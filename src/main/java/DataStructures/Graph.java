@@ -44,4 +44,13 @@ public class Graph {
         return result;
     }
 
+    public long evalueteGenericTour(){
+        long result = 0L;
+        for (int i = 0; i < graph.length - 1; i++) {
+            result += graph[i][i+1];
+        }
+        result += graph[graph.length-1][0];
+        return result;
+    }
+
 }

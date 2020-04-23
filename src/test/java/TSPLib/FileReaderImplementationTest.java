@@ -1,5 +1,6 @@
 package TSPLib;
 
+import DataStructures.ProblemInstance;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -9,21 +10,37 @@ import java.io.StringReader;
 
 public class FileReaderImplementationTest {
 
+    /**
+     * This can be used for testing the implementation of the distance functions. Some length are given in the TSPLIB
+     * documentation.
+     *
+     * @throws IOException
+     */
+    public void localTest() throws IOException {
+        String fileName = "C:\\PathToFile\\att532.tsp";
+        FileReaderImplementation fileReaderImplementation = new FileReaderImplementation();
+        ProblemInstance problemInstance = fileReaderImplementation.createGraphFromFile(fileName);
+        long length = problemInstance.getGraph().evalueteGenericTour();
+        System.out.println(length);
+    }
+
+
     @Test
-    public void testCreateNodeCoordinates() throws IOException{
+    public void testCreateNodeCoordinates() throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new StringReader("1 565.0 575.0\n" +
                 "2 25.0 185.0\n" +
-                "3 345.0 750.0\n" ));
+                "3 345.0 750.0\n"));
         FileReaderImplementation sut = new FileReaderImplementation();
         double[][] result = sut.createNodeCoordinates(bufferedReader, 3);
         double[][] expected = {{1, 565.0, 575.0}, {2, 25.0, 185.0,}, {3, 345.0, 750.0}};
-        Assert.assertArrayEquals(expected, result);;
+        Assert.assertArrayEquals(expected, result);
+        ;
 
     }
 
 
     @Test
-    public void testReadEdgeSection_Function() throws  IOException{
+    public void testReadEdgeSection_Function() throws IOException {
         FileReaderImplementation sut = new FileReaderImplementation();
         BufferedReader bufferedReader = new BufferedReader(new StringReader("Hello"));
         sut.readEdgeSection(bufferedReader, 5, "FUNCTION");

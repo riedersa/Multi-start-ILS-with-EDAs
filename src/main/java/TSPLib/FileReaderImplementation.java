@@ -40,17 +40,32 @@ public class FileReaderImplementation implements FileReader {
                 case "NAME":
                     problemInstance.setName(fragments[2]);
                     break;
+                case "NAME:":
+                    problemInstance.setName(fragments[1]);
+                    break;
                 case "TYPE":
                     problemInstance.setType(fragments[2]);
+                    break;
+                case "TYPE:":
+                    problemInstance.setType(fragments[1]);
                     break;
                 case "DIMENSION":
                     problemInstance.setDimension(Integer.parseInt(fragments[2]));
                     break;
+                case "DIMENSION:":
+                    problemInstance.setDimension(Integer.parseInt(fragments[1]));
+                    break;
                 case "EDGE_WEIGHT_TYPE":
                     edge_weight_type = fragments[2];
                     break;
+                case "EDGE_WEIGHT_TYPE:":
+                    edge_weight_type = fragments[1];
+                    break;
                 case "EDGE_WEIGHT_FORMAT":
                     edge_weight_format = fragments[2];
+                    break;
+                case "EDGE_WEIGHT_FORMAT:":
+                    edge_weight_format = fragments[1];
                     break;
                 case "NODE_COORD_SECTION":
                     problemInstance.setNodeCoordinates(createNodeCoordinates(bufferedReader,
