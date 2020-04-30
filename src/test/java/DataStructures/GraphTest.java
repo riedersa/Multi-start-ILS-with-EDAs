@@ -1,6 +1,6 @@
 package DataStructures;
 
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 public class GraphTest {
 
@@ -13,7 +13,7 @@ public class GraphTest {
     private TSPTour tspTour2 = new TSPTour(tour2, 0);
 
 
-    @Before
+    @BeforeEach
     public void setUpDistances(){
         distances = new int[5][5];
         distances[0][0] = 0;
@@ -51,15 +51,15 @@ public class GraphTest {
     @Test
     public void testEvaluateTour_TSP() {
         Graph sut = new Graph(distances);
-        Assert.assertEquals((int) sut.evaluateTour(tspTour1), distance1);
-        Assert.assertEquals((int) sut.evaluateTour(tspTour2), distance2);
+        Assertions.assertEquals((int) sut.evaluateTour(tspTour1), distance1);
+        Assertions.assertEquals((int) sut.evaluateTour(tspTour2), distance2);
     }
 
 
     @Test
     public void testEvaluateTour_int() {
         Graph sut = new Graph(distances);
-        Assert.assertEquals((int) sut.evaluateTour(tour), distance1);
-        Assert.assertEquals((int) sut.evaluateTour(tour2), distance2);
+        Assertions.assertEquals((int) sut.evaluateTour(tour), distance1);
+        Assertions.assertEquals((int) sut.evaluateTour(tour2), distance2);
     }
 }
