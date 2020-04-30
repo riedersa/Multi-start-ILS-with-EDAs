@@ -42,6 +42,13 @@ public class OrOpt implements LocalSearch {
                         return newTour;
                     }
                 }
+                for (int k = j+1; k < startTour.getLength(); k++) {
+                    TSPTour newTour = startTour.orOptSwap(i, j, k);
+                    graph.setDistanceToTour(newTour);
+                    if (newTour.getLength() < startTour.getLength()) {
+                        return newTour;
+                    }
+                }
             }
         }
         return null;

@@ -101,18 +101,29 @@ public class TSPTour {
         return newTSPTour;
     }
 
-    //Insert [start, ..., end] after insertionPoint.
+
+    /**
+     * This method cuts [start, ..., end] out of the list and inserts it after the position insertion Point.
+     * <p>
+     * It is assumed, that start is smaller than end, insertionPoint is smaller than start of bigger than end and all
+     * arguments lie between 0 and the length of the tour minus one.
+     *
+     * @param start          the start of the cut sequence (index)
+     * @param end            the end of the cut sequence (index)
+     * @param insertionPoint the index, after which the sequence should be inserted
+     * @return the new TSP tour
+     */
     public TSPTour orOptSwap(int start, int end, int insertionPoint) {
         if (start < 0 || end < start || end >= tour.length) {
             throw new IllegalArgumentException(String.format("The values of start or end don't match the " +
                     "specification: start " +
                     "is %d and end is %d", start, end));
         }
-        if ((insertionPoint >= start && end >= insertionPoint) || insertionPoint < 0 || insertionPoint >= tour.length) {
+        if ((insertionPoint >= start && end > insertionPoint) || insertionPoint < 0 || insertionPoint >= tour.length) {
             throw new IllegalArgumentException(String.format("The values of start, end or insertionPoint don't match " +
                     "the " +
                     "specification: start " +
-                    "is %d, end is %d and insertionPoint is %d", start, end));
+                    "is %d, end is %d and insertionPoint is %d", start, end, insertionPoint));
         }
         ArrayList<Integer> begin = new ArrayList();
         if (start < insertionPoint) {
@@ -122,20 +133,25 @@ public class TSPTour {
             for (int i = end + 1; i <= insertionPoint; i++) {
                 begin.add(tour[i]);
             }
+        } else if (start == insertionPoint) { //then also end == insertion point, otherwise an exception would arise
+            for(int i = 0; i< start; i++){
+                begin.add(tour[i]);
+            }
+
         } else {
-            for (int i = 0; i < insertionPoint; i++) {
+            for (int i = 0; i <= insertionPoint; i++) {
                 begin.add(tour[i]);
             }
         }
 
         ArrayList<Integer> insertion = new ArrayList();
-        for(int i = start; i<end; i++){
+        for (int i = start; i <= end; i++) {
             insertion.add(tour[i]);
         }
 
         ArrayList<Integer> endList = new ArrayList();
-        if(end < insertionPoint){
-            for(int i = insertionPoint +1; i < tour.length; i++){
+        if (end < insertionPoint) {
+            for (int i = insertionPoint + 1; i < tour.length; i++) {
                 endList.add(tour[i]);
             }
         } else {
@@ -152,7 +168,7 @@ public class TSPTour {
         Object[] tourO = begin.toArray();
 
         int[] tour = new int[this.tour.length];
-        for(int i = 0; i< tour.length; i++){
+        for (int i = 0; i < tour.length; i++) {
             tour[i] = (int) tourO[i];
         }
         TSPTour newTSPTour = new TSPTour(tour);
