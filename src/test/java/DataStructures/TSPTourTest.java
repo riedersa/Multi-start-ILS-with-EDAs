@@ -115,4 +115,15 @@ public class TSPTourTest {
         });
 
     }
+
+    @Test
+    public void compareTo(){
+        TSPTour tour = new TSPTour(new int[2], 5);
+        TSPTour tour1 = new TSPTour(new int[2], 8);
+        TSPTour tour2 = new TSPTour(new int[2], 2);
+        TSPTour tour3 = new TSPTour(new int[2], 5);
+        Assertions.assertTrue(tour.compareTo(tour1) < 0);
+        Assertions.assertTrue(tour.compareTo(tour2) > 0);
+        Assertions.assertTrue(tour.compareTo(tour3) == 0);
+    }
 }

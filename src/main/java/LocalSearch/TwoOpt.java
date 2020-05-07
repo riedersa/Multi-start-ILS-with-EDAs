@@ -11,6 +11,15 @@ public class TwoOpt implements LocalSearch {
     }
 
 
+    public TwoOpt(Method method) {
+        this.method = method;
+    }
+
+
+    public TwoOpt() {
+    }
+
+
     private Method method = Method.DESCENT;
 
 
@@ -43,17 +52,17 @@ public class TwoOpt implements LocalSearch {
     /**
      * Finds the next tour to continue with.
      *
-     * @param graph the graph on which the problem is based on
+     * @param graph     the graph on which the problem is based on
      * @param startTour the tour for which to find the next
      * @return the next tour
      */
-    private TSPTour findNextTour(Graph graph, TSPTour startTour) {
+    protected TSPTour findNextTour(Graph graph, TSPTour startTour) {
         graph.setDistanceToTour(startTour);
         long minDistance = startTour.getLength();
         TSPTour bestTour = null;
 
-        for (int i = 0; i < startTour.getLength(); i++) {
-            for (int k = i + 1; k < startTour.getLength(); k++) {
+        for (int i = 0; i < startTour.getNumberNodes(); i++) {
+            for (int k = i + 1; k < startTour.getNumberNodes(); k++) {
                 TSPTour newTour = startTour.twoOptSwap(i, k);
                 graph.setDistanceToTour(newTour);
                 long newDistance = newTour.getLength();

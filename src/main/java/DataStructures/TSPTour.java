@@ -6,7 +6,7 @@ import java.util.Arrays;
 /**
  * This class represents a TSP-tour. It also stores its length.
  */
-public class TSPTour {
+public class TSPTour implements Comparable<TSPTour> {
 
     private final int[] tour;
     private long length;
@@ -134,7 +134,7 @@ public class TSPTour {
                 begin.add(tour[i]);
             }
         } else if (start == insertionPoint) { //then also end == insertion point, otherwise an exception would arise
-            for(int i = 0; i< start; i++){
+            for (int i = 0; i < start; i++) {
                 begin.add(tour[i]);
             }
 
@@ -179,5 +179,17 @@ public class TSPTour {
     @Override
     public String toString() {
         return Arrays.toString(tour) + " of length " + length + "\n";
+    }
+
+
+    @Override
+    public int compareTo(TSPTour o) {
+        if(this.getLength() > o.getLength()){
+            return 1;
+        } else if(this.getLength() < o.getLength()){
+            return -1;
+        } else {
+            return 0;
+        }
     }
 }

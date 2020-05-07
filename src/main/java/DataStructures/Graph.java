@@ -45,6 +45,11 @@ public class Graph {
     }
 
 
+    /**
+     * Evaluates the tour length of 1,...,n.
+     *
+     * @return the tour length
+     */
     public long evalueteGenericTour() {
         long result = 0L;
         for (int i = 0; i < graph.length - 1; i++) {
@@ -55,10 +60,27 @@ public class Graph {
     }
 
 
+    /**
+     * This method computes and sets the length of the given tour, if this is not already known.
+     *
+     * @param tour the tour for which to set the length.
+     */
     public void setDistanceToTour(TSPTour tour) {
         if (!tour.isLengthKnown()) {
             tour.setLength(evaluateTour(tour));
         }
+    }
+
+
+    /**
+     * Returns the direct distance from one node to another.
+     *
+     * @param from the start node
+     * @param to   the end node
+     * @return the distance
+     */
+    public int getDistance(int from, int to) {
+        return graph[from][to];
     }
 
 }
