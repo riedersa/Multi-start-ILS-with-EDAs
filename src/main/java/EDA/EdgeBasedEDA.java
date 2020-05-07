@@ -24,7 +24,7 @@ public class EdgeBasedEDA implements EDA {
     private final int numberNodes;
     private int maxCounterOtIterations;
 
-    private double probForPriorTour = 0.2;
+    private double valueForAPrioriEdges = 10;
     private double bRatio = 0.15; //Used to create the noise. If b is high, then the perturbation is high.
     private double epsilon; //noise for the matrix according to the paper
 
@@ -61,13 +61,50 @@ public class EdgeBasedEDA implements EDA {
 
     @Override
     public TSPTour perturb(TSPTour tour) {
-        return null;
+        initiateEdgeHistogramMatrix(tour);
+        return performEDA();
     }
 
 
     @Override
     public TSPTour initiate() {
-        return null;
+        initiate();
+        return performEDA();
+    }
+
+
+    /**
+     * This method fills the edge histogram matrix if nothing is known a priori. Every edge gets the same probability.
+     */
+    private void initiateEdgeHistogramMatrix() {
+        for (int i = 0; i < numberNodes; i++) {
+            for (int j = 0; j < numberNodes; j++) {
+                if (i != j) {
+                    edgeHistogramMatrix[i][j] = 1;
+                }
+            }
+        }
+    }
+
+
+    /**
+     * This method fills the edge histogram matrix if one tour is known a priori. The edges in the tour are more likely
+     * than the others. They get the value {@code valueForAPrioriEdges}, the others get 1.
+     *
+     * @param tspTour the tour given.
+     */
+    private void initiateEdgeHistogramMatrix(TSPTour tspTour) {
+        for (int i = 0; i < numberNodes; i++) {
+            for (int j = 0; j < numberNodes; j++) {
+                if (i != j) {
+                    edgeHistogramMatrix[i][j] = 1;
+                }
+            }
+        }
+        int[] tour = tspTour.getTour();
+        for (int position = 0; position < numberNodes; position++) {
+            edgeHistogramMatrix[tour[position]][tour[(position + 1) % numberNodes]] = valueForAPrioriEdges;
+        }
     }
 
 
@@ -258,22 +295,22 @@ public class EdgeBasedEDA implements EDA {
     }
 
 
-    public double getProbForPriorTour() {
-        return probForPriorTour;
+    public double getValueForAPrioriEdges() {
+        return valueForAPrioriEdges;
     }
 
 
     /**
      * Sets the {@code probForPriorTour}
      *
-     * @param probForPriorTour the probability the positions in a given tour should get a priori in the models.
+     * @param valueForAPrioriEdges the probability the positions in a given tour should get a priori in the models.
      * @throws IllegalArgumentException If the probability is larger than 1.
      */
-    public void setProbForPriorTour(double probForPriorTour) throws IllegalArgumentException {
-        if (probForPriorTour > 1.0) {
-            throw new IllegalArgumentException(String.format("The probability is too large: %e", probForPriorTour));
+    public void setValueForAPrioriEdges(double valueForAPrioriEdges) throws IllegalArgumentException {
+        if (valueForAPrioriEdges > 1.0) {
+            throw new IllegalArgumentException(String.format("The probability is too large: %e", valueForAPrioriEdges));
         }
-        this.probForPriorTour = probForPriorTour;
+        this.valueForAPrioriEdges = valueForAPrioriEdges;
     }
 
 
