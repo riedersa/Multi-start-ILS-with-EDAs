@@ -12,8 +12,6 @@ import java.util.Random;
  * Probabilistic model-building genetic algorithms in permutation representation domain using edge histogram. In:
  * International Conference on Parallel Problem Solving from Nature. Springer, Berlin, Heidelberg, 2002. S. 224-233".
  * <p>
- * TODO: Tests
- * <p>
  * TODO: stopping criterion
  */
 public class EdgeBasedEDA implements EDA {
@@ -35,26 +33,21 @@ public class EdgeBasedEDA implements EDA {
      * This method creates a new instance of an EDA.
      *
      * @param graph                  the graph on which the TSP instance is based.
-     * @param numberNodes            the number of nodes the current TSP instance has.
      * @param selectedPopulationSize the size, the population should have after selecting the best ones.
      * @param sampledPopulationSize  the size the population should have after sampling the new ones.
      * @param maxCounterOtIterations the maximum number of iterations the algorithm should perform before stopping.
      * @throws IllegalArgumentException Throws an IllegalArgumentException if the sampledPopulationSize is smaller thant
      *                                  the selectedPopulationSize.
      */
-    public EdgeBasedEDA(Graph graph, int numberNodes, int selectedPopulationSize, int sampledPopulationSize,
+    public EdgeBasedEDA(Graph graph, int selectedPopulationSize, int sampledPopulationSize,
                         int maxCounterOtIterations) throws IllegalArgumentException {
-        if (sampledPopulationSize < selectedPopulationSize) {
-            throw new IllegalArgumentException(String.format("The size of the population after sampling should be " +
-                    "bigger than the size after selecting the best individuals. The sizes were %d for sampling and %d" +
-                    " for selecting.", sampledPopulationSize, selectedPopulationSize));
-        }
+        checkSampledAndSelectedSize(sampledPopulationSize, selectedPopulationSize);
         this.graph = graph;
-        this.numberNodes = numberNodes;
+        this.numberNodes = graph.getNumberNodes();
         this.edgeHistogramMatrix = new double[numberNodes][numberNodes];
         this.selectedPopulationSize = selectedPopulationSize;
         this.sampledPopulationSize = sampledPopulationSize;
-        this.maxCounterOtIterations = maxCounterOtIterations;
+        setMaxCounterOtIterations(maxCounterOtIterations);
         setEpsilon();
     }
 
@@ -68,7 +61,7 @@ public class EdgeBasedEDA implements EDA {
 
     @Override
     public TSPTour initiate() {
-        initiate();
+        initiateEdgeHistogramMatrix();
         return performEDA();
     }
 
@@ -76,7 +69,7 @@ public class EdgeBasedEDA implements EDA {
     /**
      * This method fills the edge histogram matrix if nothing is known a priori. Every edge gets the same probability.
      */
-    private void initiateEdgeHistogramMatrix() {
+    protected void initiateEdgeHistogramMatrix() {
         for (int i = 0; i < numberNodes; i++) {
             for (int j = 0; j < numberNodes; j++) {
                 if (i != j) {
@@ -93,7 +86,7 @@ public class EdgeBasedEDA implements EDA {
      *
      * @param tspTour the tour given.
      */
-    private void initiateEdgeHistogramMatrix(TSPTour tspTour) {
+    protected void initiateEdgeHistogramMatrix(TSPTour tspTour) {
         for (int i = 0; i < numberNodes; i++) {
             for (int j = 0; j < numberNodes; j++) {
                 if (i != j) {
@@ -104,6 +97,7 @@ public class EdgeBasedEDA implements EDA {
         int[] tour = tspTour.getTour();
         for (int position = 0; position < numberNodes; position++) {
             edgeHistogramMatrix[tour[position]][tour[(position + 1) % numberNodes]] = valueForAPrioriEdges;
+            edgeHistogramMatrix[tour[(position + 1) % numberNodes]][tour[position]] = valueForAPrioriEdges;
         }
     }
 
@@ -136,7 +130,7 @@ public class EdgeBasedEDA implements EDA {
      * @param numberElements the number of elements, that should be left in the queue.
      * @param tspTours       the priority queue from which elements are deleted.
      */
-    private PriorityQueue<TSPTour> select(int numberElements, PriorityQueue<TSPTour> tspTours) {
+    protected PriorityQueue<TSPTour> select(int numberElements, PriorityQueue<TSPTour> tspTours) {
         while (tspTours.size() > numberElements) {
             tspTours.poll();
         }
@@ -149,7 +143,7 @@ public class EdgeBasedEDA implements EDA {
      *
      * @param tspTours the population for which to create the matrix
      */
-    private void estimate(PriorityQueue<TSPTour> tspTours) {
+    protected void estimate(PriorityQueue<TSPTour> tspTours) {
         setEpsilon();
         //empty the matrix to fill it later again via just addition
         for (int i = 0; i < numberNodes; i++) {
@@ -177,7 +171,7 @@ public class EdgeBasedEDA implements EDA {
      *
      * @param tspTours the current population. It is extended by new individuals.
      */
-    private void sample(int sampledPopulationSize, PriorityQueue<TSPTour> tspTours) {
+    protected void sample(int sampledPopulationSize, PriorityQueue<TSPTour> tspTours) {
         while (tspTours.size() < sampledPopulationSize) {
             tspTours.add(createTour());
         }
@@ -189,7 +183,7 @@ public class EdgeBasedEDA implements EDA {
      *
      * @return the newly generated tour.
      */
-    private TSPTour createTour() {
+    protected TSPTour createTour() {
         Random randomGenerator = new Random();
         int[] tour = new int[numberNodes];
         int positionCounter = 0;//The next position to be filled
@@ -206,6 +200,7 @@ public class EdgeBasedEDA implements EDA {
                     positionCounter++;
                     break;
                 }
+                random -= vector[node];
             }
         }
 
@@ -219,10 +214,10 @@ public class EdgeBasedEDA implements EDA {
      * Constructs the roulette wheel vector for the tour, when the next position to fill is {@code counter}.
      *
      * @param tour    the current tour
-     * @param counter the next position to fill
+     * @param counter the next position to fill.This should always be at least 1.
      * @return
      */
-    private double[] rouletteWheelVector(int[] tour, int counter) {
+    protected double[] rouletteWheelVector(int[] tour, int counter) {
         double[] vector = edgeHistogramMatrix[tour[counter - 1]].clone();
         for (int i = 0; i < counter; i++) {
             vector[tour[i]] = 0;
@@ -255,11 +250,7 @@ public class EdgeBasedEDA implements EDA {
      *                                  the selectedPopulationSize.
      */
     public void setSelectedPopulationSize(int selectedPopulationSize) {
-        if (sampledPopulationSize < selectedPopulationSize) {
-            throw new IllegalArgumentException(String.format("The size of the population after sampling should be " +
-                    "bigger than the size after selecting the best individuals. The sizes were %d for sampling and %d" +
-                    " for selecting.", sampledPopulationSize, selectedPopulationSize));
-        }
+        checkSampledAndSelectedSize(sampledPopulationSize, selectedPopulationSize);
         this.selectedPopulationSize = selectedPopulationSize;
         setEpsilon();
     }
@@ -276,11 +267,7 @@ public class EdgeBasedEDA implements EDA {
      *                                  * * the selectedPopulationSize.
      */
     public void setSampledPopulationSize(int sampledPopulationSize) throws IllegalArgumentException {
-        if (sampledPopulationSize < selectedPopulationSize) {
-            throw new IllegalArgumentException(String.format("The size of the population after sampling should be " +
-                    "bigger than the size after selecting the best individuals. The sizes were %d for sampling and %d" +
-                    " for selecting.", sampledPopulationSize, selectedPopulationSize));
-        }
+        checkSampledAndSelectedSize(sampledPopulationSize, selectedPopulationSize);
         this.sampledPopulationSize = sampledPopulationSize;
     }
 
@@ -291,6 +278,10 @@ public class EdgeBasedEDA implements EDA {
 
 
     public void setMaxCounterOtIterations(int maxCounterOtIterations) {
+        if (maxCounterOtIterations <= 0) {
+            throw new IllegalArgumentException(String.format("There must be at least 1 iteration. " +
+                    "MaxCounterOfIterations was :", maxCounterOtIterations));
+        }
         this.maxCounterOtIterations = maxCounterOtIterations;
     }
 
@@ -304,11 +295,11 @@ public class EdgeBasedEDA implements EDA {
      * Sets the {@code probForPriorTour}
      *
      * @param valueForAPrioriEdges the probability the positions in a given tour should get a priori in the models.
-     * @throws IllegalArgumentException If the probability is larger than 1.
      */
-    public void setValueForAPrioriEdges(double valueForAPrioriEdges) throws IllegalArgumentException {
-        if (valueForAPrioriEdges > 1.0) {
-            throw new IllegalArgumentException(String.format("The probability is too large: %e", valueForAPrioriEdges));
+    public void setValueForAPrioriEdges(double valueForAPrioriEdges) {
+        if (valueForAPrioriEdges <= 0) {
+            throw new IllegalArgumentException(String.format("The value for the edges in the given tours should be " +
+                    "bigger than 0. It was: %d", valueForAPrioriEdges));
         }
         this.valueForAPrioriEdges = valueForAPrioriEdges;
     }
@@ -327,5 +318,30 @@ public class EdgeBasedEDA implements EDA {
 
     private void setEpsilon() {
         this.epsilon = (2.0 * selectedPopulationSize) / (numberNodes - 1) * bRatio;
+    }
+
+
+    private void checkSampledAndSelectedSize(int sampledPopulationSize, int selectedPopulationSize) {
+        if (sampledPopulationSize < selectedPopulationSize || sampledPopulationSize <= 0 || selectedPopulationSize < 0) {
+            throw new IllegalArgumentException(String.format("The size of the population after sampling should be " +
+                    "bigger than the size after selecting the best individuals. The sizes were %d for sampling and %d" +
+                    " for selecting.", sampledPopulationSize, selectedPopulationSize));
+        }
+    }
+
+
+    //For testing
+    protected void setEdgeHistogramMatrix(double[][] edgeHistogramMatrix) {
+        this.edgeHistogramMatrix = edgeHistogramMatrix;
+    }
+
+
+    protected double[][] getEdgeHistogramMatrix() {
+        return edgeHistogramMatrix;
+    }
+
+
+    protected double getEpsilon() {
+        return epsilon;
     }
 }

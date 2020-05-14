@@ -36,26 +36,21 @@ public class PositionBasedEDA_UMDA implements EDA {
      * This method creates a new instance of an UMDA.
      *
      * @param graph                  the graph on which the TSP instance is based.
-     * @param numberNodes            the number of nodes the current TSP instance has.
      * @param selectedPopulationSize the size, the population should have after selecting the best ones.
      * @param sampledPopulationSize  the size the population should have after sampling the new ones.
      * @param maxCounterOtIterations the maximum number of iterations the algorithm should perform before stopping.
      * @throws IllegalArgumentException Throws an IllegalArgumentException if the sampledPopulationSize is smaller thant
      *                                  the selectedPopulationSize.
      */
-    public PositionBasedEDA_UMDA(Graph graph, int numberNodes, int selectedPopulationSize, int sampledPopulationSize,
+    public PositionBasedEDA_UMDA(Graph graph, int selectedPopulationSize, int sampledPopulationSize,
                                  int maxCounterOtIterations) throws IllegalArgumentException {
-        if (sampledPopulationSize < selectedPopulationSize) {
-            throw new IllegalArgumentException(String.format("The size of the population after sampling should be " +
-                    "bigger than the size after selecting the best individuals. The sizes were %d for sampling and %d" +
-                    " for selecting.", sampledPopulationSize, selectedPopulationSize));
-        }
+        checkSampledAndSelectedSize(sampledPopulationSize, selectedPopulationSize);
         this.graph = graph;
-        this.numberNodes = numberNodes;
+        this.numberNodes = graph.getNumberNodes();
         this.model = new double[numberNodes][numberNodes];
         this.selectedPopulationSize = selectedPopulationSize;
         this.sampledPopulationSize = sampledPopulationSize;
-        this.maxCounterOtIterations = maxCounterOtIterations;
+        setMaxCounterOtIterations(maxCounterOtIterations);
     }
 
 
@@ -76,10 +71,10 @@ public class PositionBasedEDA_UMDA implements EDA {
     /**
      * Initiates the model if there is no prior knowledge. Then each node is equally likely at each position.
      */
-    private void initiateModel() {
+    protected void initiateModel() {
         double prob = 1.0 / numberNodes;
         for (int node = 0; node < numberNodes; node++) {
-            for (int position = 0; position < numberNodes; node++) {
+            for (int position = 0; position < numberNodes; position++) {
                 model[node][position] = prob;
             }
         }
@@ -92,10 +87,10 @@ public class PositionBasedEDA_UMDA implements EDA {
      *
      * @param tspTour the given tour
      */
-    private void initiateModel(TSPTour tspTour) {
+    protected void initiateModel(TSPTour tspTour) {
         double prob = (1.0 - probForPriorTour) / (numberNodes - 1.0);
         for (int node = 0; node < numberNodes; node++) {
-            for (int position = 0; position < numberNodes; node++) {
+            for (int position = 0; position < numberNodes; position++) {
                 model[node][position] = prob;
             }
         }
@@ -135,7 +130,7 @@ public class PositionBasedEDA_UMDA implements EDA {
      * @param numberElements the number of elements, that should be left in the queue.
      * @param tspTours       the priority queue from which elements are deleted.
      */
-    private PriorityQueue<TSPTour> select(int numberElements, PriorityQueue<TSPTour> tspTours) {
+    protected PriorityQueue<TSPTour> select(int numberElements, PriorityQueue<TSPTour> tspTours) {
         while (tspTours.size() > numberElements) {
             tspTours.poll();
         }
@@ -145,10 +140,12 @@ public class PositionBasedEDA_UMDA implements EDA {
 
     /**
      * This methods updates the probability model.
+     * <p>
+     * I think, there is an error in the paper. It should be divided by m+1 and not by m+(m/N)
      *
      * @param tspTours the current population that shoulc be used to update the model.
      */
-    private void estimate(PriorityQueue<TSPTour> tspTours) {
+    protected void estimate(PriorityQueue<TSPTour> tspTours) {
         int populationSize = tspTours.size();
 
         int[][] numberOccurrencesAtPosition = new int[numberNodes][numberNodes];
@@ -161,7 +158,7 @@ public class PositionBasedEDA_UMDA implements EDA {
         }
 
         double noiseNumerator = 1.0 / numberNodes;
-        double denominator = populationSize + (((double) populationSize) / numberNodes);
+        double denominator = populationSize + 1;
 
         for (int node = 0; node < numberNodes; node++) {
             for (int position = 0; position < numberNodes; position++) {
@@ -177,7 +174,7 @@ public class PositionBasedEDA_UMDA implements EDA {
      * @param sizeOfPopulationAfterSampling the size, the population should have after sampling
      * @param tspTours                      the current population
      */
-    private void sample(int sizeOfPopulationAfterSampling, PriorityQueue<TSPTour> tspTours) {
+    protected void sample(int sizeOfPopulationAfterSampling, PriorityQueue<TSPTour> tspTours) {
         while (tspTours.size() < sizeOfPopulationAfterSampling) {
             int[] tourArray = rouletteWheelForCreation();
             tourArray = refineTour(tourArray);
@@ -194,7 +191,7 @@ public class PositionBasedEDA_UMDA implements EDA {
      *
      * @return the generated Tour. This must not be feasible.
      */
-    private int[] rouletteWheelForCreation() {
+    protected int[] rouletteWheelForCreation() {
         int[] tour = new int[numberNodes];
         Random randomGenerator = new Random();
         for (int position = 0; position < numberNodes; position++) {
@@ -218,7 +215,7 @@ public class PositionBasedEDA_UMDA implements EDA {
      * @param tour the tour to change
      * @return the feasible tour based on the given one
      */
-    private int[] refineTour(int[] tour) {
+    protected int[] refineTour(int[] tour) {
         //Is true, if node i is already found in the tour.
         boolean[] alreadyFound = new boolean[numberNodes];
 
@@ -232,6 +229,7 @@ public class PositionBasedEDA_UMDA implements EDA {
             if (alreadyFound[tour[i]]) {
                 doubleLocations.add(i);
             }
+            alreadyFound[tour[i]] = true;
         }
 
         for (int i = 0; i < numberNodes; i++) {
@@ -239,7 +237,6 @@ public class PositionBasedEDA_UMDA implements EDA {
                 missingNodes.add(i);
             }
         }
-
 
         for (Integer position : doubleLocations) {
             //this is the distance between pos-1 and the node plus pos+1 and the node.
@@ -257,10 +254,13 @@ public class PositionBasedEDA_UMDA implements EDA {
 
             for (int node : missingNodes) {
                 if (random <= ((double) distanceAddedIfNode[node]) / overallDistance) {
-                    missingNodes.remove(node);
                     tour[position] = node;
+                    break;
                 }
+                random -= ((double) distanceAddedIfNode[node]) / overallDistance;
             }
+
+            missingNodes.remove(tour[position]);
         }
 
         return tour;
@@ -278,11 +278,7 @@ public class PositionBasedEDA_UMDA implements EDA {
      *                                  the selectedPopulationSize.
      */
     public void setSelectedPopulationSize(int selectedPopulationSize) {
-        if (sampledPopulationSize < selectedPopulationSize) {
-            throw new IllegalArgumentException(String.format("The size of the population after sampling should be " +
-                    "bigger than the size after selecting the best individuals. The sizes were %d for sampling and %d" +
-                    " for selecting.", sampledPopulationSize, selectedPopulationSize));
-        }
+        checkSampledAndSelectedSize(sampledPopulationSize, selectedPopulationSize);
         this.selectedPopulationSize = selectedPopulationSize;
     }
 
@@ -298,11 +294,7 @@ public class PositionBasedEDA_UMDA implements EDA {
      *                                  * * the selectedPopulationSize.
      */
     public void setSampledPopulationSize(int sampledPopulationSize) throws IllegalArgumentException {
-        if (sampledPopulationSize < selectedPopulationSize) {
-            throw new IllegalArgumentException(String.format("The size of the population after sampling should be " +
-                    "bigger than the size after selecting the best individuals. The sizes were %d for sampling and %d" +
-                    " for selecting.", sampledPopulationSize, selectedPopulationSize));
-        }
+        checkSampledAndSelectedSize(sampledPopulationSize, selectedPopulationSize);
         this.sampledPopulationSize = sampledPopulationSize;
     }
 
@@ -313,6 +305,10 @@ public class PositionBasedEDA_UMDA implements EDA {
 
 
     public void setMaxCounterOtIterations(int maxCounterOtIterations) {
+        if (maxCounterOtIterations <= 0) {
+            throw new IllegalArgumentException(String.format("There must be at least 1 iteration. " +
+                    "MaxCounterOfIterations was :", maxCounterOtIterations));
+        }
         this.maxCounterOtIterations = maxCounterOtIterations;
     }
 
@@ -333,5 +329,20 @@ public class PositionBasedEDA_UMDA implements EDA {
             throw new IllegalArgumentException(String.format("The probability is too large: %e", probForPriorTour));
         }
         this.probForPriorTour = probForPriorTour;
+    }
+
+
+    private void checkSampledAndSelectedSize(int sampledPopulationSize, int selectedPopulationSize) {
+        if (sampledPopulationSize < selectedPopulationSize || sampledPopulationSize <= 0 || selectedPopulationSize < 0) {
+            throw new IllegalArgumentException(String.format("The size of the population after sampling should be " +
+                    "bigger than the size after selecting the best individuals. The sizes were %d for sampling and %d" +
+                    " for selecting.", sampledPopulationSize, selectedPopulationSize));
+        }
+    }
+
+
+    //For testing only
+    protected double[][] getModel() {
+        return model;
     }
 }

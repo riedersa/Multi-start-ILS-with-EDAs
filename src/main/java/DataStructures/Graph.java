@@ -83,4 +83,14 @@ public class Graph {
         return graph[from][to];
     }
 
+
+    /**
+     * This function returns the number of nodes of the graph.
+     *
+     * @return the number of nodes.
+     */
+    public int getNumberNodes() {
+        return graph.length;
+    }
+
 }
