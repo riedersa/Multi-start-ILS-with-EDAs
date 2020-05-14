@@ -55,7 +55,7 @@ public class PositionBasedEDA_UMDA implements EDA {
 
 
     @Override
-    public TSPTour perturb(TSPTour tour) {
+    public TSPTour perturb(final TSPTour tour) {
         initiateModel(tour);
         return performEDA();
     }
@@ -87,7 +87,7 @@ public class PositionBasedEDA_UMDA implements EDA {
      *
      * @param tspTour the given tour
      */
-    protected void initiateModel(TSPTour tspTour) {
+    protected void initiateModel(final TSPTour tspTour) {
         double prob = (1.0 - probForPriorTour) / (numberNodes - 1.0);
         for (int node = 0; node < numberNodes; node++) {
             for (int position = 0; position < numberNodes; position++) {
@@ -129,6 +129,7 @@ public class PositionBasedEDA_UMDA implements EDA {
      *
      * @param numberElements the number of elements, that should be left in the queue.
      * @param tspTours       the priority queue from which elements are deleted.
+     * @return a priority queue containing the worst individuals of the population
      */
     protected PriorityQueue<TSPTour> select(int numberElements, PriorityQueue<TSPTour> tspTours) {
         while (tspTours.size() > numberElements) {

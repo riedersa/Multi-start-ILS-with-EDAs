@@ -2,41 +2,45 @@ package MultiStartILS;
 
 import DataStructures.Graph;
 import DataStructures.TSPTour;
-import EDA.*;
-import LocalSearch.*;
+import EDA.EDA;
+import LocalSearch.LocalSearch;
 
 /**
- * This class controls the Multi-start ILS. It calls an implementation of {@link LocalSearch} and {@link
- * EDA}.
+ * This class controls the Multi-start ILS. It calls an implementation of {@link LocalSearch} and {@link EDA}.
  */
 public class MultiStartILS {
 
     private EDA eda;
-    private int maxTimesLS;
-    private int maxTimesStuck;
+    private int maxTimesLS = 100;
+    private int maxTimesStuck = 5;
     private LocalSearch localSearchAlgorithm;
 
 
+    public MultiStartILS(EDA eda, LocalSearch localSearchAlgorithm) {
+        this.eda = eda;
+        this.localSearchAlgorithm = localSearchAlgorithm;
+    }
+
+
     /**
-     * TODO: Initialize EDA and everything else
-     * @param graph the graph for which to performe the MultiStartILS
+     * @param graph the graph for which to perform the MultiStartILS
      * @return the best tour found
      */
     public TSPTour performMultiStartILS(final Graph graph) {
         long minLength = Long.MAX_VALUE;
         TSPTour minTour = null;
 
-        int ls = 0;
-        while (ls < maxTimesLS) {
+        int localSearchCounter = 0;
+        while (localSearchCounter < maxTimesLS) {
             TSPTour tour = eda.initiate();
             tour = localSearchAlgorithm.performSearch(graph, tour);
-            ls++;
+            localSearchCounter++;
             int stuck = 0;
-            while (stuck < maxTimesStuck && ls < maxTimesLS) {
+            while (stuck < maxTimesStuck && localSearchCounter < maxTimesLS) {
                 TSPTour optimizedTour = tour;
                 optimizedTour = eda.perturb(optimizedTour);
                 optimizedTour = localSearchAlgorithm.performSearch(graph, optimizedTour);
-                ls++;
+                localSearchCounter++;
                 if (optimizedTour.getLength() < tour.getLength()) {
                     tour = optimizedTour;
                     stuck = 0;
@@ -45,7 +49,7 @@ public class MultiStartILS {
                 }
             }
 
-            if(tour.getLength() < minLength){
+            if (tour.getLength() < minLength) {
                 minTour = tour;
                 minLength = tour.getLength();
             }
@@ -53,4 +57,23 @@ public class MultiStartILS {
         return minTour;
     }
 
+
+    public int getMaxTimesLS() {
+        return maxTimesLS;
+    }
+
+
+    public void setMaxTimesLS(int maxTimesLS) {
+        this.maxTimesLS = maxTimesLS;
+    }
+
+
+    public int getMaxTimesStuck() {
+        return maxTimesStuck;
+    }
+
+
+    public void setMaxTimesStuck(int maxTimesStuck) {
+        this.maxTimesStuck = maxTimesStuck;
+    }
 }

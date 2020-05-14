@@ -53,7 +53,7 @@ public class EdgeBasedEDA implements EDA {
 
 
     @Override
-    public TSPTour perturb(TSPTour tour) {
+    public TSPTour perturb(final TSPTour tour) {
         initiateEdgeHistogramMatrix(tour);
         return performEDA();
     }
@@ -86,7 +86,7 @@ public class EdgeBasedEDA implements EDA {
      *
      * @param tspTour the tour given.
      */
-    protected void initiateEdgeHistogramMatrix(TSPTour tspTour) {
+    protected void initiateEdgeHistogramMatrix(final TSPTour tspTour) {
         for (int i = 0; i < numberNodes; i++) {
             for (int j = 0; j < numberNodes; j++) {
                 if (i != j) {
@@ -129,6 +129,7 @@ public class EdgeBasedEDA implements EDA {
      *
      * @param numberElements the number of elements, that should be left in the queue.
      * @param tspTours       the priority queue from which elements are deleted.
+     * @return a priority queue containing then worst elements of the initial one
      */
     protected PriorityQueue<TSPTour> select(int numberElements, PriorityQueue<TSPTour> tspTours) {
         while (tspTours.size() > numberElements) {
@@ -169,7 +170,8 @@ public class EdgeBasedEDA implements EDA {
      * Samples new individuals for the population until there are {@code sampledPopulationSize} individuals in the
      * population.
      *
-     * @param tspTours the current population. It is extended by new individuals.
+     * @param sampledPopulationSize the size the population should have after sampling
+     * @param tspTours              the current population. It is extended by new individuals.
      */
     protected void sample(int sampledPopulationSize, PriorityQueue<TSPTour> tspTours) {
         while (tspTours.size() < sampledPopulationSize) {
@@ -215,7 +217,7 @@ public class EdgeBasedEDA implements EDA {
      *
      * @param tour    the current tour
      * @param counter the next position to fill.This should always be at least 1.
-     * @return
+     * @return the roulette vector
      */
     protected double[] rouletteWheelVector(int[] tour, int counter) {
         double[] vector = edgeHistogramMatrix[tour[counter - 1]].clone();

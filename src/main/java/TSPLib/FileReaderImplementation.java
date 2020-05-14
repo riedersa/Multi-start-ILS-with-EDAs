@@ -94,6 +94,13 @@ public class FileReaderImplementation implements FileReader {
     }
 
 
+    /**
+     * creates the graph based on the edges
+     *
+     * @param problemInstance  where to put the graph
+     * @param edge_weight_type the edge format in which they are given
+     * @param edges            the edge matrix
+     */
     protected void setGraph(ProblemInstance problemInstance, String edge_weight_type, int[][] edges) {
         switch (edge_weight_type) {
             case "EXPLICIT":
@@ -122,10 +129,19 @@ public class FileReaderImplementation implements FileReader {
     }
 
 
+    /**
+     * Reads the node coordinates
+     *
+     * @param bufferedReader reader from which to read
+     * @param dimension      2D or 3D
+     * @return an array containing the coordinates
+     * @throws IOException if the format in the BufferedReader is wrong
+     */
     protected double[][] createNodeCoordinates(BufferedReader bufferedReader, int dimension) throws IOException {
         double[][] coordinates = new double[dimension][3];
         for (int i = 0; i < dimension; i++) {
             String[] fragments = bufferedReader.readLine().split(" ");
+            fragments = removeEmptyStrings(fragments);
             coordinates[i][0] = Integer.parseInt(fragments[0]);
             coordinates[i][1] = Double.parseDouble(fragments[1]);
             coordinates[i][2] = Double.parseDouble(fragments[2]);
@@ -134,6 +150,15 @@ public class FileReaderImplementation implements FileReader {
     }
 
 
+    /**
+     * reads the edges and returns an array containing the distances
+     *
+     * @param bufferedReader from where to read
+     * @param dimension      the number of nodes
+     * @param edgeFormat     the format in which the edges are given
+     * @return the distance matrix
+     * @throws IOException it the format of the input is wrong
+     */
     protected int[][] readEdgeSection(BufferedReader bufferedReader, int dimension, String edgeFormat) throws IOException {
         int[][] edges = new int[dimension][dimension];
         switch (edgeFormat) {
@@ -205,84 +230,14 @@ public class FileReaderImplementation implements FileReader {
     }
 
 
-    /*protected String formatUpperRow(BufferedReader bufferedReader, int dimension) throws IOException {
-        String[] fragments = bufferedReader.readLine().split(" ");
-        int index = 0;
-
-        String result = "";
-
-        for (int line = 0; line < dimension; line++) {
-            int number = dimension - line - 1;
-            for (int i = 0; i < number; i++) {
-                if (index >= fragments.length - 1) {
-                    fragments = bufferedReader.readLine().split(" ");
-                    index = 0;
-                }
-                if (fragments[index].length() == 0) {
-                    index++;
-                    i--;
-                    continue;
-                }
-                result += Integer.parseInt(fragments[index]) + " ";
-            }
-            result += "\n";
-        }
-        return result;
-    }
-
-
-    protected String formatUpperDiagRow(BufferedReader bufferedReader, int dimension) throws IOException {
-        String[] fragments = bufferedReader.readLine().split(" ");
-        int index = 0;
-
-        String result = "";
-
-        for (int line = 0; line < dimension; line++) {
-            int number = dimension - line;
-            for (int i = 0; i < number; i++) {
-                if (index >= fragments.length - 1) {
-                    fragments = bufferedReader.readLine().split(" ");
-                    index = 0;
-                }
-                if (fragments[index].length() == 0) {
-                    index++;
-                    i--;
-                    continue;
-                }
-                result += Integer.parseInt(fragments[index]) + " ";
-            }
-            result += "\n";
-        }
-        return result;
-    }
-
-
-    protected String formatLowerDiagRow(BufferedReader bufferedReader, int dimension) throws IOException {
-        String[] fragments = bufferedReader.readLine().split(" ");
-        int index = 0;
-
-        String result = "";
-
-        for (int line = 0; line < dimension; line++) {
-            int number = line + 1;
-            for (int i = 0; i < number; i++) {
-                if (index >= fragments.length - 1) {
-                    fragments = bufferedReader.readLine().split(" ");
-                    index = 0;
-                }
-                if (fragments[index].length() == 0) {
-                    index++;
-                    i--;
-                    continue;
-                }
-                result += Integer.parseInt(fragments[index]) + " ";
-            }
-            result += "\n";
-        }
-        return result;
-    }*/
-
-
+    /**
+     * Formats the edges in a matrix properly
+     *
+     * @param bufferedReader the source from which to read the edges
+     * @param expectedNumers the expected number of edges
+     * @return the values in an array
+     * @throws IOException If the format of the input is wrong
+     */
     protected int[] formatInputEdges(BufferedReader bufferedReader, int expectedNumers) throws IOException {
         String[] fragments = bufferedReader.readLine().split(" ");
         int[] result = new int[expectedNumers];
@@ -298,6 +253,30 @@ public class FileReaderImplementation implements FileReader {
             } else {
                 result[i] = Integer.parseInt(fragments[index]);
                 index++;
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * This method removes empty strings from an array
+     *
+     * @param strings the array from which to remove the strings.
+     * @return the new generated array
+     */
+    private String[] removeEmptyStrings(String[] strings) {
+        int counter = 0;
+        for (int i = 0; i < strings.length; i++) {
+            if (strings[i] != null && strings[i].length() > 0) {
+                counter++;
+            }
+        }
+        String[] result = new String[counter];
+        int position = 0;
+        for (int i = 0; i < strings.length; i++) {
+            if (strings[i] != null && strings[i].length() > 0) {
+                result[position++] = strings[i];
             }
         }
         return result;

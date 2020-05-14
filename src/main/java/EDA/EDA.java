@@ -13,7 +13,7 @@ public interface EDA {
      * @param tour the tour, that should be perturbed
      * @return the perturbed solution
      */
-    public TSPTour perturb(TSPTour tour);
+    public TSPTour perturb(final TSPTour tour);
 
 
     /**
