@@ -14,10 +14,10 @@ import java.util.Random;
  * Transactions on Electrical and Electronic Engineering, 2016, 11. Jg., S. S142-S154.".
  * <p>
  * TODO: add another stopping criterion like no improvement
- * <p>
- * TODO: Tests
  */
 public class PositionBasedEDA_UMDA implements EDA {
+
+    private static String name = "Position based EDA (UMDA)";
 
     /* This is the probabilistic model used by the EDA. model[i][j] is the probability that node i is at position j
     of the tour*/
@@ -39,17 +39,19 @@ public class PositionBasedEDA_UMDA implements EDA {
      * @param selectedPopulationSize the size, the population should have after selecting the best ones.
      * @param sampledPopulationSize  the size the population should have after sampling the new ones.
      * @param maxCounterOtIterations the maximum number of iterations the algorithm should perform before stopping.
+     * @param probForPriorTour       the probability for a node to occure at the position it was in the given tour
      * @throws IllegalArgumentException Throws an IllegalArgumentException if the sampledPopulationSize is smaller thant
      *                                  the selectedPopulationSize.
      */
     public PositionBasedEDA_UMDA(Graph graph, int selectedPopulationSize, int sampledPopulationSize,
-                                 int maxCounterOtIterations) throws IllegalArgumentException {
+                                 int maxCounterOtIterations, double probForPriorTour) throws IllegalArgumentException {
         checkSampledAndSelectedSize(sampledPopulationSize, selectedPopulationSize);
         this.graph = graph;
         this.numberNodes = graph.getNumberNodes();
         this.model = new double[numberNodes][numberNodes];
         this.selectedPopulationSize = selectedPopulationSize;
         this.sampledPopulationSize = sampledPopulationSize;
+        setProbForPriorTour(probForPriorTour);
         setMaxCounterOtIterations(maxCounterOtIterations);
     }
 
@@ -339,6 +341,11 @@ public class PositionBasedEDA_UMDA implements EDA {
                     "bigger than the size after selecting the best individuals. The sizes were %d for sampling and %d" +
                     " for selecting.", sampledPopulationSize, selectedPopulationSize));
         }
+    }
+
+
+    public static String getName() {
+        return name;
     }
 
 

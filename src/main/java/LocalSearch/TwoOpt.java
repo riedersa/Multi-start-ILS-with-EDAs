@@ -5,9 +5,14 @@ import DataStructures.TSPTour;
 
 public class TwoOpt implements LocalSearch {
 
-    enum Method {
-        STEEPEST_DESCENT,
-        DESCENT
+    private static String name = "2-Opt";
+
+    private Method method = Method.DESCENT;
+
+
+    public enum Method {
+        DESCENT,
+        STEEPEST_DESCENT
     }
 
 
@@ -18,9 +23,6 @@ public class TwoOpt implements LocalSearch {
 
     public TwoOpt() {
     }
-
-
-    private Method method = Method.DESCENT;
 
 
     public Method getMethod() {
@@ -77,5 +79,10 @@ public class TwoOpt implements LocalSearch {
             }
         }
         return bestTour;
+    }
+
+
+    public static String getName() {
+        return name;
     }
 }

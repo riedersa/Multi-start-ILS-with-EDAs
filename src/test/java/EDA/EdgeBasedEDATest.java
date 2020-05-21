@@ -15,6 +15,8 @@ public class EdgeBasedEDATest {
     private int selectedPopulationSize = 2;
     private int sampledPopulationSize = 2;
     private int maxCounterOfIterations = 5;
+    private int valueForAPrioriEdges = 10;
+    private double bratio = 0.15;
     private LinkedList<TSPTour> tspTours;
 
 
@@ -117,7 +119,7 @@ public class EdgeBasedEDATest {
         PriorityQueue<TSPTour> pq = new PriorityQueue();
         pq.addAll(tspTours);
         EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations);
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
         sut.select(2, pq);
 
         Assertions.assertEquals(2, pq.size());
@@ -133,7 +135,7 @@ public class EdgeBasedEDATest {
 
 
         EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations);
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
         sut.sample(2, pq);
 
         Assertions.assertEquals(4, pq.size());
@@ -148,7 +150,7 @@ public class EdgeBasedEDATest {
 
 
         EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations);
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
         sut.sample(4, pq);
 
         Assertions.assertEquals(4, pq.size());
@@ -163,7 +165,7 @@ public class EdgeBasedEDATest {
 
 
         EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations);
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
         sut.sample(8, pq);
 
         Assertions.assertEquals(8, pq.size());
@@ -180,7 +182,7 @@ public class EdgeBasedEDATest {
         int nextToFill = 2;
 
         EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations);
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
 
         sut.setEdgeHistogramMatrix(edgeHistrogramMatrix);
         double[] vector = sut.rouletteWheelVector(tour, nextToFill);
@@ -199,7 +201,7 @@ public class EdgeBasedEDATest {
         int nextToFill = 1;
 
         EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations);
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
 
         sut.setEdgeHistogramMatrix(edgeHistrogramMatrix);
         double[] vector = sut.rouletteWheelVector(tour, nextToFill);
@@ -218,7 +220,7 @@ public class EdgeBasedEDATest {
         int nextToFill = 4;
 
         EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations);
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
 
         sut.setEdgeHistogramMatrix(edgeHistrogramMatrix);
         double[] vector = sut.rouletteWheelVector(tour, nextToFill);
@@ -231,7 +233,7 @@ public class EdgeBasedEDATest {
     @Test
     public void testInitiateEdgeHistogramMatrix_Without() {
         EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations);
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
         sut.initiateEdgeHistogramMatrix();
         double[][] expected = new double[][]{{0, 1, 1, 1, 1, 1, 1, 1}, {1, 0, 1, 1, 1, 1, 1, 1}, {1, 1, 0, 1, 1, 1, 1
                 , 1}, {1, 1, 1, 0, 1, 1, 1, 1}, {1, 1, 1, 1, 0, 1, 1, 1}, {1, 1, 1, 1, 1, 0, 1, 1}, {1, 1, 1, 1, 1, 1
@@ -246,7 +248,7 @@ public class EdgeBasedEDATest {
     @Test
     public void testInitiateEdgeHistogramMatrix_With() {
         EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations);
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
         sut.initiateEdgeHistogramMatrix(tspTours.getLast());
         double valueOfApriori = sut.getValueForAPrioriEdges();
         double[][] expected = new double[][]{
@@ -268,7 +270,7 @@ public class EdgeBasedEDATest {
     @Test(expected = IllegalArgumentException.class)
     public void setValueOfAPrioriEdges_thrwsNull() {
         EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations);
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
         sut.setValueForAPrioriEdges(0);
     }
 
@@ -276,17 +278,17 @@ public class EdgeBasedEDATest {
     @Test(expected = IllegalArgumentException.class)
     public void setValueOfAPrioriEdges_thrwsNeg() {
         EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations);
-        sut.setValueForAPrioriEdges(-0.1);
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
+        sut.setValueForAPrioriEdges(-1);
     }
 
 
     @Test
     public void setValueOfAPrioriEdges() {
         EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations);
-        sut.setValueForAPrioriEdges(0.2);
-        Assertions.assertEquals(0.2, sut.getValueForAPrioriEdges());
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
+        sut.setValueForAPrioriEdges(2);
+        Assertions.assertEquals(2, sut.getValueForAPrioriEdges());
         sut.setValueForAPrioriEdges(110);
         Assertions.assertEquals(110, sut.getValueForAPrioriEdges());
     }
@@ -295,7 +297,7 @@ public class EdgeBasedEDATest {
     @Test
     public void testCreateTour() {
         EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations);
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
         sut.initiateEdgeHistogramMatrix();
 
         assertValidTour(sut.createTour());
@@ -305,14 +307,14 @@ public class EdgeBasedEDATest {
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorThrows() {
         EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, selectedPopulationSize - 1,
-                maxCounterOfIterations);
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
     }
 
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetSampledThrows() {
         EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations);
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
         sut.setSampledPopulationSize(0);
     }
 
@@ -320,7 +322,7 @@ public class EdgeBasedEDATest {
     @Test
     public void testSetSampled() {
         EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations);
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
         sut.setSampledPopulationSize(5);
         Assertions.assertEquals(5, sut.getSampledPopulationSize());
     }
@@ -329,7 +331,7 @@ public class EdgeBasedEDATest {
     @Test(expected = IllegalArgumentException.class)
     public void testSetSelectedThrows() {
         EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations);
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
         sut.setSelectedPopulationSize(-1);
     }
 
@@ -337,7 +339,7 @@ public class EdgeBasedEDATest {
     @Test
     public void testSetSelected() {
         EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations);
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
         sut.setSelectedPopulationSize(0);
         Assertions.assertEquals(0, sut.getSelectedPopulationSize());
     }
@@ -346,7 +348,7 @@ public class EdgeBasedEDATest {
     @Test(expected = IllegalArgumentException.class)
     public void testSetMaxCounterThrows() {
         EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations);
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
         sut.setMaxCounterOtIterations(0);
     }
 
@@ -354,7 +356,7 @@ public class EdgeBasedEDATest {
     @Test(expected = IllegalArgumentException.class)
     public void testSetMaxCounterNegThrows() {
         EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations);
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
         sut.setMaxCounterOtIterations(-5);
     }
 
@@ -362,7 +364,7 @@ public class EdgeBasedEDATest {
     @Test
     public void testSetMaxCounter() {
         EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations);
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
         sut.setMaxCounterOtIterations(5);
         Assertions.assertEquals(5, sut.getMaxCounterOtIterations());
     }
@@ -371,7 +373,7 @@ public class EdgeBasedEDATest {
     @Test
     public void testSetBRatio_Epsilon() {
         EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations);
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
         Assertions.assertEquals(0.08571428571, sut.getEpsilon(), 0.000001);
         sut.setbRatio(1);
         Assertions.assertEquals(0.5714285714, sut.getEpsilon(), 0.000001);
@@ -382,7 +384,7 @@ public class EdgeBasedEDATest {
     @Test
     public void testSetSelected_Epsilon() {
         EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations);
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
         Assertions.assertEquals(0.08571428571, sut.getEpsilon(), 0.000001);
         sut.setSelectedPopulationSize(1);
         Assertions.assertEquals(0.04285714286, sut.getEpsilon(), 0.000001);
@@ -392,7 +394,7 @@ public class EdgeBasedEDATest {
     @Test
     public void testEstimate() {
         EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations);
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
         PriorityQueue<TSPTour> pq = new PriorityQueue<>();
         pq.addAll(tspTours);
 
@@ -419,7 +421,7 @@ public class EdgeBasedEDATest {
     @Test
     public void testPertubeNoCrash() {
         EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations);
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
         TSPTour tspTour = sut.perturb(tspTours.getFirst());
         assertValidTour(tspTour);
     }
@@ -428,7 +430,7 @@ public class EdgeBasedEDATest {
     @Test
     public void testInitiateNoCrash() {
         EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations);
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
         TSPTour tspTour = sut.initiate();
         assertValidTour(tspTour);
     }

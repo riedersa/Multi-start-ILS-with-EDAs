@@ -16,13 +16,15 @@ import java.util.Random;
  */
 public class EdgeBasedEDA implements EDA {
 
+    private static String name = "Edge based EDA";
+
     private double[][] edgeHistogramMatrix;
     private int selectedPopulationSize;
     private int sampledPopulationSize;
     private final int numberNodes;
     private int maxCounterOtIterations;
 
-    private double valueForAPrioriEdges = 10;
+    private int valueForAPrioriEdges = 10;
     private double bRatio = 0.15; //Used to create the noise. If b is high, then the perturbation is high.
     private double epsilon; //noise for the matrix according to the paper
 
@@ -36,17 +38,21 @@ public class EdgeBasedEDA implements EDA {
      * @param selectedPopulationSize the size, the population should have after selecting the best ones.
      * @param sampledPopulationSize  the size the population should have after sampling the new ones.
      * @param maxCounterOtIterations the maximum number of iterations the algorithm should perform before stopping.
+     * @param bRatio                 the bRatio value. If this value is high, the pertubation is high
+     * @param valueForAPrioriEdges   the value, edges that are already in a tour, should get
      * @throws IllegalArgumentException Throws an IllegalArgumentException if the sampledPopulationSize is smaller thant
      *                                  the selectedPopulationSize.
      */
     public EdgeBasedEDA(Graph graph, int selectedPopulationSize, int sampledPopulationSize,
-                        int maxCounterOtIterations) throws IllegalArgumentException {
+                        int maxCounterOtIterations, double bRatio, int valueForAPrioriEdges) throws IllegalArgumentException {
         checkSampledAndSelectedSize(sampledPopulationSize, selectedPopulationSize);
         this.graph = graph;
         this.numberNodes = graph.getNumberNodes();
         this.edgeHistogramMatrix = new double[numberNodes][numberNodes];
         this.selectedPopulationSize = selectedPopulationSize;
         this.sampledPopulationSize = sampledPopulationSize;
+        setValueForAPrioriEdges(valueForAPrioriEdges);
+        setbRatio(bRatio);
         setMaxCounterOtIterations(maxCounterOtIterations);
         setEpsilon();
     }
@@ -298,7 +304,7 @@ public class EdgeBasedEDA implements EDA {
      *
      * @param valueForAPrioriEdges the probability the positions in a given tour should get a priori in the models.
      */
-    public void setValueForAPrioriEdges(double valueForAPrioriEdges) {
+    public void setValueForAPrioriEdges(int valueForAPrioriEdges) {
         if (valueForAPrioriEdges <= 0) {
             throw new IllegalArgumentException(String.format("The value for the edges in the given tours should be " +
                     "bigger than 0. It was: %d", valueForAPrioriEdges));
@@ -329,6 +335,11 @@ public class EdgeBasedEDA implements EDA {
                     "bigger than the size after selecting the best individuals. The sizes were %d for sampling and %d" +
                     " for selecting.", sampledPopulationSize, selectedPopulationSize));
         }
+    }
+
+
+    public static String getName() {
+        return name;
     }
 
 

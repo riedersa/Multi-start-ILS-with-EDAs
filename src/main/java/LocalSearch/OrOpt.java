@@ -8,6 +8,9 @@ import DataStructures.TSPTour;
  */
 public class OrOpt implements LocalSearch {
 
+    private static String name = "Or-Opr";
+
+
     @Override
     public TSPTour performSearch(Graph graph, TSPTour startTour) {
         graph.setDistanceToTour(startTour);
@@ -52,5 +55,10 @@ public class OrOpt implements LocalSearch {
             }
         }
         return null;
+    }
+
+
+    public static String getName() {
+        return name;
     }
 }
