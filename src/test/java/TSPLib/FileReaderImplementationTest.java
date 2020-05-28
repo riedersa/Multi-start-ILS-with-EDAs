@@ -52,7 +52,7 @@ public class FileReaderImplementationTest {
     public void testReadFullMatrix() throws IOException {
         FileReaderImplementation sut = new FileReaderImplementation();
         int[][] edges = new int[4][4];
-        sut.readFullMatrix(createFullMatrixReader(), edges);
+        sut.readFullMatrix(createFullMatrix(), edges);
         int[][] expected = {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 16}};
         Assertions.assertArrayEquals(expected, edges);
     }
@@ -108,12 +108,7 @@ public class FileReaderImplementationTest {
     }
 
 
-    private BufferedReader createFullMatrixReader() {
-        return new BufferedReader(new StringReader(
-                "1 2 3 4\n" +
-                        "5 6 7 8\n" +
-                        "9 10 11 12\n" +
-                        "13 14 15 16\n"
-        ));
+    private int[] createFullMatrix() {
+        return new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
     }
 }

@@ -18,7 +18,7 @@ import java.io.IOException;
 /**
  * This class controls the communication between the GUI and the Core.
  */
-public class Controller implements ThreadCompleteListener {
+public class ControllerRunning implements ThreadCompleteListener {
     private MultiStartILS multiStartILS;
     private ProblemInstance problemInstance;
     private TSPTour optTourFound;
@@ -154,6 +154,6 @@ public class Controller implements ThreadCompleteListener {
             System.err.println("Could not store the tour. An exception occured: \n" + ioException.getMessage());
             ioException.printStackTrace();
         }
-        GUI.GUI.programFinished();
+        GUI.RunPanel.programFinished();
     }
 }

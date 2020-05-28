@@ -169,7 +169,7 @@ public class FileReaderImplementation implements FileReader {
                         edgeFormat));
                 return null;
             case "FULL_MATRIX":
-                readFullMatrix(bufferedReader, edges);
+                readFullMatrix(formatInputEdges(bufferedReader, (dimension * dimension)), edges);
                 break;
             case "UPPER_ROW":
                 readUpperRow(formatInputEdges(bufferedReader, (dimension * (dimension - 1) / 2)), edges);
@@ -188,12 +188,11 @@ public class FileReaderImplementation implements FileReader {
     }
 
 
-    protected void readFullMatrix(BufferedReader bufferedReader, int[][] edges) throws IOException {
+    protected void readFullMatrix(int[] edgeWeights, int[][] edges) throws IOException {
+        int index = 0;
         for (int i = 0; i < edges.length; i++) {
-            String[] fragments = bufferedReader.readLine().split(" ");
-
             for (int j = 0; j < edges.length; j++) {
-                edges[i][j] = Integer.parseInt(fragments[j]);
+                edges[i][j] = edgeWeights[index++];
             }
         }
     }

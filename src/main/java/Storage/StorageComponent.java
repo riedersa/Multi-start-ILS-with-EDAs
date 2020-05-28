@@ -61,11 +61,11 @@ public class StorageComponent {
      * @throws IOException
      */
     private static void writePreamble(BufferedWriter writer, ProblemInstance problemInstance) throws IOException {
-        writer.write("Name:" + problemInstance.getName() + "\n");
-        writer.write("NumberNodes:" + problemInstance.getGraph().getNumberNodes() + "\n");
-        writer.write("Printable:" + problemInstance.isCanDraw() + "\n");
+        writer.write(FileParameters.name + problemInstance.getName() + "\n");
+        writer.write(FileParameters.numberNodes + problemInstance.getGraph().getNumberNodes() + "\n");
+        writer.write(FileParameters.printable + problemInstance.isCanDraw() + "\n");
         if (problemInstance.isCanDraw()) {
-            writer.write("NodeCoordinates\n");
+            writer.write(FileParameters.nodeCoordinates+"\n");
             double[][] nodeCoordinates = problemInstance.getNodeCoordinates();
             for (int i = 0; i < nodeCoordinates.length; i++) {
                 writer.write(writeDoubleArray(nodeCoordinates[i]) + "\n");
@@ -82,8 +82,8 @@ public class StorageComponent {
      * @throws IOException
      */
     private static void writeTour(BufferedWriter writer, TSPTour tour) throws IOException {
-        writer.write("Length:" + tour.getLength() + "\n");
-        writer.write("Tour\n");
+        writer.write(FileParameters.foundLength + tour.getLength() + "\n");
+        writer.write(FileParameters.tour+"\n");
         writer.write(writeIntArray(tour.getTour()) + "\n");
     }
 
@@ -91,7 +91,7 @@ public class StorageComponent {
     private static String writeIntArray(int[] array) {
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < array.length - 1; i++) {
-            sb.append(array[i] + ",");
+            sb.append(array[i] + FileParameters.separator);
         }
         sb.append(array[array.length - 1]);
         return sb.toString();
@@ -101,7 +101,7 @@ public class StorageComponent {
     private static String writeDoubleArray(double[] array) {
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < array.length - 1; i++) {
-            sb.append(array[i] + ",");
+            sb.append(array[i] + FileParameters.separator);
         }
         sb.append(array[array.length - 1]);
         return sb.toString();
