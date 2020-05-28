@@ -8,7 +8,6 @@ import Main.Controller;
 import Main.DefaultValues;
 
 import javax.swing.*;
-import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,7 +15,6 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.text.ParseException;
 
 public class GUI {
 
@@ -38,6 +36,9 @@ public class GUI {
 
 
     private static JDialog runningDialog;
+
+    //General
+    private static JCheckBox storeCheckBox = new JCheckBox("Store computation");
 
 
     //MultiStart ILS Fields
@@ -125,13 +126,13 @@ public class GUI {
 
         setupGeneral(runPanel, gridBagConstraints, 0);
 
-        setupMultiStartILS(runPanel, gridBagConstraints, 3);
+        setupMultiStartILS(runPanel, gridBagConstraints, 4);
 
-        setupEDA(runPanel, gridBagConstraints, 6);
+        setupEDA(runPanel, gridBagConstraints, 7);
 
-        setupLS(runPanel, gridBagConstraints, 13);
+        setupLS(runPanel, gridBagConstraints, 14);
 
-        setupButton(runPanel, gridBagConstraints, 16);
+        setupButton(runPanel, gridBagConstraints, 17);
 
         return runPanel;
     }
@@ -182,6 +183,14 @@ public class GUI {
                 }
             }
         });
+
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = start + 3;
+        gridBagConstraints.weightx = 0.0;
+        gridBagConstraints.weighty = 0.0;
+        gridBagConstraints.insets = new Insets(0, 0, bottomSpace, 0);
+        storeCheckBox.setSelected(true);
+        runPanel.add(storeCheckBox, gridBagConstraints);
     }
 
 
@@ -420,6 +429,13 @@ public class GUI {
     }
 
 
+    /**
+     * Sets up the run button.
+     *
+     * @param runPanel           the panel for which to add the button
+     * @param gridBagConstraints the layout
+     * @param start              the top left position of the button
+     */
     private static void setupButton(JPanel runPanel, GridBagConstraints gridBagConstraints, int start) {
         JButton runButton = new JButton("Run");
         gridBagConstraints.gridx = 0;
@@ -511,7 +527,7 @@ public class GUI {
 
                         controller.run(openFileName, numberLS, numberStuck, eda, sampledPopulationSize,
                                 selectedPopulationSize, maxIterationsEDA, aPrioriEdges, bRatio, probPriorTour, ls,
-                                method);
+                                method, storeCheckBox.isSelected());
 
                         createRunningDialog(controller);
 
@@ -528,6 +544,12 @@ public class GUI {
     }
 
 
+    /**
+     * This method returns a JTextArea that looks like a JLabel
+     *
+     * @param text the text on the area
+     * @return the JTextArea
+     */
     private static JTextArea formatTextArea(String text) {
         JTextArea textArea = new JTextArea(rowsTextArea, columnsTextArea);
         textArea.setText(text);
@@ -543,6 +565,11 @@ public class GUI {
     }
 
 
+    /**
+     * This is the dialog, that is shown while the program is running
+     *
+     * @param controller the connection to the executiong unit
+     */
     private static void createRunningDialog(Controller controller) {
         runningDialog = new JDialog(frame);
         runningDialog.setTitle("Running...");

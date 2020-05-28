@@ -90,6 +90,8 @@ public class FileReaderImplementation implements FileReader {
             }
         }
         setGraph(problemInstance, edge_weight_type, edges);
+
+        bufferedReader.close();
         return problemInstance;
     }
 
@@ -133,7 +135,7 @@ public class FileReaderImplementation implements FileReader {
      * Reads the node coordinates
      *
      * @param bufferedReader reader from which to read
-     * @param dimension      2D or 3D
+     * @param dimension      number of nodes
      * @return an array containing the coordinates
      * @throws IOException if the format in the BufferedReader is wrong
      */

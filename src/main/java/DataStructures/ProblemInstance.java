@@ -4,6 +4,7 @@ public class ProblemInstance {
     private String name;
     private String type;
     private Graph graph;
+    //Number of nodes
     private int dimension;
     private double[][] nodeCoordinates;
     private boolean canDraw;
