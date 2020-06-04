@@ -58,7 +58,6 @@ public class DrawPanel {
 
 
         return drawPanel;
-        //TODO: add more stuff
     }
 
 

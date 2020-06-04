@@ -17,4 +17,17 @@ public interface LocalSearch {
      */
     public TSPTour performSearch(final Graph graph, TSPTour startTour);
 
+    /**
+     * This function returns the method, the algorithm is using.
+     *
+     * @return the used Method
+     */
+    public Method getMethod();
+
+    //This enum describes which method is used by the LS. Or-OPT always uses Descent.
+    public enum Method {
+        DESCENT,
+        STEEPEST_DESCENT
+    }
+
 }

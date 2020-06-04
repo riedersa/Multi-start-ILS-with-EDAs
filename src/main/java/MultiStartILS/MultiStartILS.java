@@ -1,5 +1,6 @@
 package MultiStartILS;
 
+import DataStructures.CalculationInstance;
 import DataStructures.Graph;
 import DataStructures.TSPTour;
 import EDA.EDA;
@@ -34,30 +35,50 @@ public class MultiStartILS {
     /**
      * @return the best tour found
      */
-    public TSPTour performMultiStartILS() {
+    public CalculationInstance performMultiStartILS() {
         long minLength = Long.MAX_VALUE;
+        CalculationInstance calculationInstance = new CalculationInstance(eda.getClass().getName(),
+                localSearchAlgorithm.getClass().getName(), localSearchAlgorithm.getMethod().toString());
         TSPTour minTour = null;
 
         int localSearchCounter = 0;
         while (localSearchCounter < maxTimesLS) {
             if (!continueRunning) {
-                return minTour;
+                calculationInstance.setMinium(minTour);
+                return calculationInstance;
             }
             TSPTour tour = eda.initiate();
+            calculationInstance.addStep(tour, CalculationInstance.CalculationKind.INIT);
             tour = localSearchAlgorithm.performSearch(graph, tour);
+            calculationInstance.addStep(tour, CalculationInstance.CalculationKind.LS);
             localSearchCounter++;
             int stuck = 0;
+
+            //This is for updating the minimum. If this would not be there, aborting might lead to having no result.
+            if (tour.getLength() < minLength) {
+                minTour = tour;
+                minLength = tour.getLength();
+            }
             while (stuck < maxTimesStuck && localSearchCounter < maxTimesLS) {
                 if (!continueRunning) {
-                    return minTour;
+                    calculationInstance.setMinium(minTour);
+                    return calculationInstance;
                 }
                 TSPTour optimizedTour = tour;
                 optimizedTour = eda.perturb(optimizedTour);
+                calculationInstance.addStep(tour, CalculationInstance.CalculationKind.EDA);
                 optimizedTour = localSearchAlgorithm.performSearch(graph, optimizedTour);
+                calculationInstance.addStep(tour, CalculationInstance.CalculationKind.LS);
                 localSearchCounter++;
                 if (optimizedTour.getLength() < tour.getLength()) {
                     tour = optimizedTour;
                     stuck = 0;
+
+                    //the following statements update the minimum if something better than before is found
+                    if (tour.getLength() < minLength) {
+                        minTour = tour;
+                        minLength = tour.getLength();
+                    }
                 } else {
                     stuck++;
                 }
@@ -68,7 +89,8 @@ public class MultiStartILS {
                 minLength = tour.getLength();
             }
         }
-        return minTour;
+        calculationInstance.setMinium(minTour);
+        return calculationInstance;
     }
 
 

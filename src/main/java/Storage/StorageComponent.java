@@ -1,5 +1,6 @@
 package Storage;
 
+import DataStructures.CalculationInstance;
 import DataStructures.ProblemInstance;
 import DataStructures.TSPTour;
 
@@ -9,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * This class can store a given Problem instance with a found solution to a file for drawing it later.
@@ -18,16 +20,18 @@ public class StorageComponent {
     /**
      * This method stores the solution and the problem instance to a file.
      *
-     * @param problemInstance the problem instance for which a solution was found
-     * @param tspTour         the found solution
+     * @param problemInstance     the problem instance for which a solution was found
+     * @param calculationInstance the information on the calculation
      * @throws IOException if soring the file did not work
      */
-    public static void store(ProblemInstance problemInstance, TSPTour tspTour) throws IOException {
+    public static void store(ProblemInstance problemInstance, CalculationInstance calculationInstance) throws IOException {
         File file = createFile(problemInstance);
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
         writePreamble(writer, problemInstance);
-        writeTour(writer, tspTour);
-        writer.write("EOF");
+        writeUsedMethods(writer, calculationInstance);
+        writeTour(writer, calculationInstance.getMinimum());
+        writeCalculationPath(writer, calculationInstance);
+        writer.write(FileParameters.eof);
         writer.flush();
         writer.close();
     }
@@ -65,7 +69,7 @@ public class StorageComponent {
         writer.write(FileParameters.numberNodes + problemInstance.getGraph().getNumberNodes() + "\n");
         writer.write(FileParameters.printable + problemInstance.isCanDraw() + "\n");
         if (problemInstance.isCanDraw()) {
-            writer.write(FileParameters.nodeCoordinates+"\n");
+            writer.write(FileParameters.nodeCoordinates + "\n");
             double[][] nodeCoordinates = problemInstance.getNodeCoordinates();
             for (int i = 0; i < nodeCoordinates.length; i++) {
                 writer.write(writeDoubleArray(nodeCoordinates[i]) + "\n");
@@ -82,8 +86,12 @@ public class StorageComponent {
      * @throws IOException
      */
     private static void writeTour(BufferedWriter writer, TSPTour tour) throws IOException {
+        if (tour == null) {
+            System.err.println("Could not write minimal tour since there was none");
+            return;
+        }
         writer.write(FileParameters.foundLength + tour.getLength() + "\n");
-        writer.write(FileParameters.tour+"\n");
+        writer.write(FileParameters.tour + "\n");
         writer.write(writeIntArray(tour.getTour()) + "\n");
     }
 
@@ -120,6 +128,52 @@ public class StorageComponent {
         writeTour(writer, tspTour);
         writer.flush();
         writer.close();
+    }
+
+
+    /**
+     * this method writes the instances of the list contained in the calculation instance to the given writer.
+     *
+     * @param writer              where to write the calculations
+     * @param calculationInstance the instance that should be written
+     * @throws IOException if writing gos wrong
+     */
+    private static void writeCalculationPath(BufferedWriter writer, CalculationInstance calculationInstance)
+            throws IOException {
+        List<TSPTour> tours = calculationInstance.getTours();
+        List<CalculationInstance.CalculationKind> kinds = calculationInstance.getKinds();
+        for (int i = 0; i < tours.size(); i++) {
+            writer.write(FileParameters.pathTour + kinds.get(i) + "\n");
+            writeIntermediateTour(writer, tours.get(i));
+        }
+    }
+
+
+    /**
+     * This function writes one tour.
+     *
+     * @param writer the place to which to write the tour
+     * @param tour   the tour to write
+     * @throws IOException if writing does not work
+     */
+    private static void writeIntermediateTour(BufferedWriter writer, TSPTour tour) throws IOException {
+        writer.write(FileParameters.iFoundLength + tour.getLength() + "\n");
+        writer.write(writeIntArray(tour.getTour()) + "\n");
+    }
+
+
+    /**
+     * This function writes the used methods to the file
+     *
+     * @param writer              where to write
+     * @param calculationInstance the calculation
+     * @throws IOException if something does not work out
+     */
+    private static void writeUsedMethods(BufferedWriter writer, CalculationInstance calculationInstance)
+            throws IOException {
+        writer.write(FileParameters.eda + calculationInstance.getEda() + "\n");
+        writer.write(FileParameters.localSearch + calculationInstance.getLs() + "\n");
+        writer.write(FileParameters.localSearchMethod + calculationInstance.getLsMethod() + "\n");
     }
 
 }

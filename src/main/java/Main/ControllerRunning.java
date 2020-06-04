@@ -1,5 +1,6 @@
 package Main;
 
+import DataStructures.CalculationInstance;
 import DataStructures.ProblemInstance;
 import DataStructures.TSPTour;
 import EDA.EDA;
@@ -22,6 +23,7 @@ public class ControllerRunning implements ThreadCompleteListener {
     private MultiStartILS multiStartILS;
     private ProblemInstance problemInstance;
     private TSPTour optTourFound;
+    private CalculationInstance calculationInstance;
     private boolean shouldStore;
     NotifyingThread thread = new NotifyingThread() {
         @Override
@@ -85,9 +87,10 @@ public class ControllerRunning implements ThreadCompleteListener {
      */
     private void runMultiStartILS() {
         multiStartILS.setContinueRunning(true);
-        TSPTour tour = multiStartILS.performMultiStartILS();
-        System.out.println(tour);
-        optTourFound = tour;
+        CalculationInstance calculationInstance = multiStartILS.performMultiStartILS();
+        System.out.println(calculationInstance.getMinimum());
+        optTourFound = calculationInstance.getMinimum();
+        this.calculationInstance = calculationInstance;
     }
 
 
@@ -148,7 +151,7 @@ public class ControllerRunning implements ThreadCompleteListener {
     public void notifyOfThreadComplete(Thread thread) {
         try {
             if (shouldStore) {
-                StorageComponent.store(problemInstance, optTourFound);
+                StorageComponent.store(problemInstance, calculationInstance);
             }
         } catch (IOException ioException) {
             System.err.println("Could not store the tour. An exception occured: \n" + ioException.getMessage());

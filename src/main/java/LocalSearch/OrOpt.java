@@ -27,6 +27,12 @@ public class OrOpt implements LocalSearch {
     }
 
 
+    @Override
+    public Method getMethod() {
+        return Method.DESCENT;
+    }
+
+
     /**
      * Finds the next tour to continue with using first improvement.
      *
@@ -61,4 +67,5 @@ public class OrOpt implements LocalSearch {
     public static String getName() {
         return name;
     }
+
 }

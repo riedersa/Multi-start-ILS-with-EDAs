@@ -46,7 +46,7 @@ public class Reader {
                 TSPTour tour = new TSPTour(readTour(reader));
                 tour.setLength(foundLength);
                 returnValue.setTspTour(tour);
-            } else {
+            } else if(line.startsWith(FileParameters.eof)) {
                 break;
             }
         }

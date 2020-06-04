@@ -10,12 +10,6 @@ public class TwoOpt implements LocalSearch {
     private Method method = Method.DESCENT;
 
 
-    public enum Method {
-        DESCENT,
-        STEEPEST_DESCENT
-    }
-
-
     public TwoOpt(Method method) {
         this.method = method;
     }
@@ -25,6 +19,7 @@ public class TwoOpt implements LocalSearch {
     }
 
 
+    @Override
     public Method getMethod() {
         return method;
     }
