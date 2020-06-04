@@ -67,7 +67,8 @@ public class Graph {
      */
     public void setDistanceToTour(TSPTour tour) {
         if (!tour.isLengthKnown()) {
-            tour.setLength(evaluateTour(tour));
+            long length = evaluateTour(tour);
+            tour.setLength(length);
         }
     }
 

@@ -48,23 +48,35 @@ public class TwoOpt implements LocalSearch {
 
     /**
      * Finds the next tour to continue with.
+     * <p>
+     * Attention: This method can only be used for symmetric TSP. For efficiency reason, some formula for calculating
+     * the distance is used, that does only work on symmetric instances.
      *
      * @param graph     the graph on which the problem is based on
      * @param startTour the tour for which to find the next
-     * @return the next tour
+     * @return the next tour of null if nothing was found
      */
     protected TSPTour findNextTour(Graph graph, TSPTour startTour) {
         graph.setDistanceToTour(startTour);
         long minDistance = startTour.getLength();
+        int numberNodes = startTour.getNumberNodes();
+        int[] tour = startTour.getTour();
         TSPTour bestTour = null;
 
-        for (int i = 0; i < startTour.getNumberNodes(); i++) {
-            for (int k = i + 1; k < startTour.getNumberNodes(); k++) {
-                TSPTour newTour = startTour.twoOptSwap(i, k);
-                graph.setDistanceToTour(newTour);
-                long newDistance = newTour.getLength();
-                if (newDistance < minDistance) {
-                    minDistance = newDistance;
+        for (int i = 0; i < numberNodes; i++) {
+            for (int k = i + 1; k < numberNodes; k++) {
+                if (i == 0 && k == numberNodes - 1) {
+                    continue;
+                }
+                long calculatedDistance = startTour.getLength()
+                        - graph.getDistance(tour[posModulo(i - 1, numberNodes)], tour[i])
+                        - graph.getDistance(tour[k], tour[posModulo(k + 1, numberNodes)])
+                        + graph.getDistance(tour[posModulo(i - 1, numberNodes)], tour[k])
+                        + graph.getDistance(tour[i], tour[posModulo(k + 1, numberNodes)]);
+                if (calculatedDistance < minDistance) {
+                    TSPTour newTour = startTour.twoOptSwap(i, k);
+                    newTour.setLength(calculatedDistance);
+                    minDistance = calculatedDistance;
                     if (method.equals(Method.DESCENT)) {
                         return newTour;
                     } else {//Method equals Steepest_Descent
@@ -79,5 +91,21 @@ public class TwoOpt implements LocalSearch {
 
     public static String getName() {
         return name;
+    }
+
+
+    /**
+     * this function computes a modulo b and always returns positive values.
+     *
+     * @param a the nominator
+     * @param b the denominator
+     * @return a mod b
+     */
+    private static int posModulo(int a, int b) {
+        int result = a % b;
+        if (result < 0) {
+            result += b;
+        }
+        return result;
     }
 }

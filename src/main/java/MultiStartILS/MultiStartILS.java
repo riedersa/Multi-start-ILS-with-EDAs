@@ -10,9 +10,6 @@ import LocalSearch.LocalSearch;
  * This class controls the Multi-start ILS. It calls an implementation of {@link LocalSearch} and {@link EDA}.
  * <p>
  * Todo: Think about storing the history of a run in a list for analysis
- * <p>
- * TODO: maybe use CalculationInstance as return value instead of TSPTour. This way, more information, like intermediate
- * tours, could be returned.
  */
 public class MultiStartILS {
 
