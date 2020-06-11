@@ -61,6 +61,7 @@ public class TwoOpt implements LocalSearch {
         long minDistance = startTour.getLength();
         int numberNodes = startTour.getNumberNodes();
         int[] tour = startTour.getTour();
+        long startTourLenght = startTour.getLength();
         TSPTour bestTour = null;
 
         for (int i = 0; i < numberNodes; i++) {
@@ -68,11 +69,7 @@ public class TwoOpt implements LocalSearch {
                 if (i == 0 && k == numberNodes - 1) {
                     continue;
                 }
-                long calculatedDistance = startTour.getLength()
-                        - graph.getDistance(tour[posModulo(i - 1, numberNodes)], tour[i])
-                        - graph.getDistance(tour[k], tour[posModulo(k + 1, numberNodes)])
-                        + graph.getDistance(tour[posModulo(i - 1, numberNodes)], tour[k])
-                        + graph.getDistance(tour[i], tour[posModulo(k + 1, numberNodes)]);
+                long calculatedDistance = graph.getNewLengthAfterSwap(startTourLenght, tour, i, k, numberNodes);
                 if (calculatedDistance < minDistance) {
                     TSPTour newTour = startTour.twoOptSwap(i, k);
                     newTour.setLength(calculatedDistance);

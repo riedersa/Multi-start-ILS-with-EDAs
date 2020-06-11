@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
@@ -116,15 +117,22 @@ public class EdgeBasedEDATest {
 
     @Test
     public void testSelect() {
-        PriorityQueue<TSPTour> pq = new PriorityQueue();
+        PriorityQueue<TSPTour> pq = new PriorityQueue(Collections.reverseOrder());
         pq.addAll(tspTours);
         EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, sampledPopulationSize,
                 maxCounterOfIterations, bratio, valueForAPrioriEdges);
         sut.select(2, pq);
 
         Assertions.assertEquals(2, pq.size());
-        Assertions.assertTrue(pq.contains(tspTours.get(2)));
-        Assertions.assertTrue(pq.contains(tspTours.get(0)));
+        Assertions.assertTrue(pq.contains(tspTours.get(1)));
+        Assertions.assertTrue(pq.contains(tspTours.get(3)));
+    }
+
+
+    @Test
+    public void compareToTest(){
+        Assertions.assertTrue(tspTours.get(1).compareTo(tspTours.get(2)) < 0);
+        Assertions.assertTrue(tspTours.get(2).compareTo(tspTours.get(1)) > 0);
     }
 
 

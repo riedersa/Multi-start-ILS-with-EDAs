@@ -94,4 +94,15 @@ public class Graph {
         return graph.length;
     }
 
+
+    public long getNewLengthAfterSwap(long initialLength, int[] tour, int startReverse, int endRevers, int numberNodes){
+        int preStart = startReverse == 0? numberNodes - 1 : startReverse - 1;
+        int postEnd = (endRevers + 1) % numberNodes;
+         return initialLength
+                - graph[tour[preStart]] [tour[startReverse]]
+                - graph[tour[endRevers]] [tour[postEnd]]
+                + graph[tour[preStart]][tour[endRevers]]
+                + graph[tour[startReverse]][tour[postEnd]];
+    }
+
 }

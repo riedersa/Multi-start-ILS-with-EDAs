@@ -61,7 +61,7 @@ public class EdgeBasedEDA implements EDA {
     @Override
     public TSPTour perturb(final TSPTour tour) {
         initiateEdgeHistogramMatrix(tour);
-        return performEDA();
+        return performEDA(/*tour*/);
     }
 
 
@@ -105,6 +105,28 @@ public class EdgeBasedEDA implements EDA {
             edgeHistogramMatrix[tour[position]][tour[(position + 1) % numberNodes]] = valueForAPrioriEdges;
             edgeHistogramMatrix[tour[(position + 1) % numberNodes]][tour[position]] = valueForAPrioriEdges;
         }
+    }
+
+
+    /**
+     * This method performs an EDA with a initial tour given. Notice, that before invoking this method, the edge
+     * histogram matrix must be filled.
+     *
+     * @return the best tour found
+     */
+    private TSPTour performEDA(TSPTour tour) {
+        PriorityQueue<TSPTour> tspTours = new PriorityQueue<TSPTour>(Collections.reverseOrder());
+        tspTours.add(tour);
+        sample(sampledPopulationSize, tspTours);
+        int numberIterations = 0;
+        while (numberIterations < maxCounterOtIterations) {
+            tspTours = select(selectedPopulationSize, tspTours);
+            estimate(tspTours);
+            sample(sampledPopulationSize, tspTours);
+            numberIterations++;
+        }
+        tspTours = select(1, tspTours);
+        return tspTours.poll();
     }
 
 

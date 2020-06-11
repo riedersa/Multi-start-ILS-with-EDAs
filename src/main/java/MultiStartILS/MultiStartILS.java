@@ -63,9 +63,9 @@ public class MultiStartILS {
                 }
                 TSPTour optimizedTour = tour;
                 optimizedTour = eda.perturb(optimizedTour);
-                calculationInstance.addStep(tour, CalculationInstance.CalculationKind.EDA);
+                calculationInstance.addStep(optimizedTour, CalculationInstance.CalculationKind.EDA);
                 optimizedTour = localSearchAlgorithm.performSearch(graph, optimizedTour);
-                calculationInstance.addStep(tour, CalculationInstance.CalculationKind.LS);
+                calculationInstance.addStep(optimizedTour, CalculationInstance.CalculationKind.LS);
                 localSearchCounter++;
                 if (optimizedTour.getLength() < tour.getLength()) {
                     tour = optimizedTour;
