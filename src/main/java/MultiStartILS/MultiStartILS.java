@@ -5,11 +5,10 @@ import DataStructures.Graph;
 import DataStructures.TSPTour;
 import EDA.EDA;
 import LocalSearch.LocalSearch;
+import Storage.FileParameters;
 
 /**
  * This class controls the Multi-start ILS. It calls an implementation of {@link LocalSearch} and {@link EDA}.
- * <p>
- * Todo: Think about storing the history of a run in a list for analysis
  */
 public class MultiStartILS {
 
@@ -34,14 +33,14 @@ public class MultiStartILS {
      */
     public CalculationInstance performMultiStartILS() {
         long minLength = Long.MAX_VALUE;
-        CalculationInstance calculationInstance = new CalculationInstance(eda.getClass().getName(),
-                localSearchAlgorithm.getClass().getName(), localSearchAlgorithm.getMethod().toString());
+        CalculationInstance calculationInstance = new CalculationInstance(eda.toString(),
+                localSearchAlgorithm.toString(), this.toString());
         TSPTour minTour = null;
 
         int localSearchCounter = 0;
         while (localSearchCounter < maxTimesLS) {
             if (!continueRunning) {
-                calculationInstance.setMinium(minTour);
+                calculationInstance.setMinimum(minTour);
                 return calculationInstance;
             }
             TSPTour tour = eda.initiate();
@@ -58,7 +57,7 @@ public class MultiStartILS {
             }
             while (stuck < maxTimesStuck && localSearchCounter < maxTimesLS) {
                 if (!continueRunning) {
-                    calculationInstance.setMinium(minTour);
+                    calculationInstance.setMinimum(minTour);
                     return calculationInstance;
                 }
                 TSPTour optimizedTour = tour;
@@ -86,7 +85,7 @@ public class MultiStartILS {
                 minLength = tour.getLength();
             }
         }
-        calculationInstance.setMinium(minTour);
+        calculationInstance.setMinimum(minTour);
         return calculationInstance;
     }
 
@@ -113,5 +112,13 @@ public class MultiStartILS {
 
     public void setContinueRunning(boolean continueRunning) {
         this.continueRunning = continueRunning;
+    }
+
+
+    public String toString() {
+        return "NumberLS" + FileParameters.separator + maxTimesLS + "\n" +
+                "NumberStuck" + FileParameters.separator + maxTimesStuck + "\n" +
+                eda.toString() +
+                localSearchAlgorithm.toString();
     }
 }

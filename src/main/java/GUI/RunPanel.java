@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Locale;
 
 public class RunPanel {
     private static int bottomSpace = 5;
@@ -29,7 +30,7 @@ public class RunPanel {
 
     private static NumberFormat integerFormatter = NumberFormat.getIntegerInstance();
 
-    private static NumberFormat doubleFormatter = DecimalFormat.getInstance();
+    private static NumberFormat doubleFormatter = DecimalFormat.getInstance(Locale.ENGLISH);
 
 
     private static JDialog runningDialog;
@@ -478,7 +479,7 @@ public class RunPanel {
                         }
                         double bRatio;
                         try {
-                            bRatio = bRatioField.getText() != null ? Integer.parseInt(bRatioField.getText()) :
+                            bRatio = bRatioField.getText() != null ? Double.parseDouble(bRatioField.getText()) :
                                     DefaultValues.bRatio;
                         } catch (Exception ex) {
                             bRatio = DefaultValues.bRatio;

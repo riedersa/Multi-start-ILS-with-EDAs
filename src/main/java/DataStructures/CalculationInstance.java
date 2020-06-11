@@ -21,15 +21,15 @@ public class CalculationInstance {
 
     private String eda;
     private String ls;
-    private String lsMethod;
+    private String multiStartILS;
 
 
-    public CalculationInstance(String eda, String ls, String lsMethod) {
+    public CalculationInstance(String eda, String ls, String multiStartILS) {
         tours = new ArrayList<>();
         kinds = new ArrayList<>();
         this.eda = eda;
         this.ls = ls;
-        this.lsMethod = lsMethod;
+        this.multiStartILS = multiStartILS;
     }
 
 
@@ -54,7 +54,7 @@ public class CalculationInstance {
     }
 
 
-    public void setMinium(TSPTour minimum) {
+    public void setMinimum(TSPTour minimum) {
         this.minimum = minimum;
     }
 
@@ -69,7 +69,7 @@ public class CalculationInstance {
     }
 
 
-    public String getLsMethod() {
-        return lsMethod;
+    public String getMultiStartILS() {
+        return multiStartILS;
     }
 }

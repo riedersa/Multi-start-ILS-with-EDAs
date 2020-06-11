@@ -42,7 +42,7 @@ public class ControllerRunning implements ThreadCompleteListener {
      * @param numberLS               the maximum number of times to performe LS
      * @param numberStuck            the maximum number of times to get stuck before moving to a different initial
      *                               solution
-     * @param sampledPopulationSiue  the size of the poupulation after sampling
+     * @param sampledPopulationSize  the size of the poupulation after sampling
      * @param selectedPopulationSize the size of the population after selecting
      * @param maxIterationsEDA       the maximum number of iterations for one run of the eda
      * @param aPrioriEdges           Value edges in the initial tour should get
@@ -54,17 +54,17 @@ public class ControllerRunning implements ThreadCompleteListener {
      */
     private MultiStartILS createMultiStartILS(String edaS, String lsS, ProblemInstance problemInstance,
                                               int numberLS, int numberStuck,
-                                              int sampledPopulationSiue,
+                                              int sampledPopulationSize,
                                               int selectedPopulationSize, int maxIterationsEDA,
                                               int aPrioriEdges, double bRatio, double aPrioriProb,
                                               TwoOpt.Method lsMethod) {
         EDA eda;
         if (edaS.equals(PositionBasedEDA_UMDA.getName())) {
             eda = new PositionBasedEDA_UMDA(problemInstance.getGraph(),
-                    selectedPopulationSize, sampledPopulationSiue, maxIterationsEDA, aPrioriProb);
+                    selectedPopulationSize, sampledPopulationSize, maxIterationsEDA, aPrioriProb);
         } else {
             eda = new EdgeBasedEDA(problemInstance.getGraph(), selectedPopulationSize,
-                    sampledPopulationSiue, maxIterationsEDA, bRatio, aPrioriEdges);
+                    sampledPopulationSize, maxIterationsEDA, bRatio, aPrioriEdges);
         }
 
 

@@ -2,6 +2,7 @@ package EDA;
 
 import DataStructures.Graph;
 import DataStructures.TSPTour;
+import Storage.FileParameters;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -346,6 +347,15 @@ public class PositionBasedEDA_UMDA implements EDA {
 
     public static String getName() {
         return name;
+    }
+
+
+    public String toString() {
+        return "EDA" + FileParameters.separator + getName() + "\n" +
+                "SampledPopulationSize" + FileParameters.separator + sampledPopulationSize + "\n" +
+                "SelectedPopulationSize" + FileParameters.separator + selectedPopulationSize + "\n" +
+                "MaxIterationsEDA" + FileParameters.separator + maxCounterOtIterations + "\n" +
+                "APrioriProbsPositions" + FileParameters.separator + probForPriorTour + "\n";
     }
 
 

@@ -2,6 +2,7 @@ package LocalSearch;
 
 import DataStructures.Graph;
 import DataStructures.TSPTour;
+import Storage.FileParameters;
 
 public class TwoOpt implements LocalSearch {
 
@@ -104,5 +105,11 @@ public class TwoOpt implements LocalSearch {
             result += b;
         }
         return result;
+    }
+
+
+    public String toString() {
+        return "LocalSearchAlgorithm" + FileParameters.separator + getName() + "\n" +
+                "LocalSearchMethod" + FileParameters.separator + method.toString() + "\n";
     }
 }

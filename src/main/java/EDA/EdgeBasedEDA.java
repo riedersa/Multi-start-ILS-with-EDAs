@@ -2,6 +2,7 @@ package EDA;
 
 import DataStructures.Graph;
 import DataStructures.TSPTour;
+import Storage.FileParameters;
 
 import java.util.Collections;
 import java.util.PriorityQueue;
@@ -362,6 +363,16 @@ public class EdgeBasedEDA implements EDA {
 
     public static String getName() {
         return name;
+    }
+
+
+    public String toString() {
+        return "EDA" + FileParameters.separator + getName() + "\n" +
+                "SampledPopulationSize" + FileParameters.separator + sampledPopulationSize + "\n" +
+                "SelectedPopulationSize" + FileParameters.separator + selectedPopulationSize + "\n" +
+                "MaxIterationsEDA" + FileParameters.separator + maxCounterOtIterations + "\n" +
+                "APrioriEdges" + FileParameters.separator + valueForAPrioriEdges + "\n" +
+                "BRatio" + FileParameters.separator + bRatio + "\n";
     }
 
 

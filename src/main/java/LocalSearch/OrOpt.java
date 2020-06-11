@@ -2,6 +2,7 @@ package LocalSearch;
 
 import DataStructures.Graph;
 import DataStructures.TSPTour;
+import Storage.FileParameters;
 
 /**
  * This class implements Or-Opt and uses first improvement.
@@ -51,7 +52,7 @@ public class OrOpt implements LocalSearch {
                         return newTour;
                     }
                 }
-                for (int k = j+1; k < startTour.getNumberNodes(); k++) {
+                for (int k = j + 1; k < startTour.getNumberNodes(); k++) {
                     TSPTour newTour = startTour.orOptSwap(i, j, k);
                     graph.setDistanceToTour(newTour);
                     if (newTour.getLength() < startTour.getLength()) {
@@ -66,6 +67,12 @@ public class OrOpt implements LocalSearch {
 
     public static String getName() {
         return name;
+    }
+
+
+    public String toString() {
+        return "LocalSearchAlgorithm" + FileParameters.separator + getName() + "\n" +
+                "LocalSearchMethod" + FileParameters.separator + Method.DESCENT.toString() + "\n";
     }
 
 }

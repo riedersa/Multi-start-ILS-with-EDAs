@@ -2,7 +2,7 @@ package Main;
 
 public class DefaultValues {
 
-    //EDAS
+    //EDAs
     public static int selectedPopulationSize = 200;
     public static int sampledPopulationSize = 500;
     public static int maxCounterOtIterations = 50;

@@ -171,9 +171,9 @@ public class StorageComponent {
      */
     private static void writeUsedMethods(BufferedWriter writer, CalculationInstance calculationInstance)
             throws IOException {
-        writer.write(FileParameters.eda + calculationInstance.getEda() + "\n");
-        writer.write(FileParameters.localSearch + calculationInstance.getLs() + "\n");
-        writer.write(FileParameters.localSearchMethod + calculationInstance.getLsMethod() + "\n");
+        writer.write(calculationInstance.getEda());
+        writer.write(calculationInstance.getLs());
+        writer.write(calculationInstance.getMultiStartILS());
     }
 
 }
