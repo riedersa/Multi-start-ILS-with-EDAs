@@ -1,9 +1,6 @@
 package GUI;
 
-import EDA.EdgeBasedEDA;
-import EDA.EdgeBasedEDA_UpdateWithWeight;
-import EDA.PositionBasedEDA_PBIL;
-import EDA.PositionBasedEDA_UMDA;
+import EDA.*;
 import LocalSearch.OrOpt;
 import LocalSearch.TwoOpt;
 import Main.ControllerRunning;
@@ -64,7 +61,8 @@ public class RunPanel {
     private static String getaPrioriStringPosition = "The probability an node in the given tour should get to appear " +
             "on the sae spot:";
     private static String edaComboBoxListe[] = {EdgeBasedEDA.getName(), EdgeBasedEDA_UpdateWithWeight.getName(),
-            PositionBasedEDA_UMDA.getNameStatic(), PositionBasedEDA_PBIL.getNameStatic()};
+            PositionBasedEDA_UMDA.getNameStatic(), PositionBasedEDA_PBIL.getNameStatic(),
+            PositionBasedEDA_PBIL_newRefinement.getNameStatic()};
     private static JComboBox edaComboBox = new JComboBox(edaComboBoxListe);
     private static JTextArea sampledPopulationSize = GUI.formatTextArea("Sampled Population size: ");
     private static JFormattedTextField sampledPopulationSizeField = new JFormattedTextField(integerFormatter);
@@ -278,6 +276,14 @@ public class RunPanel {
                     bRatio.setVisible(false);
                     bRatioField.setVisible(false);
                 } else if (edaComboBox.getSelectedItem().equals(PositionBasedEDA_PBIL.getNameStatic())) {
+                    edaValueAPriori.setText(getaPrioriStringPosition);
+                    edaValueAPrioriPositionField.setVisible(true);
+                    alpha.setVisible(true);
+                    alphaField.setVisible(true);
+                    edaValueAPrioriEdgesField.setVisible(false);
+                    bRatio.setVisible(false);
+                    bRatioField.setVisible(false);
+                } else if (edaComboBox.getSelectedItem().equals(PositionBasedEDA_PBIL_newRefinement.getNameStatic())){
                     edaValueAPriori.setText(getaPrioriStringPosition);
                     edaValueAPrioriPositionField.setVisible(true);
                     alpha.setVisible(true);

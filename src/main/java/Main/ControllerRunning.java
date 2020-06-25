@@ -71,6 +71,9 @@ public class ControllerRunning implements ThreadCompleteListener {
         } else if (edaS.equals(EdgeBasedEDA_UpdateWithWeight.getName())) {
             eda = new EdgeBasedEDA_UpdateWithWeight(problemInstance.getGraph(), selectedPopulationSize,
                     sampledPopulationSize, maxIterationsEDA, bRatio, aPrioriEdges, alpha);
+        } else if (edaS.equals(PositionBasedEDA_PBIL_newRefinement.getNameStatic())){
+            eda = new PositionBasedEDA_PBIL_newRefinement(problemInstance.getGraph(),
+                    selectedPopulationSize, sampledPopulationSize, maxIterationsEDA, aPrioriProb, alpha);
         } else {
             throw new IllegalArgumentException("The name of the EDA was incorret. It was: " + edaS);
         }

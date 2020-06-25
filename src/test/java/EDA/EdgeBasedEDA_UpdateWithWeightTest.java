@@ -116,7 +116,7 @@ public class EdgeBasedEDA_UpdateWithWeightTest {
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorThrows_alphaNegative() {
         EdgeBasedEDA_UpdateWithWeight sut = new EdgeBasedEDA_UpdateWithWeight(graph, selectedPopulationSize,
-                selectedPopulationSize - 1,
+                selectedPopulationSize,
                 maxCounterOfIterations, bratio, valueForAPrioriEdges, -0.1);
     }
 
@@ -124,7 +124,7 @@ public class EdgeBasedEDA_UpdateWithWeightTest {
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorThrows_alphaLarge() {
         EdgeBasedEDA_UpdateWithWeight sut = new EdgeBasedEDA_UpdateWithWeight(graph, selectedPopulationSize,
-                selectedPopulationSize - 1,
+                selectedPopulationSize,
                 maxCounterOfIterations, bratio, valueForAPrioriEdges, 1.000001);
     }
 

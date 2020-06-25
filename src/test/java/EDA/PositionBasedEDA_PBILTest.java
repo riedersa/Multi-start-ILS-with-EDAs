@@ -131,15 +131,15 @@ public class PositionBasedEDA_PBILTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructor_ThrowsAlphaNeg() {
-        PositionBasedEDA_PBIL sut = new PositionBasedEDA_PBIL(graph, selectedPopulationSize, selectedPopulationSize - 1,
-                -1, probForPriorTour, -1);
+        PositionBasedEDA_PBIL sut = new PositionBasedEDA_PBIL(graph, selectedPopulationSize, selectedPopulationSize,
+                10, probForPriorTour, -1);
     }
 
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructor_ThrowsAlphaLarge() {
-        PositionBasedEDA_PBIL sut = new PositionBasedEDA_PBIL(graph, selectedPopulationSize, selectedPopulationSize - 1,
-                -1, probForPriorTour, 1.00001);
+        PositionBasedEDA_PBIL sut = new PositionBasedEDA_PBIL(graph, selectedPopulationSize, selectedPopulationSize ,
+                10, probForPriorTour, 1.00001);
     }
 
 

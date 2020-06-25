@@ -327,6 +327,12 @@ public abstract class PositionBasedEDA implements EDA {
     }
 
 
+    //For new refinement
+    protected Graph getGraph() {
+        return graph;
+    }
+
+
     //For testing only
     protected double[][] getModel() {
         return model;
@@ -335,6 +341,11 @@ public abstract class PositionBasedEDA implements EDA {
 
     protected int getNumberNodes() {
         return numberNodes;
+    }
+
+
+    protected void setModel(double[][] model) {
+        this.model = model;
     }
 }
 

@@ -472,17 +472,18 @@ public class EdgeBasedEDATest {
         Assertions.assertArrayEquals(new int[]{0, 9, 1, 2, 3, 4, 5, 6, 7, 8}, makeZeroStartNode(createdTour.getTour()));
     }
 
-    public int[] makeZeroStartNode(int[] tour){
+
+    public int[] makeZeroStartNode(int[] tour) {
         int[] newTour = new int[tour.length];
         int index = 0;
-        for(int i = 0; i<tour.length; i++){
-            if(tour[i] == 0){
+        for (int i = 0; i < tour.length; i++) {
+            if (tour[i] == 0) {
                 index = i;
                 break;
             }
         }
-        for(int i = 0; i<tour.length; i++){
-            newTour[i] = tour[(i+index)%tour.length];
+        for (int i = 0; i < tour.length; i++) {
+            newTour[i] = tour[(i + index) % tour.length];
         }
         return newTour;
     }
