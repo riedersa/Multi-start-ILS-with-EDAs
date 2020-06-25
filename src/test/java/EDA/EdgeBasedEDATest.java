@@ -6,8 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
@@ -113,20 +111,6 @@ public class EdgeBasedEDATest {
         tspTours.add(tsptour2);
         tspTours.add(tsptour3);
         tspTours.add(tsptour4);
-    }
-
-
-    @Test
-    public void testSelect() {
-        PriorityQueue<TSPTour> pq = new PriorityQueue(Collections.reverseOrder());
-        pq.addAll(tspTours);
-        EdgeBasedEDA sut = new EdgeBasedEDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations, bratio, valueForAPrioriEdges);
-        sut.select(2, pq);
-
-        Assertions.assertEquals(2, pq.size());
-        Assertions.assertTrue(pq.contains(tspTours.get(1)));
-        Assertions.assertTrue(pq.contains(tspTours.get(3)));
     }
 
 
@@ -407,7 +391,7 @@ public class EdgeBasedEDATest {
         PriorityQueue<TSPTour> pq = new PriorityQueue<>();
         pq.addAll(tspTours);
 
-        sut.estimate(pq);
+        sut.estimate(pq, sut.getEdgeHistogramMatrix(), sut.getNumberNodes());
 
         double[][] ehm = sut.getEdgeHistogramMatrix();
         double epsilon = sut.getEpsilon();

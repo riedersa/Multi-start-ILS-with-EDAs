@@ -3,10 +3,7 @@ package Main;
 import DataStructures.CalculationInstance;
 import DataStructures.ProblemInstance;
 import DataStructures.TSPTour;
-import EDA.EDA;
-import EDA.EdgeBasedEDA;
-import EDA.PositionBasedEDA_PBIL;
-import EDA.PositionBasedEDA_UMDA;
+import EDA.*;
 import LocalSearch.LocalSearch;
 import LocalSearch.OrOpt;
 import LocalSearch.TwoOpt;
@@ -69,9 +66,11 @@ public class ControllerRunning implements ThreadCompleteListener {
             eda = new EdgeBasedEDA(problemInstance.getGraph(), selectedPopulationSize,
                     sampledPopulationSize, maxIterationsEDA, bRatio, aPrioriEdges);
         } else if (edaS.equals(PositionBasedEDA_PBIL.getNameStatic())) {
-
             eda = new PositionBasedEDA_PBIL(problemInstance.getGraph(),
                     selectedPopulationSize, sampledPopulationSize, maxIterationsEDA, aPrioriProb, alpha);
+        } else if (edaS.equals(EdgeBasedEDA_UpdateWithWeight.getName())) {
+            eda = new EdgeBasedEDA_UpdateWithWeight(problemInstance.getGraph(), selectedPopulationSize,
+                    sampledPopulationSize, maxIterationsEDA, bRatio, aPrioriEdges, alpha);
         } else {
             throw new IllegalArgumentException("The name of the EDA was incorret. It was: " + edaS);
         }

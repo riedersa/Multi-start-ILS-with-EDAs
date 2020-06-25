@@ -1,6 +1,7 @@
 package GUI;
 
 import EDA.EdgeBasedEDA;
+import EDA.EdgeBasedEDA_UpdateWithWeight;
 import EDA.PositionBasedEDA_PBIL;
 import EDA.PositionBasedEDA_UMDA;
 import LocalSearch.OrOpt;
@@ -62,8 +63,8 @@ public class RunPanel {
             "This should be an integer: ";
     private static String getaPrioriStringPosition = "The probability an node in the given tour should get to appear " +
             "on the sae spot:";
-    private static String edaComboBoxListe[] = {EdgeBasedEDA.getName(), PositionBasedEDA_UMDA.getNameStatic(),
-            PositionBasedEDA_PBIL.getNameStatic()};
+    private static String edaComboBoxListe[] = {EdgeBasedEDA.getName(), EdgeBasedEDA_UpdateWithWeight.getName(),
+            PositionBasedEDA_UMDA.getNameStatic(), PositionBasedEDA_PBIL.getNameStatic()};
     private static JComboBox edaComboBox = new JComboBox(edaComboBoxListe);
     private static JTextArea sampledPopulationSize = GUI.formatTextArea("Sampled Population size: ");
     private static JFormattedTextField sampledPopulationSizeField = new JFormattedTextField(integerFormatter);
@@ -257,6 +258,14 @@ public class RunPanel {
                     edaValueAPrioriPositionField.setVisible(false);
                     alpha.setVisible(false);
                     alphaField.setVisible(false);
+                    edaValueAPrioriEdgesField.setVisible(true);
+                    bRatio.setVisible(true);
+                    bRatioField.setVisible(true);
+                } else if (edaComboBox.getSelectedItem().equals(EdgeBasedEDA_UpdateWithWeight.getName())) {
+                    edaValueAPriori.setText(aPrioriStringEdge);
+                    edaValueAPrioriPositionField.setVisible(false);
+                    alpha.setVisible(true);
+                    alphaField.setVisible(true);
                     edaValueAPrioriEdgesField.setVisible(true);
                     bRatio.setVisible(true);
                     bRatioField.setVisible(true);

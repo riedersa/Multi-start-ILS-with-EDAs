@@ -117,7 +117,7 @@ public class EdgeBasedEDA implements EDA {
     protected void initiateEdgeHistogramMatrix_UseProbModel(final TSPTour tspTour) {
         PriorityQueue<TSPTour> pq = new PriorityQueue<TSPTour>();
         pq.add(tspTour);
-        estimate(pq);
+        edgeHistogramMatrix = estimate(pq, edgeHistogramMatrix, numberNodes);
     }
 
 
@@ -133,12 +133,12 @@ public class EdgeBasedEDA implements EDA {
         sample(sampledPopulationSize, tspTours);
         int numberIterations = 0;
         while (numberIterations < maxCounterOtIterations) {
-            tspTours = select(selectedPopulationSize, tspTours);
-            estimate(tspTours);
+            tspTours = PriorityQueueHelper.select(selectedPopulationSize, tspTours);
+            edgeHistogramMatrix = estimate(tspTours, edgeHistogramMatrix, numberNodes);
             sample(sampledPopulationSize, tspTours);
             numberIterations++;
         }
-        tspTours = select(1, tspTours);
+        tspTours = PriorityQueueHelper.select(1, tspTours);
         return tspTours.poll();
     }
 
@@ -153,39 +153,26 @@ public class EdgeBasedEDA implements EDA {
         sample(sampledPopulationSize, tspTours);
         int numberIterations = 0;
         while (numberIterations < maxCounterOtIterations) {
-            tspTours = select(selectedPopulationSize, tspTours);
-            estimate(tspTours);
+            tspTours = PriorityQueueHelper.select(selectedPopulationSize, tspTours);
+            edgeHistogramMatrix = estimate(tspTours, edgeHistogramMatrix, numberNodes);
             sample(sampledPopulationSize, tspTours);
             numberIterations++;
         }
-        tspTours = select(1, tspTours);
+        tspTours = PriorityQueueHelper.select(1, tspTours);
         return tspTours.poll();
-    }
-
-
-    /**
-     * This method selects the worst individuals of the population. The worst numberElements individuals are left in the
-     * queue, all others are removed. Notice, that for using this method in an appropriate way, the priority queue
-     * should have reversed order. This way was chosen to make the implementation more efficient.
-     *
-     * @param numberElements the number of elements, that should be left in the queue.
-     * @param tspTours       the priority queue from which elements are deleted.
-     * @return a priority queue containing then worst elements of the initial one
-     */
-    protected PriorityQueue<TSPTour> select(int numberElements, PriorityQueue<TSPTour> tspTours) {
-        while (tspTours.size() > numberElements) {
-            tspTours.poll();
-        }
-        return tspTours;
     }
 
 
     /**
      * This method creates the edge histogram matrix. It can only be used for symmetric TSPs.
      *
-     * @param tspTours the population for which to create the matrix
+     * @param tspTours            the population for which to create the matrix
+     * @param edgeHistogramMatrix the edge histogram matrix. It must be hre so that the method can be overwritten in the
+     *                            subclass.
+     * @param numberNodes         this is the number of nodes of the current instance. It is used for overwriting, too.
+     * @return the new edgeHistogram matrix
      */
-    protected void estimate(PriorityQueue<TSPTour> tspTours) {
+    protected double[][] estimate(PriorityQueue<TSPTour> tspTours, double[][] edgeHistogramMatrix, int numberNodes) {
         setEpsilon();
         //empty the matrix to fill it later again via just addition
         for (int i = 0; i < numberNodes; i++) {
@@ -204,6 +191,8 @@ public class EdgeBasedEDA implements EDA {
                 edgeHistogramMatrix[tour[(position + 1) % numberNodes]][tour[position]]++;
             }
         }
+
+        return edgeHistogramMatrix;
     }
 
 
@@ -359,7 +348,7 @@ public class EdgeBasedEDA implements EDA {
     }
 
 
-    private void setEpsilon() {
+    protected void setEpsilon() {
         this.epsilon = (2.0 * selectedPopulationSize) / (numberNodes - 1) * bRatio;
     }
 
@@ -401,5 +390,10 @@ public class EdgeBasedEDA implements EDA {
 
     protected double getEpsilon() {
         return epsilon;
+    }
+
+
+    protected int getNumberNodes() {
+        return numberNodes;
     }
 }

@@ -29,6 +29,7 @@ public abstract class PositionBasedEDA implements EDA {
     private double probForPriorTour = 0.2;
 
     private final Graph graph;
+    private boolean firstUpdate = true;
 
 
     /**
@@ -58,6 +59,7 @@ public abstract class PositionBasedEDA implements EDA {
     @Override
     public TSPTour perturb(final TSPTour tour) {
         initiateModel(tour);
+        firstUpdate = false;
         return performEDA();
     }
 
@@ -65,6 +67,7 @@ public abstract class PositionBasedEDA implements EDA {
     @Override
     public TSPTour initiate() {
         initiateModel();
+        firstUpdate = true;
         return performEDA();
     }
 
@@ -112,7 +115,6 @@ public abstract class PositionBasedEDA implements EDA {
         PriorityQueue<TSPTour> tspTours = new PriorityQueue<TSPTour>(Collections.reverseOrder());
         sample(sampledPopulationSize, tspTours);
         int numberIterations = 0;
-        boolean firstUpdate = true;
         while (numberIterations < maxCounterOtIterations) {
             tspTours = PriorityQueueHelper.select(selectedPopulationSize, tspTours);
             model = estimate(tspTours, model, numberNodes, firstUpdate);
