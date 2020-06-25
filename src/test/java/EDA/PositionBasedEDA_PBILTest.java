@@ -6,16 +6,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
-public class PositionBasedEDA_UMDATest {
+public class PositionBasedEDA_PBILTest {
 
     private Graph graph;
     private int selectedPopulationSize = 2;
     private int sampledPopulationSize = 2;
     private int maxCounterOfIterations = 5;
     private double probForPriorTour = 0.2;
+    double alpha = 0.9;
     private LinkedList<TSPTour> tspTours;
 
 
@@ -115,38 +117,52 @@ public class PositionBasedEDA_UMDATest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructor_Throws() {
-        PositionBasedEDA_UMDA sut = new PositionBasedEDA_UMDA(graph, selectedPopulationSize, selectedPopulationSize - 1,
-                maxCounterOfIterations, probForPriorTour);
+        PositionBasedEDA_PBIL sut = new PositionBasedEDA_PBIL(graph, selectedPopulationSize, selectedPopulationSize - 1,
+                maxCounterOfIterations, probForPriorTour, alpha);
     }
 
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructor_ThrowsMaxCounter() {
-        PositionBasedEDA_UMDA sut = new PositionBasedEDA_UMDA(graph, selectedPopulationSize, selectedPopulationSize - 1,
-                -1, probForPriorTour);
+        PositionBasedEDA_PBIL sut = new PositionBasedEDA_PBIL(graph, selectedPopulationSize, selectedPopulationSize - 1,
+                -1, probForPriorTour, alpha);
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructor_ThrowsAlphaNeg() {
+        PositionBasedEDA_PBIL sut = new PositionBasedEDA_PBIL(graph, selectedPopulationSize, selectedPopulationSize - 1,
+                -1, probForPriorTour, -1);
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructor_ThrowsAlphaLarge() {
+        PositionBasedEDA_PBIL sut = new PositionBasedEDA_PBIL(graph, selectedPopulationSize, selectedPopulationSize - 1,
+                -1, probForPriorTour, 1.00001);
     }
 
 
     @Test(expected = IllegalArgumentException.class)
     public void testsetSampled_Throws() {
-        PositionBasedEDA_UMDA sut = new PositionBasedEDA_UMDA(graph, 0, 1,
-                maxCounterOfIterations, probForPriorTour);
+        PositionBasedEDA_PBIL sut = new PositionBasedEDA_PBIL(graph, 0, 1,
+                maxCounterOfIterations, probForPriorTour, alpha);
         sut.setSampledPopulationSize(0);
     }
 
 
     @Test(expected = IllegalArgumentException.class)
     public void testsetSelected_Throws() {
-        PositionBasedEDA_UMDA sut = new PositionBasedEDA_UMDA(graph, 1, 1,
-                maxCounterOfIterations, probForPriorTour);
+        PositionBasedEDA_PBIL sut = new PositionBasedEDA_PBIL(graph, 1, 1,
+                maxCounterOfIterations, probForPriorTour, alpha);
         sut.setSelectedPopulationSize(-1);
     }
 
 
     @Test
     public void testsetSampled() {
-        PositionBasedEDA_UMDA sut = new PositionBasedEDA_UMDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations, probForPriorTour);
+        PositionBasedEDA_PBIL sut = new PositionBasedEDA_PBIL(graph, selectedPopulationSize, sampledPopulationSize,
+                maxCounterOfIterations, probForPriorTour, alpha);
         sut.setSampledPopulationSize(5);
         Assertions.assertEquals(5, sut.getSampledPopulationSize());
     }
@@ -154,8 +170,8 @@ public class PositionBasedEDA_UMDATest {
 
     @Test
     public void testsetSelected() {
-        PositionBasedEDA_UMDA sut = new PositionBasedEDA_UMDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations, probForPriorTour);
+        PositionBasedEDA_PBIL sut = new PositionBasedEDA_PBIL(graph, selectedPopulationSize, sampledPopulationSize,
+                maxCounterOfIterations, probForPriorTour, alpha);
         sut.setSelectedPopulationSize(1);
         Assertions.assertEquals(1, sut.getSelectedPopulationSize());
     }
@@ -163,16 +179,16 @@ public class PositionBasedEDA_UMDATest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetProbForPriorTour_throws() {
-        PositionBasedEDA_UMDA sut = new PositionBasedEDA_UMDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations, probForPriorTour);
+        PositionBasedEDA_PBIL sut = new PositionBasedEDA_PBIL(graph, selectedPopulationSize, sampledPopulationSize,
+                maxCounterOfIterations, probForPriorTour, alpha);
         sut.setProbForPriorTour(1.01);
     }
 
 
     @Test
     public void testSetProbForPriorTour() {
-        PositionBasedEDA_UMDA sut = new PositionBasedEDA_UMDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations, probForPriorTour);
+        PositionBasedEDA_PBIL sut = new PositionBasedEDA_PBIL(graph, selectedPopulationSize, sampledPopulationSize,
+                maxCounterOfIterations, probForPriorTour, alpha);
         sut.setProbForPriorTour(1.0);
         Assertions.assertEquals(1.0, sut.getProbForPriorTour(), 0.00001);
 
@@ -186,16 +202,16 @@ public class PositionBasedEDA_UMDATest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetMaxCounter_throwsNull() {
-        PositionBasedEDA_UMDA sut = new PositionBasedEDA_UMDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations, probForPriorTour);
+        PositionBasedEDA_PBIL sut = new PositionBasedEDA_PBIL(graph, selectedPopulationSize, sampledPopulationSize,
+                maxCounterOfIterations, probForPriorTour, alpha);
         sut.setMaxCounterOtIterations(0);
     }
 
 
     @Test
     public void testSetMaxCounter() {
-        PositionBasedEDA_UMDA sut = new PositionBasedEDA_UMDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations, probForPriorTour);
+        PositionBasedEDA_PBIL sut = new PositionBasedEDA_PBIL(graph, selectedPopulationSize, sampledPopulationSize,
+                maxCounterOfIterations, probForPriorTour, alpha);
         sut.setMaxCounterOtIterations(5);
         Assertions.assertEquals(5, sut.getMaxCounterOtIterations());
     }
@@ -203,8 +219,8 @@ public class PositionBasedEDA_UMDATest {
 
     @Test
     public void testRouletteWheelForCreation_NoCrash() {
-        PositionBasedEDA_UMDA sut = new PositionBasedEDA_UMDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations, probForPriorTour);
+        PositionBasedEDA_PBIL sut = new PositionBasedEDA_PBIL(graph, selectedPopulationSize, sampledPopulationSize,
+                maxCounterOfIterations, probForPriorTour, alpha);
         sut.initiateModel();
 
         sut.initiateModel();
@@ -214,8 +230,8 @@ public class PositionBasedEDA_UMDATest {
 
     @Test
     public void testInitiateModel() {
-        PositionBasedEDA_UMDA sut = new PositionBasedEDA_UMDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations, probForPriorTour);
+        PositionBasedEDA_PBIL sut = new PositionBasedEDA_PBIL(graph, selectedPopulationSize, sampledPopulationSize,
+                maxCounterOfIterations, probForPriorTour, alpha);
         sut.initiateModel();
         double[][] model = sut.getModel();
         double[][] expected = {{0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125},
@@ -233,8 +249,8 @@ public class PositionBasedEDA_UMDATest {
 
     @Test
     public void testInitiateModel_With() {
-        PositionBasedEDA_UMDA sut = new PositionBasedEDA_UMDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations, probForPriorTour);
+        PositionBasedEDA_PBIL sut = new PositionBasedEDA_PBIL(graph, selectedPopulationSize, sampledPopulationSize,
+                maxCounterOfIterations, probForPriorTour, alpha);
         sut.initiateModel(tspTours.getLast());
         double[][] model = sut.getModel();
         double[][] expected = {
@@ -257,8 +273,8 @@ public class PositionBasedEDA_UMDATest {
         pq.addAll(tspTours);
 
 
-        PositionBasedEDA_UMDA sut = new PositionBasedEDA_UMDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations, probForPriorTour);
+        PositionBasedEDA_PBIL sut = new PositionBasedEDA_PBIL(graph, selectedPopulationSize, sampledPopulationSize,
+                maxCounterOfIterations, probForPriorTour, alpha);
         sut.sample(2, pq);
 
         Assertions.assertEquals(4, pq.size());
@@ -273,8 +289,8 @@ public class PositionBasedEDA_UMDATest {
         pq.addAll(tspTours);
 
 
-        PositionBasedEDA_UMDA sut = new PositionBasedEDA_UMDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations, probForPriorTour);
+        PositionBasedEDA_PBIL sut = new PositionBasedEDA_PBIL(graph, selectedPopulationSize, sampledPopulationSize,
+                maxCounterOfIterations, probForPriorTour, alpha);
         sut.sample(4, pq);
 
         Assertions.assertEquals(4, pq.size());
@@ -288,8 +304,8 @@ public class PositionBasedEDA_UMDATest {
         PriorityQueue<TSPTour> pq = new PriorityQueue();
         pq.addAll(tspTours);
 
-        PositionBasedEDA_UMDA sut = new PositionBasedEDA_UMDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations, probForPriorTour);
+        PositionBasedEDA_PBIL sut = new PositionBasedEDA_PBIL(graph, selectedPopulationSize, sampledPopulationSize,
+                maxCounterOfIterations, probForPriorTour, alpha);
         sut.initiateModel();
         sut.sample(8, pq);
 
@@ -301,8 +317,8 @@ public class PositionBasedEDA_UMDATest {
 
     @Test
     public void testRefineTour() {
-        PositionBasedEDA_UMDA sut = new PositionBasedEDA_UMDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations, probForPriorTour);
+        PositionBasedEDA_PBIL sut = new PositionBasedEDA_PBIL(graph, selectedPopulationSize, sampledPopulationSize,
+                maxCounterOfIterations, probForPriorTour, alpha);
         int[] tour = sut.refineTour(new int[graph.getNumberNodes()]);
         assertAllNodesInTour(tour);
 
@@ -313,13 +329,13 @@ public class PositionBasedEDA_UMDATest {
 
 
     @Test
-    public void testEstimate() {
+    public void testEstimate_First() {
         PriorityQueue<TSPTour> pq = new PriorityQueue();
         pq.addAll(tspTours);
 
-        PositionBasedEDA_UMDA sut = new PositionBasedEDA_UMDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations, probForPriorTour);
-        sut.estimate(pq, sut.getModel(), sut.getNumberNodes(), false);
+        PositionBasedEDA_PBIL sut = new PositionBasedEDA_PBIL(graph, selectedPopulationSize, sampledPopulationSize,
+                maxCounterOfIterations, probForPriorTour, alpha);
+        double[][] result = sut.estimate(pq, sut.getModel(), sut.getNumberNodes(), true);
 
         double[][] expected = new double[][]{
                 {0.225, 0.025, 0.025, 0.025, 0.225, 0.225, 0.225, 0.025},
@@ -336,9 +352,50 @@ public class PositionBasedEDA_UMDATest {
 
 
     @Test
+    public void testEstimate_WithModel() {
+        PriorityQueue<TSPTour> pq = new PriorityQueue();
+        pq.addAll(tspTours);
+
+        PositionBasedEDA_PBIL sut = new PositionBasedEDA_PBIL(graph, selectedPopulationSize, sampledPopulationSize,
+                maxCounterOfIterations, probForPriorTour, alpha);
+        double[][] model = {{0.5, 0.5, 0, 0, 0, 0, 0, 0},
+                {0.5, 0.5, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0.5, 0.5, 0, 0, 0, 0},
+                {0, 0, 0.5, 0.5, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0.5, 0.5, 0, 0},
+                {0, 0, 0, 0, 0.5, 0.5, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0.5, 0.5},
+                {0, 0, 0, 0, 0, 0, 0.5, 0.5}};
+
+        double[][] result = sut.estimate(pq, model, sut.getNumberNodes(), false);
+
+        double[][] expected = new double[][]{
+                {0.225 * 0.9 + 0.5 * 0.1, 0.025 * 0.9 + 0.5 * 0.1, 0.025 * 0.9, 0.025 * 0.9, 0.225 * 0.9, 0.225 * 0.9
+                        , 0.225 * 0.9, 0.025 * 0.9},
+                {0.225 * 0.9 + 0.5 * 0.1, 0.225 * 0.9 + 0.5 * 0.1, 0.025 * 0.9, 0.025 * 0.9, 0.025 * 0.9, 0.225 * 0.9
+                        , 0.225 * 0.9, 0.025 * 0.9},
+                {0.225 * 0.9, 0.225 * 0.9, 0.225 * 0.9 + 0.5 * 0.1, 0.025 * 0.9 + 0.5 * 0.1, 0.025 * 0.9, 0.025 * 0.9
+                        , 0.225 * 0.9, 0.025 * 0.9},
+                {0.225 * 0.9, 0.225 * 0.9, 0.225 * 0.9 + 0.5 * 0.1, 0.225 * 0.9 + 0.5 * 0.1, 0.025 * 0.9, 0.025 * 0.9
+                        , 0.025 * 0.9, 0.025 * 0.9},
+                {0.025 * 0.9, 0.225 * 0.9, 0.225 * 0.9, 0.225 * 0.9, 0.225 * 0.9 + 0.5 * 0.1, 0.025 * 0.9 + 0.5 * 0.1
+                        , 0.025 * 0.9, 0.025 * 0.9},
+                {0.025 * 0.9, 0.025 * 0.9, 0.225 * 0.9, 0.225 * 0.9, 0.225 * 0.9 + 0.5 * 0.1, 0.225 * 0.9 + 0.5 * 0.1
+                        , 0.025 * 0.9, 0.025 * 0.9},
+                {0.025 * 0.9, 0.025 * 0.9, 0.025 * 0.9, 0.225 * 0.9, 0.225 * 0.9, 0.225 * 0.9,
+                        0.225 * 0.9 + 0.5 * 0.1, 0.025 * 0.9 + 0.5 * 0.1},
+                {0.025 * 0.9, 0.025 * 0.9, 0.025 * 0.9, 0.025 * 0.9, 0.025 * 0.9, 0.025 * 0.9,
+                        0.025 * 0.9 + 0.5 * 0.1, 0.825 * 0.9 + 0.5 * 0.1}};
+
+        double delta = 0.00000001;
+        assertDoubleArrayEquals(expected, result, delta);
+    }
+
+
+    @Test
     public void testPertubeNoCrash() {
-        PositionBasedEDA_UMDA sut = new PositionBasedEDA_UMDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations, probForPriorTour);
+        PositionBasedEDA_PBIL sut = new PositionBasedEDA_PBIL(graph, selectedPopulationSize, sampledPopulationSize,
+                maxCounterOfIterations, probForPriorTour, alpha);
         TSPTour tspTour = sut.perturb(tspTours.getFirst());
         assertValidTour(tspTour);
     }
@@ -346,8 +403,8 @@ public class PositionBasedEDA_UMDATest {
 
     @Test
     public void testInitiateNoCrash() {
-        PositionBasedEDA_UMDA sut = new PositionBasedEDA_UMDA(graph, selectedPopulationSize, sampledPopulationSize,
-                maxCounterOfIterations, probForPriorTour);
+        PositionBasedEDA_PBIL sut = new PositionBasedEDA_PBIL(graph, selectedPopulationSize, sampledPopulationSize,
+                maxCounterOfIterations, probForPriorTour, alpha);
         TSPTour tspTour = sut.initiate();
         assertValidTour(tspTour);
     }

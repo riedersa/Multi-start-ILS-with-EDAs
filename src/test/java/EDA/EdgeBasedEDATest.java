@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
@@ -130,7 +131,7 @@ public class EdgeBasedEDATest {
 
 
     @Test
-    public void compareToTest(){
+    public void compareToTest() {
         Assertions.assertTrue(tspTours.get(1).compareTo(tspTours.get(2)) < 0);
         Assertions.assertTrue(tspTours.get(2).compareTo(tspTours.get(1)) > 0);
     }
@@ -441,6 +442,65 @@ public class EdgeBasedEDATest {
                 maxCounterOfIterations, bratio, valueForAPrioriEdges);
         TSPTour tspTour = sut.initiate();
         assertValidTour(tspTour);
+    }
+
+
+    @Test
+    public void testRouletteWheelVector() {
+        double[][] edgeHistogramMatrix = new double[][]{{}, {}, {1, 1, 4, 1, 1, 2, 1, 1, 1, 1}};
+        EdgeBasedEDA sut = new EdgeBasedEDA(new Graph(new int[][]{{}, {}, {}, {}, {}, {}, {}, {}, {}, {}}),
+                selectedPopulationSize, sampledPopulationSize,
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
+        sut.setEdgeHistogramMatrix(edgeHistogramMatrix);
+        double[] rouletteWheel = sut.rouletteWheelVector(new int[]{2, 0, 0, 0, 1, 1, 1, 1, 1, 1}, 1);
+        Assertions.assertArrayEquals(new double[]{0.1, 0.1, 0, 0.1, 0.1, 0.2, 0.1, 0.1, 0.1, 0.1}, rouletteWheel);
+    }
+
+    @Test
+    public void testRouletteWheelVector_Identity() {
+        double[][] edgeHistogramMatrix = new double[][]{{0, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 1, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 1, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 1, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 1, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 1, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, {1, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+        EdgeBasedEDA sut = new EdgeBasedEDA(new Graph(new int[][]{{}, {}, {}, {}, {}, {}, {}, {}, {}, {}}),
+                selectedPopulationSize, sampledPopulationSize,
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
+        sut.setEdgeHistogramMatrix(edgeHistogramMatrix);
+        double[] rouletteWheel = sut.rouletteWheelVector(new int[]{2, 0, 0, 0, 1, 1, 1, 1, 1, 1}, 1);
+        Assertions.assertArrayEquals(new double[]{0, 0, 0, 1, 0, 0, 0, 0, 0, 0}, rouletteWheel);
+    }
+
+
+    @Test
+    public void testCreateTour_probOne() {
+        double[][] edgeHistogramMatrix = new double[][]{{0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                {0, 0, 1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 1, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 1, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 1, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 1, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 1, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 1, 0}, {1, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 1, 0, 0, 0, 0, 0, 0, 0, 0}};
+        EdgeBasedEDA sut = new EdgeBasedEDA(new Graph(new int[][]{{1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1,
+                1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1, 1,
+                1, 1}, {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+                , {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}}),
+                selectedPopulationSize, sampledPopulationSize,
+                maxCounterOfIterations, bratio, valueForAPrioriEdges);
+        sut.setEdgeHistogramMatrix(edgeHistogramMatrix);
+        TSPTour createdTour = sut.createTour();
+        Assertions.assertArrayEquals(new int[]{0, 9, 1, 2, 3, 4, 5, 6, 7, 8}, makeZeroStartNode(createdTour.getTour()));
+    }
+
+    public int[] makeZeroStartNode(int[] tour){
+        int[] newTour = new int[tour.length];
+        int index = 0;
+        for(int i = 0; i<tour.length; i++){
+            if(tour[i] == 0){
+                index = i;
+                break;
+            }
+        }
+        for(int i = 0; i<tour.length; i++){
+            newTour[i] = tour[(i+index)%tour.length];
+        }
+        return newTour;
     }
 
 

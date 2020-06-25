@@ -5,6 +5,7 @@ import DataStructures.ProblemInstance;
 import DataStructures.TSPTour;
 import EDA.EDA;
 import EDA.EdgeBasedEDA;
+import EDA.PositionBasedEDA_PBIL;
 import EDA.PositionBasedEDA_UMDA;
 import LocalSearch.LocalSearch;
 import LocalSearch.OrOpt;
@@ -49,6 +50,8 @@ public class ControllerRunning implements ThreadCompleteListener {
      * @param bRatio                 slack for sampling in edge based eda
      * @param aPrioriProb            probability for a city to occur at the same place it is in the initial tour for
      *                               position based EDA
+     * @param alpha                  weight, the tours cuttently in a population should get when updating the model. The
+     *                               current model gets weight (1-alpha).
      * @param lsMethod               steepest descent or descent
      * @return the multiStartILS
      */
@@ -56,15 +59,21 @@ public class ControllerRunning implements ThreadCompleteListener {
                                               int numberLS, int numberStuck,
                                               int sampledPopulationSize,
                                               int selectedPopulationSize, int maxIterationsEDA,
-                                              int aPrioriEdges, double bRatio, double aPrioriProb,
+                                              int aPrioriEdges, double bRatio, double aPrioriProb, double alpha,
                                               TwoOpt.Method lsMethod) {
         EDA eda;
-        if (edaS.equals(PositionBasedEDA_UMDA.getName())) {
+        if (edaS.equals(PositionBasedEDA_UMDA.getNameStatic())) {
             eda = new PositionBasedEDA_UMDA(problemInstance.getGraph(),
                     selectedPopulationSize, sampledPopulationSize, maxIterationsEDA, aPrioriProb);
-        } else {
+        } else if (edaS.equals(EdgeBasedEDA.getName())) {
             eda = new EdgeBasedEDA(problemInstance.getGraph(), selectedPopulationSize,
                     sampledPopulationSize, maxIterationsEDA, bRatio, aPrioriEdges);
+        } else if (edaS.equals(PositionBasedEDA_PBIL.getNameStatic())) {
+
+            eda = new PositionBasedEDA_PBIL(problemInstance.getGraph(),
+                    selectedPopulationSize, sampledPopulationSize, maxIterationsEDA, aPrioriProb, alpha);
+        } else {
+            throw new IllegalArgumentException("The name of the EDA was incorret. It was: " + edaS);
         }
 
 
@@ -74,6 +83,7 @@ public class ControllerRunning implements ThreadCompleteListener {
         } else {
             ls = new OrOpt();
         }
+
 
         MultiStartILS multiStartILS = new MultiStartILS(eda, ls, problemInstance.getGraph());
         multiStartILS.setMaxTimesLS(numberLS);
@@ -107,6 +117,8 @@ public class ControllerRunning implements ThreadCompleteListener {
      * @param aPrioriEdges           the value a priori edges get in EdgeBased sampling
      * @param bRatio                 the bRatio value for edge based sampling
      * @param aPrioriProb            the probability for a city to be at the position it was in the initial tour
+     * @param alpha                  weight, the tours cuttently in a population should get when updating the model. The
+     *                               current model gets weight (1-alpha).
      * @param ls                     the local search method to use
      * @param lsMethod               Descent or Steepest descent
      * @param shouldStore            true, if the result should be saved
@@ -114,7 +126,7 @@ public class ControllerRunning implements ThreadCompleteListener {
      */
     public void run(String filename, int numberLS, int numberStuck,
                     String eda, int sampledPopulationSize, int selectedPopulationSize, int maxIterationsEDA,
-                    int aPrioriEdges, double bRatio, double aPrioriProb,
+                    int aPrioriEdges, double bRatio, double aPrioriProb, double alpha,
                     String ls, TwoOpt.Method lsMethod, boolean shouldStore) throws IOException {
         this.shouldStore = shouldStore;
         FileReader fileReader = new FileReaderImplementation();
@@ -122,6 +134,7 @@ public class ControllerRunning implements ThreadCompleteListener {
 
         multiStartILS = createMultiStartILS(eda, ls, problemInstance, numberLS, numberStuck,
                 sampledPopulationSize, selectedPopulationSize, maxIterationsEDA, aPrioriEdges, bRatio, aPrioriProb,
+                alpha,
                 lsMethod);
 
         thread.addListener(this);

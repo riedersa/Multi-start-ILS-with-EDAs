@@ -1,6 +1,7 @@
 package GUI;
 
 import EDA.EdgeBasedEDA;
+import EDA.PositionBasedEDA_PBIL;
 import EDA.PositionBasedEDA_UMDA;
 import LocalSearch.OrOpt;
 import LocalSearch.TwoOpt;
@@ -28,7 +29,7 @@ public class RunPanel {
 
     private static int headingsPlus = 2;
 
-    private static NumberFormat integerFormatter = NumberFormat.getIntegerInstance();
+    private static NumberFormat integerFormatter = NumberFormat.getIntegerInstance(Locale.ENGLISH);
 
     private static NumberFormat doubleFormatter = DecimalFormat.getInstance(Locale.ENGLISH);
 
@@ -61,7 +62,8 @@ public class RunPanel {
             "This should be an integer: ";
     private static String getaPrioriStringPosition = "The probability an node in the given tour should get to appear " +
             "on the sae spot:";
-    private static String edaComboBoxListe[] = {EdgeBasedEDA.getName(), PositionBasedEDA_UMDA.getName()};
+    private static String edaComboBoxListe[] = {EdgeBasedEDA.getName(), PositionBasedEDA_UMDA.getNameStatic(),
+            PositionBasedEDA_PBIL.getNameStatic()};
     private static JComboBox edaComboBox = new JComboBox(edaComboBoxListe);
     private static JTextArea sampledPopulationSize = GUI.formatTextArea("Sampled Population size: ");
     private static JFormattedTextField sampledPopulationSizeField = new JFormattedTextField(integerFormatter);
@@ -73,9 +75,11 @@ public class RunPanel {
     private static JFormattedTextField edaValueAPrioriEdgesField = new JFormattedTextField(integerFormatter);
     private static JFormattedTextField edaValueAPrioriPositionField = new JFormattedTextField(doubleFormatter);
     private static JTextArea bRatio = GUI.formatTextArea("BRatio (If this value is high, the perturbation in one " +
-            "iteration will " +
-            "be high):");
+            "iteration will be high):");
     private static JFormattedTextField bRatioField = new JFormattedTextField(doubleFormatter);
+    private static JTextArea alpha = GUI.formatTextArea("Alpha (This value defines the weighting the current tours in" +
+            " the population should get when updating the model. The value hsould be between 0 and 1.");
+    private static JFormattedTextField alphaField = new JFormattedTextField(doubleFormatter);
 
 
     /**
@@ -103,9 +107,9 @@ public class RunPanel {
 
         setupEDA(runPanel, gridBagConstraints, 7);
 
-        setupLS(runPanel, gridBagConstraints, 14);
+        setupLS(runPanel, gridBagConstraints, 15);
 
-        setupButton(runPanel, gridBagConstraints, 17);
+        setupButton(runPanel, gridBagConstraints, 18);
 
         return runPanel;
     }
@@ -251,12 +255,24 @@ public class RunPanel {
                 if (edaComboBox.getSelectedItem().equals(EdgeBasedEDA.getName())) {
                     edaValueAPriori.setText(aPrioriStringEdge);
                     edaValueAPrioriPositionField.setVisible(false);
+                    alpha.setVisible(false);
+                    alphaField.setVisible(false);
                     edaValueAPrioriEdgesField.setVisible(true);
                     bRatio.setVisible(true);
                     bRatioField.setVisible(true);
-                } else {
+                } else if (edaComboBox.getSelectedItem().equals(PositionBasedEDA_UMDA.getNameStatic())) {
                     edaValueAPriori.setText(getaPrioriStringPosition);
                     edaValueAPrioriPositionField.setVisible(true);
+                    alpha.setVisible(false);
+                    alphaField.setVisible(false);
+                    edaValueAPrioriEdgesField.setVisible(false);
+                    bRatio.setVisible(false);
+                    bRatioField.setVisible(false);
+                } else if (edaComboBox.getSelectedItem().equals(PositionBasedEDA_PBIL.getNameStatic())) {
+                    edaValueAPriori.setText(getaPrioriStringPosition);
+                    edaValueAPrioriPositionField.setVisible(true);
+                    alpha.setVisible(true);
+                    alphaField.setVisible(true);
                     edaValueAPrioriEdgesField.setVisible(false);
                     bRatio.setVisible(false);
                     bRatioField.setVisible(false);
@@ -353,6 +369,23 @@ public class RunPanel {
         gridBagConstraints.weighty = 0.0;
         gridBagConstraints.insets = new Insets(0, 0, bottomSpace, 0);
         runPanel.add(bRatioField, gridBagConstraints);
+
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = start + 7;
+        gridBagConstraints.weightx = 0.0;
+        gridBagConstraints.weighty = 0.0;
+        gridBagConstraints.insets = new Insets(0, 0, bottomSpace, 0);
+        runPanel.add(alpha, gridBagConstraints);
+        alpha.setVisible(false);
+
+        alphaField.setColumns(10);
+        alphaField.setToolTipText("Default is " + DefaultValues.alpha);
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = start + 7;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 0.0;
+        gridBagConstraints.insets = new Insets(0, 0, bottomSpace, 0);
+        runPanel.add(alphaField, gridBagConstraints);
 
     }
 
@@ -472,7 +505,7 @@ public class RunPanel {
                         int aPrioriEdges;
                         try {
                             aPrioriEdges = edaValueAPrioriEdgesField.getText() != null ?
-                                    Integer.parseInt(edaValueAPrioriEdgesField.getText()) :
+                                    integerFormatter.parse(edaValueAPrioriEdgesField.getText()).intValue() :
                                     DefaultValues.valueForAPrioriEdges;
                         } catch (Exception ex) {
                             aPrioriEdges = DefaultValues.valueForAPrioriEdges;
@@ -483,6 +516,13 @@ public class RunPanel {
                                     DefaultValues.bRatio;
                         } catch (Exception ex) {
                             bRatio = DefaultValues.bRatio;
+                        }
+                        double alpha;
+                        try {
+                            alpha = bRatioField.getText() != null ? Double.parseDouble(alphaField.getText()) :
+                                    DefaultValues.alpha;
+                        } catch (Exception ex) {
+                            alpha = DefaultValues.alpha;
                         }
                         double probPriorTour;
                         try {
@@ -499,8 +539,8 @@ public class RunPanel {
 
 
                         controllerRunning.run(openFileName, numberLS, numberStuck, eda, sampledPopulationSize,
-                                selectedPopulationSize, maxIterationsEDA, aPrioriEdges, bRatio, probPriorTour, ls,
-                                method, storeCheckBox.isSelected());
+                                selectedPopulationSize, maxIterationsEDA, aPrioriEdges, bRatio, probPriorTour, alpha,
+                                ls, method, storeCheckBox.isSelected());
 
                         createRunningDialog(controllerRunning);
 

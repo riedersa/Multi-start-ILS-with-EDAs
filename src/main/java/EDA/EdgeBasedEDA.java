@@ -110,6 +110,18 @@ public class EdgeBasedEDA implements EDA {
 
 
     /**
+     * This method fills the edge histogram matrix if one tour is known a priori. It uses
+     *
+     * @param tspTour the tour given.
+     */
+    protected void initiateEdgeHistogramMatrix_UseProbModel(final TSPTour tspTour) {
+        PriorityQueue<TSPTour> pq = new PriorityQueue<TSPTour>();
+        pq.add(tspTour);
+        estimate(pq);
+    }
+
+
+    /**
      * This method performs an EDA with a initial tour given. Notice, that before invoking this method, the edge
      * histogram matrix must be filled.
      *
