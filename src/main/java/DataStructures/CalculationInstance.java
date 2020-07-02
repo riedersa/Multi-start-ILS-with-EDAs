@@ -77,4 +77,13 @@ public class CalculationInstance {
     public String getMultiStartILS() {
         return multiStartILS;
     }
+
+
+    public String toString() {
+        return "[EDA:" + eda + "\n" +
+                "LS:" + ls + "\n" +
+                "MultiStart:" + multiStartILS + "\n" +
+                "TSPTour:" + minimum.toString() + "]\n";
+
+    }
 }

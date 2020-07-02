@@ -2,7 +2,6 @@ package Main;
 
 import DataStructures.CalculationInstance;
 import DataStructures.ProblemInstance;
-import DataStructures.TSPTour;
 import EDA.*;
 import LocalSearch.LocalSearch;
 import LocalSearch.OrOpt;
@@ -51,12 +50,12 @@ public class ControllerRunning implements ThreadCompleteListener {
      * @param lsMethod               steepest descent or descent
      * @return the multiStartILS
      */
-    private MultiStartILS createMultiStartILS(String edaS, String lsS, ProblemInstance problemInstance,
-                                              int numberLS, int numberStuck,
-                                              int sampledPopulationSize,
-                                              int selectedPopulationSize, int maxIterationsEDA,
-                                              int aPrioriEdges, double bRatio, double aPrioriProb, double alpha,
-                                              TwoOpt.Method lsMethod) {
+    public MultiStartILS createMultiStartILS(String edaS, String lsS, ProblemInstance problemInstance,
+                                             int numberLS, int numberStuck,
+                                             int sampledPopulationSize,
+                                             int selectedPopulationSize, int maxIterationsEDA,
+                                             int aPrioriEdges, double bRatio, double aPrioriProb, double alpha,
+                                             TwoOpt.Method lsMethod) {
         EDA eda;
         if (edaS.equals(PositionBasedEDA_UMDA.getNameStatic())) {
             eda = new PositionBasedEDA_UMDA(problemInstance.getGraph(),

@@ -22,9 +22,10 @@ public class StorageComponent {
      *
      * @param problemInstance     the problem instance for which a solution was found
      * @param calculationInstance the information on the calculation
+     * @return the name of the file in which the results were stored
      * @throws IOException if soring the file did not work
      */
-    public static void store(ProblemInstance problemInstance, CalculationInstance calculationInstance) throws IOException {
+    public static String store(ProblemInstance problemInstance, CalculationInstance calculationInstance) throws IOException {
         File file = createFile(problemInstance);
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
         writePreamble(writer, problemInstance);
@@ -34,6 +35,7 @@ public class StorageComponent {
         writer.write(FileParameters.eof);
         writer.flush();
         writer.close();
+        return file.getName();
     }
 
 
