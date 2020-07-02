@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 public class PositionBasedEDA_PBIL_newRefinementTest {
     private Graph graph;
@@ -14,8 +15,9 @@ public class PositionBasedEDA_PBIL_newRefinementTest {
     private int sampledPopulationSize = 2;
     private int maxCounterOfIterations = 5;
     private double probForPriorTour = 0.2;
-    private double bratio = 0.15;
     private LinkedList<TSPTour> tspTours;
+
+    double alpha = 0.9;
 
 
     @Before
@@ -109,6 +111,54 @@ public class PositionBasedEDA_PBIL_newRefinementTest {
         tspTours.add(tsptour2);
         tspTours.add(tsptour3);
         tspTours.add(tsptour4);
+    }
+
+
+    @Test
+    public void testSample_sizeSmaller() {
+        PriorityQueue<TSPTour> pq = new PriorityQueue();
+        pq.addAll(tspTours);
+
+
+        PositionBasedEDA_PBIL_newRefinement sut = new PositionBasedEDA_PBIL_newRefinement(graph, selectedPopulationSize, sampledPopulationSize,
+                maxCounterOfIterations, probForPriorTour, alpha);
+        sut.sample(2, pq);
+
+        Assertions.assertEquals(4, pq.size());
+        assertPQContainsAll(pq);
+        assertValidTours(pq);
+    }
+
+
+    @Test
+    public void testSample_sizeEqual() {
+        PriorityQueue<TSPTour> pq = new PriorityQueue();
+        pq.addAll(tspTours);
+
+
+        PositionBasedEDA_PBIL_newRefinement sut = new PositionBasedEDA_PBIL_newRefinement(graph, selectedPopulationSize, sampledPopulationSize,
+                maxCounterOfIterations, probForPriorTour, alpha);
+        sut.sample(4, pq);
+
+        Assertions.assertEquals(4, pq.size());
+        assertPQContainsAll(pq);
+        assertValidTours(pq);
+    }
+
+
+    @Test
+    public void testSample_sizeGreater() {
+        PriorityQueue<TSPTour> pq = new PriorityQueue();
+        pq.addAll(tspTours);
+
+        PositionBasedEDA_PBIL_newRefinement sut = new PositionBasedEDA_PBIL_newRefinement(graph, selectedPopulationSize, sampledPopulationSize,
+                maxCounterOfIterations, probForPriorTour, alpha);
+        sut.initiateModel();
+        sut.sample(8, pq);
+
+        Assertions.assertEquals(8, pq.size());
+        assertPQContainsAll(pq);
+        assertValidTours(pq);
     }
 
 
@@ -259,6 +309,23 @@ public class PositionBasedEDA_PBIL_newRefinementTest {
         }
         Assertions.assertArrayEquals(expected, contains);
         Assertions.assertEquals(graph.evaluateTour(tour), tspTour.getLength());
+    }
+
+
+    private void assertPQContainsAll(PriorityQueue<TSPTour> pq) {
+        for (TSPTour tour : tspTours) {
+            Assertions.assertTrue(pq.contains(tour));
+        }
+    }
+
+
+    private void assertValidTours(PriorityQueue<TSPTour> pq) {
+        for (TSPTour tspTour : pq) {
+            if (tspTours.contains(tspTour)) {
+                continue;
+            }
+            assertValidTour(tspTour);
+        }
     }
 
 

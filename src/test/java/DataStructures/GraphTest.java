@@ -1,6 +1,8 @@
 package DataStructures;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class GraphTest {
 
@@ -14,7 +16,7 @@ public class GraphTest {
 
 
     @BeforeEach
-    public void setUpDistances(){
+    public void setUpDistances() {
         distances = new int[5][5];
         distances[0][0] = 0;
         distances[0][1] = 1;
@@ -61,5 +63,12 @@ public class GraphTest {
         Graph sut = new Graph(distances);
         Assertions.assertEquals((int) sut.evaluateTour(tour), distance1);
         Assertions.assertEquals((int) sut.evaluateTour(tour2), distance2);
+    }
+
+
+    @Test
+    public void testEvaluateGenericTour() {
+        Graph sut = new Graph(distances);
+        Assertions.assertEquals(12, sut.evalueteGenericTour());
     }
 }

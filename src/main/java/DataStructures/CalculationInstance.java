@@ -54,6 +54,11 @@ public class CalculationInstance {
     }
 
 
+    /**
+     * This sets the minimum for this instance. Be carefully, the ,ethod does not check the length.
+     *
+     * @param minimum the minium to set.
+     */
     public void setMinimum(TSPTour minimum) {
         this.minimum = minimum;
     }

@@ -20,7 +20,6 @@ import java.io.IOException;
 public class ControllerRunning implements ThreadCompleteListener {
     private MultiStartILS multiStartILS;
     private ProblemInstance problemInstance;
-    private TSPTour optTourFound;
     private CalculationInstance calculationInstance;
     private boolean shouldStore;
     NotifyingThread thread = new NotifyingThread() {
@@ -71,7 +70,7 @@ public class ControllerRunning implements ThreadCompleteListener {
         } else if (edaS.equals(EdgeBasedEDA_UpdateWithWeight.getName())) {
             eda = new EdgeBasedEDA_UpdateWithWeight(problemInstance.getGraph(), selectedPopulationSize,
                     sampledPopulationSize, maxIterationsEDA, bRatio, aPrioriEdges, alpha);
-        } else if (edaS.equals(PositionBasedEDA_PBIL_newRefinement.getNameStatic())){
+        } else if (edaS.equals(PositionBasedEDA_PBIL_newRefinement.getNameStatic())) {
             eda = new PositionBasedEDA_PBIL_newRefinement(problemInstance.getGraph(),
                     selectedPopulationSize, sampledPopulationSize, maxIterationsEDA, aPrioriProb, alpha);
         } else {
@@ -101,7 +100,6 @@ public class ControllerRunning implements ThreadCompleteListener {
         multiStartILS.setContinueRunning(true);
         CalculationInstance calculationInstance = multiStartILS.performMultiStartILS();
         System.out.println(calculationInstance.getMinimum());
-        optTourFound = calculationInstance.getMinimum();
         this.calculationInstance = calculationInstance;
     }
 
@@ -136,8 +134,7 @@ public class ControllerRunning implements ThreadCompleteListener {
 
         multiStartILS = createMultiStartILS(eda, ls, problemInstance, numberLS, numberStuck,
                 sampledPopulationSize, selectedPopulationSize, maxIterationsEDA, aPrioriEdges, bRatio, aPrioriProb,
-                alpha,
-                lsMethod);
+                alpha, lsMethod);
 
         thread.addListener(this);
         thread.start();

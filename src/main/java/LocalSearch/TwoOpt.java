@@ -92,22 +92,6 @@ public class TwoOpt implements LocalSearch {
     }
 
 
-    /**
-     * this function computes a modulo b and always returns positive values.
-     *
-     * @param a the nominator
-     * @param b the denominator
-     * @return a mod b
-     */
-    private static int posModulo(int a, int b) {
-        int result = a % b;
-        if (result < 0) {
-            result += b;
-        }
-        return result;
-    }
-
-
     public String toString() {
         return "LocalSearchAlgorithm" + FileParameters.separator + getName() + "\n" +
                 "LocalSearchMethod" + FileParameters.separator + method.toString() + "\n";
