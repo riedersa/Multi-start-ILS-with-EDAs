@@ -1,24 +1,18 @@
 package Evaluation;
 
 import DataStructures.CalculationInstance;
+import DataStructures.Graph;
 import DataStructures.ProblemInstance;
 import EDA.*;
 import LocalSearch.LocalSearch;
 import LocalSearch.OrOpt;
 import LocalSearch.TwoOpt;
 import MultiStartILS.MultiStartILS;
-import Storage.FileParameters;
-import Storage.StorageComponent;
 import TSPLib.FileReader;
 import TSPLib.FileReaderImplementation;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,447 +20,535 @@ import java.util.List;
  */
 public class EvaluatingClass {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws  IOException{
         //TODO call for some instances
-    }
-
-
-    private static void executeForFile(String filename, double opt) throws IOException {
-        FileReader fileReader = new FileReaderImplementation();
-        ProblemInstance problemInstance = fileReader.createGraphFromFile(filename);
-        ArrayList<String> time = new ArrayList<>();
-        ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
-        ArrayList<String> filenames = new ArrayList<>();
-        //TODO: add some stuff to do
-        //TODO: remember to store Files and calculation instances
-        long startTime = System.nanoTime();
-        //TODO methods here
-        long endTime = System.nanoTime();
-        double duration = (endTime - startTime) / 1000000.0;
-        //TODO: remember to store time
-
-        store(calculationInstances, filenames, time, problemInstance, opt);
-    }
-
-
-    private static CalculationInstance execute_EdgeBased_TwoOpt_Steepest(ProblemInstance problemInstance,
-                                                                         int numberLS, int numberStuck,
-                                                                         int sampledPopulationSize,
-                                                                         int selectedPopulationSize,
-                                                                         int maxIterationsEDA,
-                                                                         int aPrioriEdges, double bRatio) {
-        LocalSearch.Method lsMethod = LocalSearch.Method.STEEPEST_DESCENT;
-
-        EDA eda = new EdgeBasedEDA(problemInstance.getGraph(), selectedPopulationSize,
-                sampledPopulationSize, maxIterationsEDA, bRatio, aPrioriEdges);
-
-        LocalSearch ls = new TwoOpt(lsMethod);
-
-        MultiStartILS multiStartILS = new MultiStartILS(eda, ls, problemInstance.getGraph());
-        multiStartILS.setMaxTimesLS(numberLS);
-        multiStartILS.setMaxTimesStuck(numberStuck);
-
-        return multiStartILS.performMultiStartILS();
-    }
-
-
-    private static CalculationInstance execute_EdgeBasedHistory_TwoOpt_Steepest(ProblemInstance problemInstance,
-                                                                                int numberLS,
-                                                                                int numberStuck,
-                                                                                int sampledPopulationSize,
-                                                                                int selectedPopulationSize,
-                                                                                int maxIterationsEDA,
-                                                                                int aPrioriEdges, double bRatio,
-                                                                                double alpha)
-            throws IOException {
-        LocalSearch.Method lsMethod = LocalSearch.Method.STEEPEST_DESCENT;
-
-        EDA eda = new EdgeBasedEDA_UpdateWithWeight(problemInstance.getGraph(), selectedPopulationSize,
-                sampledPopulationSize, maxIterationsEDA, bRatio, aPrioriEdges, alpha);
-
-        LocalSearch ls = new TwoOpt(lsMethod);
-
-        MultiStartILS multiStartILS = new MultiStartILS(eda, ls, problemInstance.getGraph());
-        multiStartILS.setMaxTimesLS(numberLS);
-        multiStartILS.setMaxTimesStuck(numberStuck);
-
-        return multiStartILS.performMultiStartILS();
-    }
-
-
-    private static CalculationInstance execute_EdgeBased_TwoOpt_Descent(ProblemInstance problemInstance, int numberLS
-            , int numberStuck,
-                                                                        int sampledPopulationSize,
-                                                                        int selectedPopulationSize,
-                                                                        int maxIterationsEDA,
-                                                                        int aPrioriEdges, double bRatio)
-            throws IOException {
-        LocalSearch.Method lsMethod = LocalSearch.Method.DESCENT;
-
-        EDA eda = new EdgeBasedEDA(problemInstance.getGraph(), selectedPopulationSize,
-                sampledPopulationSize, maxIterationsEDA, bRatio, aPrioriEdges);
-
-        LocalSearch ls = new TwoOpt(lsMethod);
-
-        MultiStartILS multiStartILS = new MultiStartILS(eda, ls, problemInstance.getGraph());
-        multiStartILS.setMaxTimesLS(numberLS);
-        multiStartILS.setMaxTimesStuck(numberStuck);
-
-        return multiStartILS.performMultiStartILS();
-    }
-
-
-    private static CalculationInstance execute_EdgeBasedHistory_TwoOpt_Descent(ProblemInstance problemInstance,
-                                                                               int numberLS,
-                                                                               int numberStuck,
-                                                                               int sampledPopulationSize,
-                                                                               int selectedPopulationSize,
-                                                                               int maxIterationsEDA,
-                                                                               int aPrioriEdges, double bRatio,
-                                                                               double alpha)
-            throws IOException {
-        LocalSearch.Method lsMethod = LocalSearch.Method.DESCENT;
-
-        EDA eda = new EdgeBasedEDA_UpdateWithWeight(problemInstance.getGraph(), selectedPopulationSize,
-                sampledPopulationSize, maxIterationsEDA, bRatio, aPrioriEdges, alpha);
-
-        LocalSearch ls = new TwoOpt(lsMethod);
-
-        MultiStartILS multiStartILS = new MultiStartILS(eda, ls, problemInstance.getGraph());
-        multiStartILS.setMaxTimesLS(numberLS);
-        multiStartILS.setMaxTimesStuck(numberStuck);
-
-        return multiStartILS.performMultiStartILS();
-    }
-
-
-    private static CalculationInstance execute_EdgeBased_OrOpt(ProblemInstance problemInstance, int numberLS,
-                                                               int numberStuck,
-                                                               int sampledPopulationSize,
-                                                               int selectedPopulationSize,
-                                                               int maxIterationsEDA,
-                                                               int aPrioriEdges, double bRatio)
-            throws IOException {
-        EDA eda = new EdgeBasedEDA(problemInstance.getGraph(), selectedPopulationSize,
-                sampledPopulationSize, maxIterationsEDA, bRatio, aPrioriEdges);
-
-        LocalSearch ls = new OrOpt();
-
-        MultiStartILS multiStartILS = new MultiStartILS(eda, ls, problemInstance.getGraph());
-        multiStartILS.setMaxTimesLS(numberLS);
-        multiStartILS.setMaxTimesStuck(numberStuck);
-
-        return multiStartILS.performMultiStartILS();
-    }
-
-
-    private static CalculationInstance execute_EdgeBasedHistory_OrOpt(ProblemInstance problemInstance, int numberLS,
-                                                                      int numberStuck,
-                                                                      int sampledPopulationSize,
-                                                                      int selectedPopulationSize,
-                                                                      int maxIterationsEDA,
-                                                                      int aPrioriEdges, double bRatio,
-                                                                      double alpha)
-            throws IOException {
-
-        EDA eda = new EdgeBasedEDA_UpdateWithWeight(problemInstance.getGraph(), selectedPopulationSize,
-                sampledPopulationSize, maxIterationsEDA, bRatio, aPrioriEdges, alpha);
-
-        LocalSearch ls = new OrOpt();
-
-        MultiStartILS multiStartILS = new MultiStartILS(eda, ls, problemInstance.getGraph());
-        multiStartILS.setMaxTimesLS(numberLS);
-        multiStartILS.setMaxTimesStuck(numberStuck);
-
-        return multiStartILS.performMultiStartILS();
-    }
-
-
-    private static CalculationInstance execute_UMDA_TwoOpt_Steepest(ProblemInstance problemInstance, int numberLS,
-                                                                    int numberStuck,
-                                                                    int sampledPopulationSize,
-                                                                    int selectedPopulationSize,
-                                                                    int maxIterationsEDA,
-                                                                    double aPrioriProb)
-            throws IOException {
-        LocalSearch.Method lsMethod = LocalSearch.Method.STEEPEST_DESCENT;
-
-        EDA eda = new PositionBasedEDA_UMDA(problemInstance.getGraph(),
-                selectedPopulationSize, sampledPopulationSize, maxIterationsEDA, aPrioriProb);
-
-        LocalSearch ls = new TwoOpt(lsMethod);
-
-        MultiStartILS multiStartILS = new MultiStartILS(eda, ls, problemInstance.getGraph());
-        multiStartILS.setMaxTimesLS(numberLS);
-        multiStartILS.setMaxTimesStuck(numberStuck);
-
-        return multiStartILS.performMultiStartILS();
-    }
-
-
-    private static CalculationInstance execute_PBIL_TwoOpt_Steepest(ProblemInstance problemInstance, int numberLS,
-                                                                    int numberStuck,
-                                                                    int sampledPopulationSize,
-                                                                    int selectedPopulationSize,
-                                                                    int maxIterationsEDA,
-                                                                    double aPrioriProb, double alpha)
-            throws IOException {
-        LocalSearch.Method lsMethod = LocalSearch.Method.STEEPEST_DESCENT;
-
-        EDA eda = new PositionBasedEDA_PBIL(problemInstance.getGraph(),
-                selectedPopulationSize, sampledPopulationSize, maxIterationsEDA, aPrioriProb, alpha);
-
-        LocalSearch ls = new TwoOpt(lsMethod);
-
-        MultiStartILS multiStartILS = new MultiStartILS(eda, ls, problemInstance.getGraph());
-        multiStartILS.setMaxTimesLS(numberLS);
-        multiStartILS.setMaxTimesStuck(numberStuck);
-
-        return multiStartILS.performMultiStartILS();
-    }
-
-
-    private static CalculationInstance execute_PBILRefinement_TwoOpt_Steepest(ProblemInstance problemInstance,
-                                                                              int numberLS,
-                                                                              int numberStuck,
-                                                                              int sampledPopulationSize,
-                                                                              int selectedPopulationSize,
-                                                                              int maxIterationsEDA,
-                                                                              double aPrioriProb, double alpha)
-            throws IOException {
-        LocalSearch.Method lsMethod = LocalSearch.Method.STEEPEST_DESCENT;
-
-        EDA eda = new PositionBasedEDA_PBIL_newRefinement(problemInstance.getGraph(),
-                selectedPopulationSize, sampledPopulationSize, maxIterationsEDA, aPrioriProb, alpha);
-
-        LocalSearch ls = new TwoOpt(lsMethod);
-
-        MultiStartILS multiStartILS = new MultiStartILS(eda, ls, problemInstance.getGraph());
-        multiStartILS.setMaxTimesLS(numberLS);
-        multiStartILS.setMaxTimesStuck(numberStuck);
-
-        return multiStartILS.performMultiStartILS();
-    }
-
-
-    private static CalculationInstance execute_UMDA_TwoOpt_Descent(ProblemInstance problemInstance, int numberLS,
-                                                                   int numberStuck,
-                                                                   int sampledPopulationSize,
-                                                                   int selectedPopulationSize,
-                                                                   int maxIterationsEDA,
-                                                                   double aPrioriProb)
-            throws IOException {
-        LocalSearch.Method lsMethod = LocalSearch.Method.DESCENT;
-
-        EDA eda = new PositionBasedEDA_UMDA(problemInstance.getGraph(),
-                selectedPopulationSize, sampledPopulationSize, maxIterationsEDA, aPrioriProb);
-
-        LocalSearch ls = new TwoOpt(lsMethod);
-
-        MultiStartILS multiStartILS = new MultiStartILS(eda, ls, problemInstance.getGraph());
-        multiStartILS.setMaxTimesLS(numberLS);
-        multiStartILS.setMaxTimesStuck(numberStuck);
-
-        return multiStartILS.performMultiStartILS();
-    }
-
-
-    private static CalculationInstance execute_PBIL_TwoOpt_Descent(ProblemInstance problemInstance, int numberLS,
-                                                                   int numberStuck,
-                                                                   int sampledPopulationSize,
-                                                                   int selectedPopulationSize,
-                                                                   int maxIterationsEDA,
-                                                                   double aPrioriProb, double alpha)
-            throws IOException {
-        LocalSearch.Method lsMethod = LocalSearch.Method.DESCENT;
-
-        EDA eda = new PositionBasedEDA_PBIL(problemInstance.getGraph(),
-                selectedPopulationSize, sampledPopulationSize, maxIterationsEDA, aPrioriProb, alpha);
-
-        LocalSearch ls = new TwoOpt(lsMethod);
-
-        MultiStartILS multiStartILS = new MultiStartILS(eda, ls, problemInstance.getGraph());
-        multiStartILS.setMaxTimesLS(numberLS);
-        multiStartILS.setMaxTimesStuck(numberStuck);
-
-        return multiStartILS.performMultiStartILS();
-    }
-
-
-    private static CalculationInstance execute_PBILRefinement_TwoOpt_Descent(ProblemInstance problemInstance,
-                                                                             int numberLS,
-                                                                             int numberStuck,
-                                                                             int sampledPopulationSize,
-                                                                             int selectedPopulationSize,
-                                                                             int maxIterationsEDA,
-                                                                             double aPrioriProb, double alpha)
-            throws IOException {
-        LocalSearch.Method lsMethod = LocalSearch.Method.DESCENT;
-
-        EDA eda = new PositionBasedEDA_PBIL_newRefinement(problemInstance.getGraph(),
-                selectedPopulationSize, sampledPopulationSize, maxIterationsEDA, aPrioriProb, alpha);
-
-        LocalSearch ls = new TwoOpt(lsMethod);
-
-        MultiStartILS multiStartILS = new MultiStartILS(eda, ls, problemInstance.getGraph());
-        multiStartILS.setMaxTimesLS(numberLS);
-        multiStartILS.setMaxTimesStuck(numberStuck);
-
-        return multiStartILS.performMultiStartILS();
-    }
-
-
-    private static CalculationInstance execute_UMDA_OrOpt(ProblemInstance problemInstance, int numberLS,
-                                                          int numberStuck,
-                                                          int sampledPopulationSize,
-                                                          int selectedPopulationSize,
-                                                          int maxIterationsEDA,
-                                                          double aPrioriProb)
-            throws IOException {
-
-        EDA eda = new PositionBasedEDA_UMDA(problemInstance.getGraph(),
-                selectedPopulationSize, sampledPopulationSize, maxIterationsEDA, aPrioriProb);
-
-        LocalSearch ls = new OrOpt();
-
-        MultiStartILS multiStartILS = new MultiStartILS(eda, ls, problemInstance.getGraph());
-        multiStartILS.setMaxTimesLS(numberLS);
-        multiStartILS.setMaxTimesStuck(numberStuck);
-
-        return multiStartILS.performMultiStartILS();
-    }
-
-
-    private static CalculationInstance execute_PBIL_OrOpt(ProblemInstance problemInstance, int numberLS,
-                                                          int numberStuck,
-                                                          int sampledPopulationSize,
-                                                          int selectedPopulationSize,
-                                                          int maxIterationsEDA,
-                                                          double aPrioriProb, double alpha)
-            throws IOException {
-
-        EDA eda = new PositionBasedEDA_PBIL(problemInstance.getGraph(),
-                selectedPopulationSize, sampledPopulationSize, maxIterationsEDA, aPrioriProb, alpha);
-
-        LocalSearch ls = new OrOpt();
-
-        MultiStartILS multiStartILS = new MultiStartILS(eda, ls, problemInstance.getGraph());
-        multiStartILS.setMaxTimesLS(numberLS);
-        multiStartILS.setMaxTimesStuck(numberStuck);
-
-        return multiStartILS.performMultiStartILS();
-    }
-
-
-    private static CalculationInstance execute_PBILRefinement_OrOpt(ProblemInstance problemInstance, int numberLS,
-                                                                    int numberStuck,
-                                                                    int sampledPopulationSize,
-                                                                    int selectedPopulationSize,
-                                                                    int maxIterationsEDA,
-                                                                    double aPrioriProb, double alpha)
-            throws IOException {
-
-        EDA eda = new PositionBasedEDA_PBIL_newRefinement(problemInstance.getGraph(),
-                selectedPopulationSize, sampledPopulationSize, maxIterationsEDA, aPrioriProb, alpha);
-
-        LocalSearch ls = new OrOpt();
-
-        MultiStartILS multiStartILS = new MultiStartILS(eda, ls, problemInstance.getGraph());
-        multiStartILS.setMaxTimesLS(numberLS);
-        multiStartILS.setMaxTimesStuck(numberStuck);
-
-        return multiStartILS.performMultiStartILS();
+        executeForFile("C:\\1_Daten\\Studium\\SS20\\IDP\\ProblemInstances\\TSP\\bayg29.tsp", 1610);
+        executeForFile("C:\\1_Daten\\Studium\\SS20\\IDP\\ProblemInstances\\TSP\\gr96.tsp", 55209);
+        executeForFile("C:\\1_Daten\\Studium\\SS20\\IDP\\ProblemInstances\\TSP\\pr124.tsp", 59030);
     }
 
 
     /**
-     * This method stores a calculationInstance.
+     * This executes an algorithm for some file.
      *
-     * @param problemInstance     the problem to which the calculation refers
-     * @param calculationInstance the instance to  store
-     * @return the filename
+     * @param filename
+     * @param opt
+     * @throws IOException
      */
-    private static String storeCalculationInstance(ProblemInstance problemInstance,
-                                                   CalculationInstance calculationInstance)
+    private static void executeForFile(String filename, double opt) throws IOException {
+        FileReader fileReader = new FileReaderImplementation();
+        ProblemInstance problemInstance = fileReader.createGraphFromFile(filename);
+        //Todo let some instances run
+
+        execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.001, 10, opt);
+        execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.1, 10, opt);
+
+        //Todo: If i know what values are best suited, i could use OrOpt and Steepest Descent
+
+        execute_EdgeBasedHistory_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.001, 0.1,10, opt);
+
+        execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.50, 0.1, 10, opt);
+        execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.10, 0.1, 10, opt);
+
+        execute_PBILRefinement_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.50, 0.1, 10, opt);
+
+        execute_UMDA_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.50,  10, opt);
+    }
+
+
+    private static void execute_EdgeBased_TwoOpt_Steepest(ProblemInstance problemInstance,
+                                                          int numberLS, int numberStuck,
+                                                          int sampledPopulationSize,
+                                                          int selectedPopulationSize,
+                                                          int maxIterationsEDA,
+                                                          int aPrioriEdges, double bRatio,
+                                                          int numberRepetitions, double opt)
             throws IOException {
-        return StorageComponent.store(problemInstance, calculationInstance);
+        ArrayList<Double> time = new ArrayList<>();
+        ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
+        ArrayList<String> filenames = new ArrayList<>();
+
+        EDA eda = new EdgeBasedEDA(problemInstance.getGraph(), selectedPopulationSize,
+                sampledPopulationSize, maxIterationsEDA, bRatio, aPrioriEdges);
+
+        LocalSearch ls = new TwoOpt(LocalSearch.Method.STEEPEST_DESCENT);
+
+        for (int repetition = 0; repetition < numberRepetitions; repetition++) {
+            CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
+                    numberStuck, time);
+            calculationInstances.add(result);
+            filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
+        }
+
+        EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
+                "EdgeBased_TwoOpt_Steepest_" + numberRepetitions +
+                        "_times_EDA[" + eda.toString() + "]_LS[" + ls.toString() + "]");
     }
 
 
-    private static void addResults(BufferedWriter writer, List<CalculationInstance> calculationInstances,
-                                   List<String> filenames, List<String> time, ProblemInstance problemInstance,
-                                   double opt)
+    private static void execute_EdgeBasedHistory_TwoOpt_Steepest(ProblemInstance problemInstance,
+                                                                 int numberLS,
+                                                                 int numberStuck,
+                                                                 int sampledPopulationSize,
+                                                                 int selectedPopulationSize,
+                                                                 int maxIterationsEDA,
+                                                                 int aPrioriEdges, double bRatio,
+                                                                 double alpha,
+                                                                 int numberRepetitions, double opt)
             throws IOException {
-        writer.write("ProblemName:" + problemInstance.getName() + "\n");
-        writer.write("Opt:" + opt + "\n");
+        ArrayList<Double> time = new ArrayList<>();
+        ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
+        ArrayList<String> filenames = new ArrayList<>();
+        LocalSearch.Method lsMethod = LocalSearch.Method.STEEPEST_DESCENT;
 
-        CalculationInstance min = findMinimum(calculationInstances);
-        writer.write("Min:" + min.toString() + "\n");
-        writer.write("AbsMinError:" + (min.getMinimum().getLength() - opt) + "\n");
-        double relMinError = (min.getMinimum().getLength() - opt) / opt;
-        writer.write("RelMinError:" + relMinError + "\n");
+        EDA eda = new EdgeBasedEDA_UpdateWithWeight(problemInstance.getGraph(), selectedPopulationSize,
+                sampledPopulationSize, maxIterationsEDA, bRatio, aPrioriEdges, alpha);
 
-        double avg = computeAvgDistance(calculationInstances);
-        writer.write("Avg:" + avg + "\n");
-        writer.write("AbsAvgError:" + (avg - opt) + "\n");
-        double relAvgError = (avg - opt) / opt;
-        writer.write("RelAvgError:" + relAvgError + "\n");
+        LocalSearch ls = new TwoOpt(lsMethod);
 
-        writer.write("Calculations" + "\n");
-        for (int i = 0; i < calculationInstances.size(); i++) {
-            writer.write("Filename:" + filenames.get(i) + "\n");
-            writer.write("Time:" + time.get(i) + "\n");
-            writer.write("FoundMin:" + calculationInstances.get(i).getMinimum().toString());
+        for (int repetition = 0; repetition < numberRepetitions; repetition++) {
+            CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
+                    numberStuck, time);
+            calculationInstances.add(result);
+            filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
         }
 
+        EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
+                "EdgeBasedHistory_TwoOpt_Steepest_" + numberRepetitions +
+                        "_times_EDA[" + eda.toString() + "]_LS[" + ls.toString() + "]");
     }
 
 
-    private static CalculationInstance findMinimum(List<CalculationInstance> calculationInstances) {
-        CalculationInstance optInstance = null;
-        double distance = Double.MAX_VALUE;
-        for (CalculationInstance calculationInstance : calculationInstances) {
-            if (calculationInstance.getMinimum().getLength() < distance) {
-                distance = calculationInstance.getMinimum().getLength();
-                optInstance = calculationInstance;
-            }
+    private static void execute_EdgeBased_TwoOpt_Descent(ProblemInstance problemInstance, int numberLS, int numberStuck,
+                                                         int sampledPopulationSize,
+                                                         int selectedPopulationSize,
+                                                         int maxIterationsEDA,
+                                                         int aPrioriEdges, double bRatio,
+                                                         int numberRepetitions, double opt)
+            throws IOException {
+        ArrayList<Double> time = new ArrayList<>();
+        ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
+        ArrayList<String> filenames = new ArrayList<>();
+        LocalSearch.Method lsMethod = LocalSearch.Method.DESCENT;
+
+        EDA eda = new EdgeBasedEDA(problemInstance.getGraph(), selectedPopulationSize,
+                sampledPopulationSize, maxIterationsEDA, bRatio, aPrioriEdges);
+
+        LocalSearch ls = new TwoOpt(lsMethod);
+
+        for (int repetition = 0; repetition < numberRepetitions; repetition++) {
+            CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
+                    numberStuck, time);
+            calculationInstances.add(result);
+            filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
         }
-        return optInstance;
+
+        EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
+                "EdgeBased_TwoOpt_Descent_" + numberRepetitions +
+                        "_times_EDA[" + eda.toString() + "]_LS[" + ls.toString() + "]");
     }
 
 
-    private static double computeAvgDistance(List<CalculationInstance> calculationInstances) {
-        double distance = 0;
-        for (CalculationInstance calculationInstance : calculationInstances) {
-            distance += calculationInstance.getMinimum().getLength();
+    private static void execute_EdgeBasedHistory_TwoOpt_Descent(ProblemInstance problemInstance,
+                                                                int numberLS,
+                                                                int numberStuck,
+                                                                int sampledPopulationSize,
+                                                                int selectedPopulationSize,
+                                                                int maxIterationsEDA,
+                                                                int aPrioriEdges, double bRatio,
+                                                                double alpha,
+                                                                int numberRepetitions, double opt)
+            throws IOException {
+        ArrayList<Double> time = new ArrayList<>();
+        ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
+        ArrayList<String> filenames = new ArrayList<>();
+        LocalSearch.Method lsMethod = LocalSearch.Method.DESCENT;
+
+        EDA eda = new EdgeBasedEDA_UpdateWithWeight(problemInstance.getGraph(), selectedPopulationSize,
+                sampledPopulationSize, maxIterationsEDA, bRatio, aPrioriEdges, alpha);
+
+        LocalSearch ls = new TwoOpt(lsMethod);
+
+        for (int repetition = 0; repetition < numberRepetitions; repetition++) {
+            CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
+                    numberStuck, time);
+            calculationInstances.add(result);
+            filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
         }
-        return distance / calculationInstances.size();
+
+        EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
+                "EdgeBasedHistory_TwoOpt_Descent_" + numberRepetitions +
+                        "_times_EDA[" + eda.toString() + "]_LS[" + ls.toString() + "]");
     }
 
 
-    public static String store(List<CalculationInstance> calculationInstances,
-                               List<String> filenames, List<String> time, ProblemInstance problemInstance,
-                               double opt) throws IOException {
-        File file = createFile(problemInstance);
-        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-        addResults(writer, calculationInstances, filenames, time, problemInstance, opt);
-        writer.write(FileParameters.eof);
-        writer.flush();
-        writer.close();
-        return file.getName();
+    private static void execute_EdgeBased_OrOpt(ProblemInstance problemInstance, int numberLS,
+                                                int numberStuck,
+                                                int sampledPopulationSize,
+                                                int selectedPopulationSize,
+                                                int maxIterationsEDA,
+                                                int aPrioriEdges, double bRatio,
+                                                int numberRepetitions, double opt)
+            throws IOException {
+        ArrayList<Double> time = new ArrayList<>();
+        ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
+        ArrayList<String> filenames = new ArrayList<>();
+        EDA eda = new EdgeBasedEDA(problemInstance.getGraph(), selectedPopulationSize,
+                sampledPopulationSize, maxIterationsEDA, bRatio, aPrioriEdges);
+
+        LocalSearch ls = new OrOpt();
+
+        for (int repetition = 0; repetition < numberRepetitions; repetition++) {
+            CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
+                    numberStuck, time);
+            calculationInstances.add(result);
+            filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
+        }
+
+        EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
+                "EdgeBased_OrOpt_" + numberRepetitions +
+                        "_times_EDA[" + eda.toString() + "]_LS[" + ls.toString() + "]");
     }
 
 
-    private static File createFile(ProblemInstance problemInstance) throws IOException {
-        String fileSeparator = System.getProperty("file.separator");
-        String fileName = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date());
-        fileName += "_" + problemInstance.getName() + "_automation.txt";
+    private static void execute_EdgeBasedHistory_OrOpt(ProblemInstance problemInstance, int numberLS,
+                                                       int numberStuck,
+                                                       int sampledPopulationSize,
+                                                       int selectedPopulationSize,
+                                                       int maxIterationsEDA,
+                                                       int aPrioriEdges, double bRatio,
+                                                       double alpha,
+                                                       int numberRepetitions, double opt)
+            throws IOException {
+        ArrayList<Double> time = new ArrayList<>();
+        ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
+        ArrayList<String> filenames = new ArrayList<>();
 
-        String relativePath = "results" + fileSeparator + "automation" + fileSeparator + fileName;
-        File file = new File(relativePath);
-        file.getParentFile().mkdirs();
-        file.createNewFile();
-        return file;
+        EDA eda = new EdgeBasedEDA_UpdateWithWeight(problemInstance.getGraph(), selectedPopulationSize,
+                sampledPopulationSize, maxIterationsEDA, bRatio, aPrioriEdges, alpha);
+
+        LocalSearch ls = new OrOpt();
+
+        for (int repetition = 0; repetition < numberRepetitions; repetition++) {
+            CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
+                    numberStuck, time);
+            calculationInstances.add(result);
+            filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
+        }
+
+        EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
+                "EdgeBasedHistory_OrOpt_" + numberRepetitions +
+                        "_times_EDA[" + eda.toString() + "]_LS[" + ls.toString() + "]");
+    }
+
+
+    private static void execute_UMDA_TwoOpt_Steepest(ProblemInstance problemInstance, int numberLS,
+                                                     int numberStuck,
+                                                     int sampledPopulationSize,
+                                                     int selectedPopulationSize,
+                                                     int maxIterationsEDA,
+                                                     double aPrioriProb,
+                                                     int numberRepetitions, double opt)
+            throws IOException {
+        ArrayList<Double> time = new ArrayList<>();
+        ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
+        ArrayList<String> filenames = new ArrayList<>();
+        LocalSearch.Method lsMethod = LocalSearch.Method.STEEPEST_DESCENT;
+
+        EDA eda = new PositionBasedEDA_UMDA(problemInstance.getGraph(),
+                selectedPopulationSize, sampledPopulationSize, maxIterationsEDA, aPrioriProb);
+
+        LocalSearch ls = new TwoOpt(lsMethod);
+
+        for (int repetition = 0; repetition < numberRepetitions; repetition++) {
+            CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
+                    numberStuck, time);
+            calculationInstances.add(result);
+            filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
+        }
+
+        EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
+                "UMDA_TwoOpt_Steepest_" + numberRepetitions +
+                        "_times_EDA[" + eda.toString() + "]_LS[" + ls.toString() + "]");
+    }
+
+
+    private static void execute_PBIL_TwoOpt_Steepest(ProblemInstance problemInstance, int numberLS,
+                                                     int numberStuck,
+                                                     int sampledPopulationSize,
+                                                     int selectedPopulationSize,
+                                                     int maxIterationsEDA,
+                                                     double aPrioriProb, double alpha,
+                                                     int numberRepetitions, double opt)
+            throws IOException {
+        ArrayList<Double> time = new ArrayList<>();
+        ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
+        ArrayList<String> filenames = new ArrayList<>();
+        LocalSearch.Method lsMethod = LocalSearch.Method.STEEPEST_DESCENT;
+
+        EDA eda = new PositionBasedEDA_PBIL(problemInstance.getGraph(),
+                selectedPopulationSize, sampledPopulationSize, maxIterationsEDA, aPrioriProb, alpha);
+
+        LocalSearch ls = new TwoOpt(lsMethod);
+
+        for (int repetition = 0; repetition < numberRepetitions; repetition++) {
+            CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
+                    numberStuck, time);
+            calculationInstances.add(result);
+            filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
+        }
+
+        EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
+                "PBIL_TwoOpt_Steepest_" + numberRepetitions +
+                        "_times_EDA[" + eda.toString() + "]_LS[" + ls.toString() + "]");
+    }
+
+
+    private static void execute_PBILRefinement_TwoOpt_Steepest(ProblemInstance problemInstance,
+                                                               int numberLS,
+                                                               int numberStuck,
+                                                               int sampledPopulationSize,
+                                                               int selectedPopulationSize,
+                                                               int maxIterationsEDA,
+                                                               double aPrioriProb, double alpha,
+                                                               int numberRepetitions, double opt)
+            throws IOException {
+        ArrayList<Double> time = new ArrayList<>();
+        ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
+        ArrayList<String> filenames = new ArrayList<>();
+        LocalSearch.Method lsMethod = LocalSearch.Method.STEEPEST_DESCENT;
+
+        EDA eda = new PositionBasedEDA_PBIL_newRefinement(problemInstance.getGraph(),
+                selectedPopulationSize, sampledPopulationSize, maxIterationsEDA, aPrioriProb, alpha);
+
+        LocalSearch ls = new TwoOpt(lsMethod);
+
+        for (int repetition = 0; repetition < numberRepetitions; repetition++) {
+            CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
+                    numberStuck, time);
+            calculationInstances.add(result);
+            filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
+        }
+
+        EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
+                "PBILRefinement_TwoOpt_Steepest_" + numberRepetitions +
+                        "_times_EDA[" + eda.toString() + "]_LS[" + ls.toString() + "]");
+    }
+
+
+    private static void execute_UMDA_TwoOpt_Descent(ProblemInstance problemInstance, int numberLS,
+                                             int numberStuck,
+                                             int sampledPopulationSize,
+                                             int selectedPopulationSize,
+                                             int maxIterationsEDA,
+                                             double aPrioriProb,
+                                             int numberRepetitions, double opt)
+            throws IOException {
+        ArrayList<Double> time = new ArrayList<>();
+        ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
+        ArrayList<String> filenames = new ArrayList<>();
+        LocalSearch.Method lsMethod = LocalSearch.Method.DESCENT;
+
+        EDA eda = new PositionBasedEDA_UMDA(problemInstance.getGraph(),
+                selectedPopulationSize, sampledPopulationSize, maxIterationsEDA, aPrioriProb);
+
+        LocalSearch ls = new TwoOpt(lsMethod);
+
+        for (int repetition = 0; repetition < numberRepetitions; repetition++) {
+            CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
+                    numberStuck, time);
+            calculationInstances.add(result);
+            filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
+        }
+
+        EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
+                "UMDA_TwoOpt_Descent_" + numberRepetitions +
+                        "_times_EDA[" + eda.toString() + "]_LS[" + ls.toString() + "]");
+    }
+
+
+    private static void execute_PBIL_TwoOpt_Descent(ProblemInstance problemInstance, int numberLS,
+                                                    int numberStuck,
+                                                    int sampledPopulationSize,
+                                                    int selectedPopulationSize,
+                                                    int maxIterationsEDA,
+                                                    double aPrioriProb, double alpha,
+                                                    int numberRepetitions, double opt)
+            throws IOException {
+        ArrayList<Double> time = new ArrayList<>();
+        ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
+        ArrayList<String> filenames = new ArrayList<>();
+        LocalSearch.Method lsMethod = LocalSearch.Method.DESCENT;
+
+        EDA eda = new PositionBasedEDA_PBIL(problemInstance.getGraph(),
+                selectedPopulationSize, sampledPopulationSize, maxIterationsEDA, aPrioriProb, alpha);
+
+        LocalSearch ls = new TwoOpt(lsMethod);
+
+        for (int repetition = 0; repetition < numberRepetitions; repetition++) {
+            CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
+                    numberStuck, time);
+            calculationInstances.add(result);
+            filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
+        }
+
+        EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
+                "PBIL_TwoOpt_Descent_" + numberRepetitions +
+                        "_times_EDA[" + eda.toString() + "]_LS[" + ls.toString() + "]");
+    }
+
+
+    private static void execute_PBILRefinement_TwoOpt_Descent(ProblemInstance problemInstance,
+                                                              int numberLS,
+                                                              int numberStuck,
+                                                              int sampledPopulationSize,
+                                                              int selectedPopulationSize,
+                                                              int maxIterationsEDA,
+                                                              double aPrioriProb, double alpha,
+                                                              int numberRepetitions, double opt)
+            throws IOException {
+        ArrayList<Double> time = new ArrayList<>();
+        ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
+        ArrayList<String> filenames = new ArrayList<>();
+        LocalSearch.Method lsMethod = LocalSearch.Method.DESCENT;
+
+        EDA eda = new PositionBasedEDA_PBIL_newRefinement(problemInstance.getGraph(),
+                selectedPopulationSize, sampledPopulationSize, maxIterationsEDA, aPrioriProb, alpha);
+
+        LocalSearch ls = new TwoOpt(lsMethod);
+
+        for (int repetition = 0; repetition < numberRepetitions; repetition++) {
+            CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
+                    numberStuck, time);
+            calculationInstances.add(result);
+            filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
+        }
+
+        EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
+                "PBILRefinement_TwoOpt_Descent_" + numberRepetitions +
+                        "_times_EDA[" + eda.toString() + "]_LS[" + ls.toString() + "]");
+    }
+
+
+    private static void execute_UMDA_OrOpt(ProblemInstance problemInstance, int numberLS,
+                                           int numberStuck,
+                                           int sampledPopulationSize,
+                                           int selectedPopulationSize,
+                                           int maxIterationsEDA,
+                                           double aPrioriProb,
+                                           int numberRepetitions, double opt)
+            throws IOException {
+        ArrayList<Double> time = new ArrayList<>();
+        ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
+        ArrayList<String> filenames = new ArrayList<>();
+        EDA eda = new PositionBasedEDA_UMDA(problemInstance.getGraph(),
+                selectedPopulationSize, sampledPopulationSize, maxIterationsEDA, aPrioriProb);
+
+        LocalSearch ls = new OrOpt();
+
+        for (int repetition = 0; repetition < numberRepetitions; repetition++) {
+            CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
+                    numberStuck, time);
+            calculationInstances.add(result);
+            filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
+        }
+
+        EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
+                "UMDA_OrOpt_" + numberRepetitions +
+                        "_times_EDA[" + eda.toString() + "]_LS[" + ls.toString() + "]");
+    }
+
+
+    private static void execute_PBIL_OrOpt(ProblemInstance problemInstance, int numberLS,
+                                           int numberStuck,
+                                           int sampledPopulationSize,
+                                           int selectedPopulationSize,
+                                           int maxIterationsEDA,
+                                           double aPrioriProb, double alpha,
+                                           int numberRepetitions, double opt)
+            throws IOException {
+        ArrayList<Double> time = new ArrayList<>();
+        ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
+        ArrayList<String> filenames = new ArrayList<>();
+
+        EDA eda = new PositionBasedEDA_PBIL(problemInstance.getGraph(),
+                selectedPopulationSize, sampledPopulationSize, maxIterationsEDA, aPrioriProb, alpha);
+
+        LocalSearch ls = new OrOpt();
+
+        for (int repetition = 0; repetition < numberRepetitions; repetition++) {
+            CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
+                    numberStuck, time);
+            calculationInstances.add(result);
+            filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
+        }
+
+        EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
+                "PBIL_OrOpt_" + numberRepetitions +
+                        "_times_EDA[" + eda.toString() + "]_LS[" + ls.toString() + "]");
+    }
+
+
+    private static void execute_PBILRefinement_OrOpt(ProblemInstance problemInstance, int numberLS,
+                                                     int numberStuck,
+                                                     int sampledPopulationSize,
+                                                     int selectedPopulationSize,
+                                                     int maxIterationsEDA,
+                                                     double aPrioriProb, double alpha,
+                                                     int numberRepetitions, double opt)
+            throws IOException {
+        ArrayList<Double> time = new ArrayList<>();
+        ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
+        ArrayList<String> filenames = new ArrayList<>();
+
+        EDA eda = new PositionBasedEDA_PBIL_newRefinement(problemInstance.getGraph(),
+                selectedPopulationSize, sampledPopulationSize, maxIterationsEDA, aPrioriProb, alpha);
+
+        LocalSearch ls = new OrOpt();
+
+        for (int repetition = 0; repetition < numberRepetitions; repetition++) {
+            CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
+                    numberStuck, time);
+            calculationInstances.add(result);
+            filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
+        }
+
+        EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
+                "PBILRefinement_OrOpt_" + numberRepetitions +
+                        "_times_EDA[" + eda.toString() + "]_LS[" + ls.toString() + "]");
+    }
+
+
+    /**
+     * This method performs a multistart ILS based on the algorithms given.
+     *
+     * @param ls          the local search algorithm
+     * @param eda         the eda
+     * @param graph       the graph for which to find a TSP solution
+     * @param numberLS    the maximum number to perform local search
+     * @param numberStuck the maximum number to call an eda if the local search is stuck
+     * @param time        the list in which to store the needed time
+     * @return the calculation instance produced
+     */
+    private static CalculationInstance executeMulstistartILS(LocalSearch ls, EDA eda, Graph graph, int numberLS,
+                                                             int numberStuck, List<Double> time) {
+        MultiStartILS multiStartILS = new MultiStartILS(eda, ls, graph);
+        multiStartILS.setMaxTimesLS(numberLS);
+        multiStartILS.setMaxTimesStuck(numberStuck);
+
+        long startTime = System.nanoTime();
+        CalculationInstance result = multiStartILS.performMultiStartILS();
+        long endTime = System.nanoTime();
+        double duration = (endTime - startTime) / 1000000.0;
+        time.add(duration);
+        return result;
     }
 
 }
