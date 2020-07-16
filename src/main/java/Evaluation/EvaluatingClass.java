@@ -22,32 +22,35 @@ public class EvaluatingClass {
 
     public static void main(String[] args) throws  IOException{
         //TODO call for some instances
-        executeForFile("C:\\1_Daten\\Studium\\SS20\\IDP\\ProblemInstances\\TSP\\bayg29.tsp", 1610);
+        //executeForFile("C:\\1_Daten\\Studium\\SS20\\IDP\\ProblemInstances\\TSP\\bayg29.tsp", 1610);
+        System.out.println("Executed: bayg29");
         executeForFile("C:\\1_Daten\\Studium\\SS20\\IDP\\ProblemInstances\\TSP\\gr96.tsp", 55209);
+        System.out.println("Executed: gr96");
         executeForFile("C:\\1_Daten\\Studium\\SS20\\IDP\\ProblemInstances\\TSP\\pr124.tsp", 59030);
+        System.out.println("Executed: pr124");
     }
 
 
     /**
      * This executes an algorithm for some file.
      *
-     * @param filename
-     * @param opt
-     * @throws IOException
+     * @param filename the file for which to execute
+     * @param opt the optimum result for this tour
+     * @throws IOException if reading or writing goes wrong.
      */
     private static void executeForFile(String filename, double opt) throws IOException {
         FileReader fileReader = new FileReaderImplementation();
         ProblemInstance problemInstance = fileReader.createGraphFromFile(filename);
         //Todo let some instances run
 
-        execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 200,
+        /*execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 200,
                 100, 100, 40, 0.001, 10, opt);
-        execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 200,
-                100, 100, 40, 0.1, 10, opt);
+        /*execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.1, 10, opt);*/
 
         //Todo: If i know what values are best suited, i could use OrOpt and Steepest Descent
 
-        execute_EdgeBasedHistory_TwoOpt_Descent(problemInstance, 20, 3, 200,
+        /*execute_EdgeBasedHistory_TwoOpt_Descent(problemInstance, 20, 3, 200,
                 100, 100, 40, 0.001, 0.1,10, opt);
 
         execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 200,
@@ -56,10 +59,26 @@ public class EvaluatingClass {
                 100, 100, 0.10, 0.1, 10, opt);
 
         execute_PBILRefinement_TwoOpt_Descent(problemInstance, 20, 3, 200,
-                100, 100, 0.50, 0.1, 10, opt);
+                100, 100, 0.10, 0.1, 10, opt);
 
         execute_UMDA_TwoOpt_Descent(problemInstance, 20, 3, 200,
-                100, 100, 0.50,  10, opt);
+                100, 100, 0.50,  10, opt);*/
+
+        /*execute_EdgeBased_OrOpt(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.001, 10, opt);*/
+        execute_EdgeBased_TwoOpt_Steepest(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.001, 10, opt);
+        /*execute_EdgeBasedHistory_OrOpt(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.001, 0.1,10, opt);*/
+        execute_EdgeBasedHistory_TwoOpt_Steepest(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.001, 0.1,10, opt);
+
+        /*execute_PBIL_OrOpt(problemInstance, 20, 3, 200,
+                100, 100, 0.10, 0.1, 10, opt);*/
+        execute_PBIL_TwoOpt_Steepest(problemInstance, 20, 3, 200,
+                100, 100, 0.10, 0.1, 10, opt);
+        execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.20, 0.1, 10, opt);
     }
 
 
@@ -85,6 +104,7 @@ public class EvaluatingClass {
                     numberStuck, time);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
+            System.out.println("Run"+repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -118,6 +138,7 @@ public class EvaluatingClass {
                     numberStuck, time);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
+            System.out.println("Run"+repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -148,6 +169,7 @@ public class EvaluatingClass {
                     numberStuck, time);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
+            System.out.println("Run"+repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -181,6 +203,7 @@ public class EvaluatingClass {
                     numberStuck, time);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
+            System.out.println("Run"+repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -210,6 +233,7 @@ public class EvaluatingClass {
                     numberStuck, time);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
+            System.out.println("Run"+repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -241,6 +265,7 @@ public class EvaluatingClass {
                     numberStuck, time);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
+            System.out.println("Run"+repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -272,6 +297,7 @@ public class EvaluatingClass {
                     numberStuck, time);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
+            System.out.println("Run"+repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -303,6 +329,7 @@ public class EvaluatingClass {
                     numberStuck, time);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
+            System.out.println("Run"+repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -335,6 +362,7 @@ public class EvaluatingClass {
                     numberStuck, time);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
+            System.out.println("Run"+repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -366,6 +394,7 @@ public class EvaluatingClass {
                     numberStuck, time);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
+            System.out.println("Run"+repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -397,6 +426,7 @@ public class EvaluatingClass {
                     numberStuck, time);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
+            System.out.println("Run"+repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -429,6 +459,7 @@ public class EvaluatingClass {
                     numberStuck, time);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
+            System.out.println("Run"+repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -458,6 +489,7 @@ public class EvaluatingClass {
                     numberStuck, time);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
+            System.out.println("Run"+repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -488,6 +520,7 @@ public class EvaluatingClass {
                     numberStuck, time);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
+            System.out.println("Run"+repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -518,6 +551,7 @@ public class EvaluatingClass {
                     numberStuck, time);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
+            System.out.println("Run"+repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,

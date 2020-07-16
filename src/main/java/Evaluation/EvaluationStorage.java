@@ -75,9 +75,9 @@ public class EvaluationStorage {
         writer.write("ProblemName:" + problemInstance.getName() + "\n");
         writer.write("Opt:" + opt + "\n");
         writer.write("GeneralInformation:" + generalInformation + "\n");
-        writer.write("TimesOptFound:" + timesOptWasFound(calculationInstances, opt) + "\n");
 
         CalculationInstance min = findMinimum(calculationInstances);
+        writer.write("TimesOptFound:" + timesOptWasFound(calculationInstances, opt) + "\n");
         writer.write("Min:" + min.toString() + "\n");
         writer.write("AbsMinError:" + (min.getMinimum().getLength() - opt) + "\n");
         double relMinError = (min.getMinimum().getLength() - opt) / opt;
@@ -88,6 +88,7 @@ public class EvaluationStorage {
         writer.write("AbsAvgError:" + (avg - opt) + "\n");
         double relAvgError = (avg - opt) / opt;
         writer.write("RelAvgError:" + relAvgError + "\n");
+        writer.write("AvgTime:"+getAvgTime(time)+"\n");
 
         writer.write("Calculations" + "\n");
         for (int i = 0; i < calculationInstances.size(); i++) {
@@ -129,5 +130,14 @@ public class EvaluationStorage {
             distance += calculationInstance.getMinimum().getLength();
         }
         return distance / calculationInstances.size();
+    }
+
+
+    private static double getAvgTime(List<Double> time){
+        int value = 0;
+        for(Double t: time){
+            value += t;
+        }
+        return value/time.size();
     }
 }
