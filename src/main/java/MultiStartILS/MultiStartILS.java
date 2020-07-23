@@ -160,7 +160,7 @@ public class MultiStartILS {
                 minTour = tour;
                 minLength = tour.getLength();
             }
-            while (stuck < maxTimesStuck && localSearchCounter < maxTimesLS) {
+            while (stuck < maxTimesStuck && minLength > opt && time < endTime) {
                 if (!continueRunning) {
                     calculationInstance.setMinimum(minTour);
                     return calculationInstance;
@@ -183,6 +183,7 @@ public class MultiStartILS {
                 } else {
                     stuck++;
                 }
+                time = System.nanoTime();
             }
 
             if (tour.getLength() < minLength) {

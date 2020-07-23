@@ -20,9 +20,12 @@ import java.util.List;
  */
 public class EvaluatingClass {
 
-    public static void main(String[] args) throws  IOException{
+    private static long threeMinutes = 180000000000L;
+
+
+    public static void main(String[] args) throws IOException {
         //TODO call for some instances
-        //executeForFile("C:\\1_Daten\\Studium\\SS20\\IDP\\ProblemInstances\\TSP\\bayg29.tsp", 1610);
+        executeForFile("C:\\1_Daten\\Studium\\SS20\\IDP\\ProblemInstances\\TSP\\bayg29.tsp", 1610);
         System.out.println("Executed: bayg29");
         executeForFile("C:\\1_Daten\\Studium\\SS20\\IDP\\ProblemInstances\\TSP\\gr96.tsp", 55209);
         System.out.println("Executed: gr96");
@@ -35,7 +38,7 @@ public class EvaluatingClass {
      * This executes an algorithm for some file.
      *
      * @param filename the file for which to execute
-     * @param opt the optimum result for this tour
+     * @param opt      the optimum result for this tour
      * @throws IOException if reading or writing goes wrong.
      */
     private static void executeForFile(String filename, double opt) throws IOException {
@@ -43,22 +46,23 @@ public class EvaluatingClass {
         ProblemInstance problemInstance = fileReader.createGraphFromFile(filename);
         //Todo let some instances run
 
-        /*execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 200,
-                100, 100, 40, 0.001, 10, opt);
+        execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.001, 10, opt, threeMinutes, true);
         /*execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 200,
                 100, 100, 40, 0.1, 10, opt);*/
 
         //Todo: If i know what values are best suited, i could use OrOpt and Steepest Descent
 
-        /*execute_EdgeBasedHistory_TwoOpt_Descent(problemInstance, 20, 3, 200,
-                100, 100, 40, 0.001, 0.1,10, opt);
+        execute_EdgeBasedHistory_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.001, 0.1, 10, opt,
+                threeMinutes, true);
 
+        /*execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.50, 0.1, 10, opt);*/
         execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 200,
-                100, 100, 0.50, 0.1, 10, opt);
-        execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 200,
-                100, 100, 0.10, 0.1, 10, opt);
+                100, 100, 0.10, 0.1, 10, opt, threeMinutes, true);
 
-        execute_PBILRefinement_TwoOpt_Descent(problemInstance, 20, 3, 200,
+        /*execute_PBILRefinement_TwoOpt_Descent(problemInstance, 20, 3, 200,
                 100, 100, 0.10, 0.1, 10, opt);
 
         execute_UMDA_TwoOpt_Descent(problemInstance, 20, 3, 200,
@@ -66,19 +70,19 @@ public class EvaluatingClass {
 
         /*execute_EdgeBased_OrOpt(problemInstance, 20, 3, 200,
                 100, 100, 40, 0.001, 10, opt);*/
-        execute_EdgeBased_TwoOpt_Steepest(problemInstance, 20, 3, 200,
-                100, 100, 40, 0.001, 10, opt);
+        /*execute_EdgeBased_TwoOpt_Steepest(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.001, 10, opt, threeMinutes, true);
         /*execute_EdgeBasedHistory_OrOpt(problemInstance, 20, 3, 200,
                 100, 100, 40, 0.001, 0.1,10, opt);*/
         execute_EdgeBasedHistory_TwoOpt_Steepest(problemInstance, 20, 3, 200,
-                100, 100, 40, 0.001, 0.1,10, opt);
+                100, 100, 40, 0.001, 0.1, 10, opt, threeMinutes, true);
 
         /*execute_PBIL_OrOpt(problemInstance, 20, 3, 200,
                 100, 100, 0.10, 0.1, 10, opt);*/
         execute_PBIL_TwoOpt_Steepest(problemInstance, 20, 3, 200,
-                100, 100, 0.10, 0.1, 10, opt);
-        execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 200,
-                100, 100, 0.20, 0.1, 10, opt);
+                100, 100, 0.10, 0.1, 10, opt, threeMinutes, true);
+        /*execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.20, 0.1, 10, opt);*/
     }
 
 
@@ -88,7 +92,8 @@ public class EvaluatingClass {
                                                           int selectedPopulationSize,
                                                           int maxIterationsEDA,
                                                           int aPrioriEdges, double bRatio,
-                                                          int numberRepetitions, double opt)
+                                                          int numberRepetitions, double opt,
+                                                          long maxExecutuinNanoSeconds, boolean runUntilOpt)
             throws IOException {
         ArrayList<Double> time = new ArrayList<>();
         ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
@@ -101,10 +106,10 @@ public class EvaluatingClass {
 
         for (int repetition = 0; repetition < numberRepetitions; repetition++) {
             CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
-                    numberStuck, time);
+                    numberStuck, time, maxExecutuinNanoSeconds, opt, runUntilOpt);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
-            System.out.println("Run"+repetition);
+            System.out.println("Run" + repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -121,7 +126,8 @@ public class EvaluatingClass {
                                                                  int maxIterationsEDA,
                                                                  int aPrioriEdges, double bRatio,
                                                                  double alpha,
-                                                                 int numberRepetitions, double opt)
+                                                                 int numberRepetitions, double opt,
+                                                                 long maxExecutionNanoSeconds, boolean runUntilOpt)
             throws IOException {
         ArrayList<Double> time = new ArrayList<>();
         ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
@@ -135,10 +141,10 @@ public class EvaluatingClass {
 
         for (int repetition = 0; repetition < numberRepetitions; repetition++) {
             CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
-                    numberStuck, time);
+                    numberStuck, time, maxExecutionNanoSeconds, opt, runUntilOpt);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
-            System.out.println("Run"+repetition);
+            System.out.println("Run" + repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -152,7 +158,8 @@ public class EvaluatingClass {
                                                          int selectedPopulationSize,
                                                          int maxIterationsEDA,
                                                          int aPrioriEdges, double bRatio,
-                                                         int numberRepetitions, double opt)
+                                                         int numberRepetitions, double opt,
+                                                         long maxExecutionNanoSeconds, boolean runUntilOpt)
             throws IOException {
         ArrayList<Double> time = new ArrayList<>();
         ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
@@ -166,10 +173,10 @@ public class EvaluatingClass {
 
         for (int repetition = 0; repetition < numberRepetitions; repetition++) {
             CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
-                    numberStuck, time);
+                    numberStuck, time, maxExecutionNanoSeconds, opt, runUntilOpt);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
-            System.out.println("Run"+repetition);
+            System.out.println("Run" + repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -186,7 +193,8 @@ public class EvaluatingClass {
                                                                 int maxIterationsEDA,
                                                                 int aPrioriEdges, double bRatio,
                                                                 double alpha,
-                                                                int numberRepetitions, double opt)
+                                                                int numberRepetitions, double opt,
+                                                                long maxExecutionNanoSeconds, boolean runUntilOpt)
             throws IOException {
         ArrayList<Double> time = new ArrayList<>();
         ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
@@ -200,10 +208,10 @@ public class EvaluatingClass {
 
         for (int repetition = 0; repetition < numberRepetitions; repetition++) {
             CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
-                    numberStuck, time);
+                    numberStuck, time, maxExecutionNanoSeconds, opt, runUntilOpt);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
-            System.out.println("Run"+repetition);
+            System.out.println("Run" + repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -218,7 +226,8 @@ public class EvaluatingClass {
                                                 int selectedPopulationSize,
                                                 int maxIterationsEDA,
                                                 int aPrioriEdges, double bRatio,
-                                                int numberRepetitions, double opt)
+                                                int numberRepetitions, double opt, long maxExecutionNanoSeconds,
+                                                boolean runUntilOpt)
             throws IOException {
         ArrayList<Double> time = new ArrayList<>();
         ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
@@ -230,10 +239,10 @@ public class EvaluatingClass {
 
         for (int repetition = 0; repetition < numberRepetitions; repetition++) {
             CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
-                    numberStuck, time);
+                    numberStuck, time, maxExecutionNanoSeconds, opt, runUntilOpt);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
-            System.out.println("Run"+repetition);
+            System.out.println("Run" + repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -249,7 +258,8 @@ public class EvaluatingClass {
                                                        int maxIterationsEDA,
                                                        int aPrioriEdges, double bRatio,
                                                        double alpha,
-                                                       int numberRepetitions, double opt)
+                                                       int numberRepetitions, double opt,
+                                                       long maxExecutionNanoSeconds, boolean runUntilOpt)
             throws IOException {
         ArrayList<Double> time = new ArrayList<>();
         ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
@@ -262,10 +272,10 @@ public class EvaluatingClass {
 
         for (int repetition = 0; repetition < numberRepetitions; repetition++) {
             CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
-                    numberStuck, time);
+                    numberStuck, time, maxExecutionNanoSeconds, opt, runUntilOpt);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
-            System.out.println("Run"+repetition);
+            System.out.println("Run" + repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -280,7 +290,8 @@ public class EvaluatingClass {
                                                      int selectedPopulationSize,
                                                      int maxIterationsEDA,
                                                      double aPrioriProb,
-                                                     int numberRepetitions, double opt)
+                                                     int numberRepetitions, double opt, long maxExecutionNanoSeconds,
+                                                     boolean runUntilOpt)
             throws IOException {
         ArrayList<Double> time = new ArrayList<>();
         ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
@@ -294,10 +305,10 @@ public class EvaluatingClass {
 
         for (int repetition = 0; repetition < numberRepetitions; repetition++) {
             CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
-                    numberStuck, time);
+                    numberStuck, time, maxExecutionNanoSeconds, opt, runUntilOpt);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
-            System.out.println("Run"+repetition);
+            System.out.println("Run" + repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -312,7 +323,8 @@ public class EvaluatingClass {
                                                      int selectedPopulationSize,
                                                      int maxIterationsEDA,
                                                      double aPrioriProb, double alpha,
-                                                     int numberRepetitions, double opt)
+                                                     int numberRepetitions, double opt, long maxExecutionNanoSeconds,
+                                                     boolean runUntilOpt)
             throws IOException {
         ArrayList<Double> time = new ArrayList<>();
         ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
@@ -326,10 +338,10 @@ public class EvaluatingClass {
 
         for (int repetition = 0; repetition < numberRepetitions; repetition++) {
             CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
-                    numberStuck, time);
+                    numberStuck, time, maxExecutionNanoSeconds, opt, runUntilOpt);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
-            System.out.println("Run"+repetition);
+            System.out.println("Run" + repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -345,7 +357,8 @@ public class EvaluatingClass {
                                                                int selectedPopulationSize,
                                                                int maxIterationsEDA,
                                                                double aPrioriProb, double alpha,
-                                                               int numberRepetitions, double opt)
+                                                               int numberRepetitions, double opt,
+                                                               long maxExecutionNanoSeconds, boolean runUntilOpt)
             throws IOException {
         ArrayList<Double> time = new ArrayList<>();
         ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
@@ -359,10 +372,10 @@ public class EvaluatingClass {
 
         for (int repetition = 0; repetition < numberRepetitions; repetition++) {
             CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
-                    numberStuck, time);
+                    numberStuck, time, maxExecutionNanoSeconds, opt, runUntilOpt);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
-            System.out.println("Run"+repetition);
+            System.out.println("Run" + repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -372,12 +385,13 @@ public class EvaluatingClass {
 
 
     private static void execute_UMDA_TwoOpt_Descent(ProblemInstance problemInstance, int numberLS,
-                                             int numberStuck,
-                                             int sampledPopulationSize,
-                                             int selectedPopulationSize,
-                                             int maxIterationsEDA,
-                                             double aPrioriProb,
-                                             int numberRepetitions, double opt)
+                                                    int numberStuck,
+                                                    int sampledPopulationSize,
+                                                    int selectedPopulationSize,
+                                                    int maxIterationsEDA,
+                                                    double aPrioriProb,
+                                                    int numberRepetitions, double opt, long maxExecutionNanoSeconds,
+                                                    boolean runUntilOpt)
             throws IOException {
         ArrayList<Double> time = new ArrayList<>();
         ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
@@ -391,10 +405,10 @@ public class EvaluatingClass {
 
         for (int repetition = 0; repetition < numberRepetitions; repetition++) {
             CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
-                    numberStuck, time);
+                    numberStuck, time, maxExecutionNanoSeconds, opt, runUntilOpt);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
-            System.out.println("Run"+repetition);
+            System.out.println("Run" + repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -409,7 +423,8 @@ public class EvaluatingClass {
                                                     int selectedPopulationSize,
                                                     int maxIterationsEDA,
                                                     double aPrioriProb, double alpha,
-                                                    int numberRepetitions, double opt)
+                                                    int numberRepetitions, double opt, long maxExecutionNanoSeconds,
+                                                    boolean runUntilOpt)
             throws IOException {
         ArrayList<Double> time = new ArrayList<>();
         ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
@@ -423,10 +438,10 @@ public class EvaluatingClass {
 
         for (int repetition = 0; repetition < numberRepetitions; repetition++) {
             CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
-                    numberStuck, time);
+                    numberStuck, time, maxExecutionNanoSeconds, opt, runUntilOpt);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
-            System.out.println("Run"+repetition);
+            System.out.println("Run" + repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -442,7 +457,8 @@ public class EvaluatingClass {
                                                               int selectedPopulationSize,
                                                               int maxIterationsEDA,
                                                               double aPrioriProb, double alpha,
-                                                              int numberRepetitions, double opt)
+                                                              int numberRepetitions, double opt,
+                                                              long maxExecutionNanoSeconds, boolean runUntilOpt)
             throws IOException {
         ArrayList<Double> time = new ArrayList<>();
         ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
@@ -456,10 +472,10 @@ public class EvaluatingClass {
 
         for (int repetition = 0; repetition < numberRepetitions; repetition++) {
             CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
-                    numberStuck, time);
+                    numberStuck, time, maxExecutionNanoSeconds, opt, runUntilOpt);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
-            System.out.println("Run"+repetition);
+            System.out.println("Run" + repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -474,7 +490,8 @@ public class EvaluatingClass {
                                            int selectedPopulationSize,
                                            int maxIterationsEDA,
                                            double aPrioriProb,
-                                           int numberRepetitions, double opt)
+                                           int numberRepetitions, double opt, long maxExecutionNanoSeconds,
+                                           boolean runUntilOpt)
             throws IOException {
         ArrayList<Double> time = new ArrayList<>();
         ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
@@ -486,10 +503,10 @@ public class EvaluatingClass {
 
         for (int repetition = 0; repetition < numberRepetitions; repetition++) {
             CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
-                    numberStuck, time);
+                    numberStuck, time, maxExecutionNanoSeconds, opt, runUntilOpt);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
-            System.out.println("Run"+repetition);
+            System.out.println("Run" + repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -504,7 +521,8 @@ public class EvaluatingClass {
                                            int selectedPopulationSize,
                                            int maxIterationsEDA,
                                            double aPrioriProb, double alpha,
-                                           int numberRepetitions, double opt)
+                                           int numberRepetitions, double opt, long maxExecutionNanoSeconds,
+                                           boolean runUntilOpt)
             throws IOException {
         ArrayList<Double> time = new ArrayList<>();
         ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
@@ -517,10 +535,10 @@ public class EvaluatingClass {
 
         for (int repetition = 0; repetition < numberRepetitions; repetition++) {
             CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
-                    numberStuck, time);
+                    numberStuck, time, maxExecutionNanoSeconds, opt, runUntilOpt);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
-            System.out.println("Run"+repetition);
+            System.out.println("Run" + repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -535,7 +553,8 @@ public class EvaluatingClass {
                                                      int selectedPopulationSize,
                                                      int maxIterationsEDA,
                                                      double aPrioriProb, double alpha,
-                                                     int numberRepetitions, double opt)
+                                                     int numberRepetitions, double opt,
+                                                     long maxExecutuinNanoSeconds, boolean runUntilOpt)
             throws IOException {
         ArrayList<Double> time = new ArrayList<>();
         ArrayList<CalculationInstance> calculationInstances = new ArrayList<>();
@@ -548,10 +567,10 @@ public class EvaluatingClass {
 
         for (int repetition = 0; repetition < numberRepetitions; repetition++) {
             CalculationInstance result = executeMulstistartILS(ls, eda, problemInstance.getGraph(), numberLS,
-                    numberStuck, time);
+                    numberStuck, time, maxExecutuinNanoSeconds, opt, runUntilOpt);
             calculationInstances.add(result);
             filenames.add(EvaluationStorage.storeCalculationInstance(problemInstance, result));
-            System.out.println("Run"+repetition);
+            System.out.println("Run" + repetition);
         }
 
         EvaluationStorage.store(calculationInstances, filenames, time, problemInstance, opt,
@@ -572,17 +591,28 @@ public class EvaluatingClass {
      * @return the calculation instance produced
      */
     private static CalculationInstance executeMulstistartILS(LocalSearch ls, EDA eda, Graph graph, int numberLS,
-                                                             int numberStuck, List<Double> time) {
+                                                             int numberStuck, List<Double> time, long maxNanoSeconds,
+                                                             double opt, boolean runUntilOpt) {
         MultiStartILS multiStartILS = new MultiStartILS(eda, ls, graph);
         multiStartILS.setMaxTimesLS(numberLS);
         multiStartILS.setMaxTimesStuck(numberStuck);
 
-        long startTime = System.nanoTime();
-        CalculationInstance result = multiStartILS.performMultiStartILS();
-        long endTime = System.nanoTime();
-        double duration = (endTime - startTime) / 1000000.0;
-        time.add(duration);
-        return result;
+        if (!runUntilOpt) {
+            long startTime = System.nanoTime();
+            CalculationInstance result = multiStartILS.performMultiStartILS();
+            long endTime = System.nanoTime();
+            double duration = (endTime - startTime) / 1000000.0;
+            time.add(duration);
+            return result;
+        } else {
+            long startTime = System.nanoTime();
+            long finalTime = startTime + maxNanoSeconds;
+            CalculationInstance result = multiStartILS.performMultiStartILSWithTime(finalTime, opt);
+            long endTime = System.nanoTime();
+            double duration = (endTime - startTime) / 1000000.0;
+            time.add(duration);
+            return result;
+        }
     }
 
 }
