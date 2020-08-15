@@ -109,63 +109,45 @@ public class TSPTour implements Comparable<TSPTour> {
      * arguments lie between 0 and the length of the tour minus one.
      *
      * @param start          the start of the cut sequence (index)
-     * @param end            the end of the cut sequence (index)
+     * @param length         the length of the cut sequence. It should be 1, 2, or 3
      * @param insertionPoint the index, after which the sequence should be inserted
      * @return the new TSP tour
      */
-    public TSPTour orOptSwap(int start, int end, int insertionPoint) {
-        if (start < 0 || end < start || end >= tour.length) {
-            throw new IllegalArgumentException(String.format("The values of start or end don't match the " +
+    public TSPTour orOptSwap(int start, int length, int insertionPoint) {
+        if (start < 0 || length <= 0 || length > 3) {
+            throw new IllegalArgumentException(String.format("The values of start or length don't match the " +
                     "specification: start " +
-                    "is %d and end is %d", start, end));
+                    "is %d and length is %d", start, length));
         }
-        if ((insertionPoint >= start && end > insertionPoint) || insertionPoint < 0 || insertionPoint >= tour.length) {
+        int end = (start + (length - 1)) % tour.length;
+        if ((insertionPoint >= start && end > insertionPoint) || insertionPoint < 0 || insertionPoint >= tour.length ||
+                (insertionPoint >= start && insertionPoint > end && end < start) || (end < start && insertionPoint < end)) {
             throw new IllegalArgumentException(String.format("The values of start, end or insertionPoint don't match " +
                     "the " +
                     "specification: start " +
                     "is %d, end is %d and insertionPoint is %d", start, end, insertionPoint));
         }
-        ArrayList<Integer> begin = new ArrayList();
-        if (start < insertionPoint) {
-            for (int i = 0; i < start; i++) {
-                begin.add(tour[i]);
-            }
-            for (int i = end + 1; i <= insertionPoint; i++) {
-                begin.add(tour[i]);
-            }
+        ArrayList<Integer> newTour = new ArrayList();
+        if (start < insertionPoint && start <= end) {
+            addTotour(newTour, 0, start-1);
+            addTotour(newTour, end + 1, insertionPoint);
+            addTotour(newTour, start, end);
+            addTotour(newTour, insertionPoint + 1, tour.length-1);
         } else if (start == insertionPoint) { //then also end == insertion point, otherwise an exception would arise
-            for (int i = 0; i < start; i++) {
-                begin.add(tour[i]);
-            }
-
-        } else {
-            for (int i = 0; i <= insertionPoint; i++) {
-                begin.add(tour[i]);
-            }
+            addTotour(newTour, 0, tour.length-1);
+        } else if (insertionPoint < start && start <= end) {
+            addTotour(newTour, 0, insertionPoint);
+            addTotour(newTour, start, end);
+            addTotour(newTour, insertionPoint + 1, start - 1);
+            addTotour(newTour, end + 1, tour.length-1);
+        } else if (end <= insertionPoint && insertionPoint < start) {
+            addTotour(newTour, end + 1, insertionPoint);
+            addTotour(newTour, start, tour.length - 1);
+            addTotour(newTour, 0, end);
+            addTotour(newTour, insertionPoint + 1, start - 1);
         }
 
-        ArrayList<Integer> insertion = new ArrayList();
-        for (int i = start; i <= end; i++) {
-            insertion.add(tour[i]);
-        }
-
-        ArrayList<Integer> endList = new ArrayList();
-        if (end < insertionPoint) {
-            for (int i = insertionPoint + 1; i < tour.length; i++) {
-                endList.add(tour[i]);
-            }
-        } else {
-            for (int i = insertionPoint + 1; i < start; i++) {
-                endList.add(tour[i]);
-            }
-            for (int i = end + 1; i < tour.length; i++) {
-                endList.add(tour[i]);
-            }
-        }
-        begin.addAll(insertion);
-        begin.addAll(endList);
-
-        Object[] tourO = begin.toArray();
+        Object[] tourO = newTour.toArray();
 
         int[] tour = new int[this.tour.length];
         for (int i = 0; i < tour.length; i++) {
@@ -173,6 +155,20 @@ public class TSPTour implements Comparable<TSPTour> {
         }
         TSPTour newTSPTour = new TSPTour(tour);
         return newTSPTour;
+    }
+
+
+    /**
+     * This method adds every node between start and end (including these two) to the arrayList.
+     *
+     * @param arrayList the arraylist to add to
+     * @param start     the starting point
+     * @param end       the end point
+     */
+    private void addTotour(ArrayList<Integer> arrayList, int start, int end) {
+        for (int i = start; i <= end; i++) {
+            arrayList.add(tour[i]);
+        }
     }
 
 
@@ -184,9 +180,9 @@ public class TSPTour implements Comparable<TSPTour> {
 
     @Override
     public int compareTo(TSPTour o) {
-        if(this.getLength() > o.getLength()){
+        if (this.getLength() > o.getLength()) {
             return 1;
-        } else if(this.getLength() < o.getLength()){
+        } else if (this.getLength() < o.getLength()) {
             return -1;
         } else {
             return 0;

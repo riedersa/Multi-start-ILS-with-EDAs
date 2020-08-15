@@ -131,7 +131,7 @@ public class OrOptTest {
         OrOpt sut = new OrOpt();
 
         TSPTour result = sut.performSearch(graph, tour);
-        int[] expected = {7,0, 1, 2, 3, 4, 5, 6};
+        int[] expected = {0, 1, 2, 3, 4, 5, 6, 7};
         Assertions.assertArrayEquals(expected, result.getTour());
         Assertions.assertEquals(16, result.getLength());
     }

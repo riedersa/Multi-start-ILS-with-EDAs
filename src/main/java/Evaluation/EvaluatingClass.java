@@ -21,16 +21,25 @@ import java.util.List;
 public class EvaluatingClass {
 
     private static long threeMinutes = 180000000000L;
+    private static long oneMinute = 60000000000L;
+
+    private static int numberRuns = 10;
 
 
     public static void main(String[] args) throws IOException {
         //TODO call for some instances
         executeForFile("C:\\1_Daten\\Studium\\SS20\\IDP\\ProblemInstances\\TSP\\bayg29.tsp", 1610);
         System.out.println("Executed: bayg29");
+        /*executeForFile("C:\\1_Daten\\Studium\\SS20\\IDP\\ProblemInstances\\TSP\\eil51.tsp", 426);
+        System.out.println("Executed: eil51");
+        executeForFile("C:\\1_Daten\\Studium\\SS20\\IDP\\ProblemInstances\\TSP\\st70.tsp", 675);
+        System.out.println("Executed: st70");
         executeForFile("C:\\1_Daten\\Studium\\SS20\\IDP\\ProblemInstances\\TSP\\gr96.tsp", 55209);
         System.out.println("Executed: gr96");
-        executeForFile("C:\\1_Daten\\Studium\\SS20\\IDP\\ProblemInstances\\TSP\\pr124.tsp", 59030);
-        System.out.println("Executed: pr124");
+        executeForFile("C:\\1_Daten\\Studium\\SS20\\IDP\\ProblemInstances\\TSP\\rd100.tsp", 7910);
+        System.out.println("Executed: rd100");
+        /*executeForFile("C:\\1_Daten\\Studium\\SS20\\IDP\\ProblemInstances\\TSP\\pr124.tsp", 59030);
+        System.out.println("Executed: pr124");*/
     }
 
 
@@ -44,22 +53,167 @@ public class EvaluatingClass {
     private static void executeForFile(String filename, double opt) throws IOException {
         FileReader fileReader = new FileReaderImplementation();
         ProblemInstance problemInstance = fileReader.createGraphFromFile(filename);
-        //Todo let some instances run
+        //12.08.2020  //TODO: Edge based History and let run for 50 times
+        //Try to optimize parameters of EdgeBased
+        /*execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.001, numberRuns, opt, threeMinutes, false);
+        execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.005, numberRuns, opt, threeMinutes, false);
+        execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.01, numberRuns, opt, threeMinutes, false);
+        execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.02, numberRuns, opt, threeMinutes, false);
+        execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.03, numberRuns, opt, threeMinutes, false);
+        execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.05, numberRuns, opt, threeMinutes, false);
+        execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.075, numberRuns, opt, threeMinutes, false);
+        execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.1, numberRuns, opt, threeMinutes, false);
 
         execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.005, numberRuns, opt, threeMinutes, false);
+        execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 150,
+                100, 100, 40, 0.005, numberRuns, opt, threeMinutes, false);
+        execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 175,
+                100, 100, 40, 0.005, numberRuns, opt, threeMinutes, false);
+        execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 125,
+                100, 100, 40, 0.005, numberRuns, opt, threeMinutes, false);
+        execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 300,
+                100, 100, 40, 0.005, numberRuns, opt, threeMinutes, false);
+
+        execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 50, 40, 0.005, numberRuns, opt, threeMinutes, false);
+        execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.005, numberRuns, opt, threeMinutes, false);
+        execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 150, 40, 0.005, numberRuns, opt, threeMinutes, false);
+        execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 200, 40, 0.005, numberRuns, opt, threeMinutes, false);
+        execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 250, 40, 0.005, numberRuns, opt, threeMinutes, false);*/
+
+        //Test position based for prob for prior tour
+        /*execute_UMDA_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.10,  numberRuns, opt, threeMinutes, false);
+        execute_UMDA_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.20,  numberRuns, opt, threeMinutes, false);
+        execute_UMDA_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.30,  numberRuns, opt, threeMinutes, false);
+        execute_UMDA_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.40,  numberRuns, opt, threeMinutes, false);
+        execute_UMDA_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.50,  numberRuns, opt, threeMinutes, false);
+
+        execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.10,  0.1, numberRuns, opt, threeMinutes, false);
+        execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.20,  0.1, numberRuns, opt, threeMinutes, false);
+        execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.30,  0.1, numberRuns, opt, threeMinutes, false);
+        execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.40,  0.1, numberRuns, opt, threeMinutes, false);
+        execute_PBIL_TwoOpt_Descent(problemInstance, 20,3, 200,
+                100, 100, 0.50,  0.1, numberRuns, opt, threeMinutes, false);*/
+
+        //SampledSize //TODO: add to data
+        /*execute_UMDA_TwoOpt_Descent(problemInstance, 20, 3, 125,
+                100, 100, 0.20,  numberRuns, opt, threeMinutes, false);
+        execute_UMDA_TwoOpt_Descent(problemInstance, 20, 3, 150,
+                100, 100, 0.20,  numberRuns, opt, threeMinutes, false);
+        execute_UMDA_TwoOpt_Descent(problemInstance, 20, 3, 175,
+                100, 100, 0.20,  numberRuns, opt, threeMinutes, false);
+        execute_UMDA_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.20,  numberRuns, opt, threeMinutes, false);
+
+
+        execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 125,
+                100, 100, 0.30,  0.1, numberRuns, opt, threeMinutes, false);
+        execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 150,
+                100, 100, 0.30,  0.1, numberRuns, opt, threeMinutes, false);
+        execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 175,
+                100, 100, 0.30,  0.1, numberRuns, opt, threeMinutes, false);
+        execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.30,  0.1, numberRuns, opt, threeMinutes, false);
+
+        //Iterations EDA
+        execute_UMDA_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 50, 0.20,  numberRuns, opt, threeMinutes, false);
+        execute_UMDA_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.20,  numberRuns, opt, threeMinutes, false);
+        execute_UMDA_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 150, 0.20,  numberRuns, opt, threeMinutes, false);
+
+
+        execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 50, 0.30,  0.1, numberRuns, opt, threeMinutes, false);
+        execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.30,  0.1, numberRuns, opt, threeMinutes, false);
+        execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 150, 0.30,  0.1, numberRuns, opt, threeMinutes, false);
+
+        //Alpha
+        execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.30,  0.1, numberRuns, opt, threeMinutes, false);
+        execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.30,  0.2, numberRuns, opt, threeMinutes, false);
+        execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.30,  0.3, numberRuns, opt, threeMinutes, false);
+        execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.30,  0.4, numberRuns, opt, threeMinutes, false);*/
+
+        //TODO: I made a mistake. I need to update also eil51
+        execute_EdgeBasedHistory_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.005, 0.1, numberRuns, opt, threeMinutes, false);
+        execute_EdgeBasedHistory_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.005, 0.2, numberRuns, opt, threeMinutes, false);
+        execute_EdgeBasedHistory_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.005, 0.3, numberRuns, opt, threeMinutes, false);
+        execute_EdgeBasedHistory_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.005, 0.4, numberRuns, opt, threeMinutes, false);
+
+        //TODO: new refinement of PBIL and old with best parameters
+        execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.30,  0.1, numberRuns, opt, threeMinutes, false);
+        execute_PBILRefinement_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.30,  0.1, numberRuns, opt, threeMinutes, false);
+        //Todo: OrOpt and TwoOpt for one minute
+        execute_PBIL_TwoOpt_Steepest(problemInstance, 20, 3, 200,
+                100, 100, 0.30,  0.1, numberRuns, opt, oneMinute, true);
+        execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.30,  0.1, numberRuns, opt, oneMinute, true);
+        execute_PBIL_OrOpt(problemInstance, 20, 3, 200,
+                100, 100, 0.30,  0.1, numberRuns, opt, oneMinute, true);
+
+        execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.005, numberRuns, opt, oneMinute, true);
+        execute_EdgeBased_TwoOpt_Steepest(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.005, numberRuns, opt, oneMinute, true);
+        execute_EdgeBased_OrOpt(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.005, numberRuns, opt, oneMinute, true);
+        //Todo: run until 1 minute with best of edge based and position based
+        execute_UMDA_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 0.20,  numberRuns, opt, oneMinute, true);
+        execute_EdgeBasedHistory_TwoOpt_Descent(problemInstance, 20, 3, 200,
+                100, 100, 40, 0.005, 0.2, numberRuns, opt, oneMinute, true);
+
+        //Todo let some instances run
+
+        /*/execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 200,
                 100, 100, 40, 0.001, 10, opt, threeMinutes, true);
         /*execute_EdgeBased_TwoOpt_Descent(problemInstance, 20, 3, 200,
                 100, 100, 40, 0.1, 10, opt);*/
 
         //Todo: If i know what values are best suited, i could use OrOpt and Steepest Descent
 
-        execute_EdgeBasedHistory_TwoOpt_Descent(problemInstance, 20, 3, 200,
+        /*execute_EdgeBasedHistory_TwoOpt_Descent(problemInstance, 20, 3, 200,
                 100, 100, 40, 0.001, 0.1, 10, opt,
                 threeMinutes, true);
 
         /*execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 200,
                 100, 100, 0.50, 0.1, 10, opt);*/
-        execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 200,
+        /*execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 200,
                 100, 100, 0.10, 0.1, 10, opt, threeMinutes, true);
 
         /*execute_PBILRefinement_TwoOpt_Descent(problemInstance, 20, 3, 200,
@@ -74,12 +228,12 @@ public class EvaluatingClass {
                 100, 100, 40, 0.001, 10, opt, threeMinutes, true);
         /*execute_EdgeBasedHistory_OrOpt(problemInstance, 20, 3, 200,
                 100, 100, 40, 0.001, 0.1,10, opt);*/
-        execute_EdgeBasedHistory_TwoOpt_Steepest(problemInstance, 20, 3, 200,
+        /*execute_EdgeBasedHistory_TwoOpt_Steepest(problemInstance, 20, 3, 200,
                 100, 100, 40, 0.001, 0.1, 10, opt, threeMinutes, true);
 
         /*execute_PBIL_OrOpt(problemInstance, 20, 3, 200,
                 100, 100, 0.10, 0.1, 10, opt);*/
-        execute_PBIL_TwoOpt_Steepest(problemInstance, 20, 3, 200,
+        /*execute_PBIL_TwoOpt_Steepest(problemInstance, 20, 3, 200,
                 100, 100, 0.10, 0.1, 10, opt, threeMinutes, true);
         /*execute_PBIL_TwoOpt_Descent(problemInstance, 20, 3, 200,
                 100, 100, 0.20, 0.1, 10, opt);*/
