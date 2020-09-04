@@ -24,7 +24,9 @@ public interface LocalSearch {
      */
     public Method getMethod();
 
-    //This enum describes which method is used by the LS. Or-OPT always uses Descent.
+    /**
+     * This enum describes which method is used by the LS. Or-OPT always uses Descent.
+     */
     public enum Method {
         DESCENT,
         STEEPEST_DESCENT

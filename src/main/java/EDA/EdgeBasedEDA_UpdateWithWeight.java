@@ -6,6 +6,10 @@ import Storage.FileParameters;
 
 import java.util.PriorityQueue;
 
+/**
+ * This class is an edge based eda, but with an update function similar to PBIL. Weighted with value (1-alpha), also the
+ * previous computations are taken into account.
+ */
 public class EdgeBasedEDA_UpdateWithWeight extends EdgeBasedEDA {
 
 
@@ -38,7 +42,8 @@ public class EdgeBasedEDA_UpdateWithWeight extends EdgeBasedEDA {
 
 
     /**
-     * This method creates the edge histogram matrix. It can only be used for symmetric TSPs.
+     * This method creates the edge histogram matrix. It can only be used for symmetric TSPs. Similar to PBIL, also the
+     * previous value of the computation is taken into account.
      *
      * @param tspTours the population for which to create the matrix
      */

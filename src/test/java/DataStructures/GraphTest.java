@@ -69,6 +69,6 @@ public class GraphTest {
     @Test
     public void testEvaluateGenericTour() {
         Graph sut = new Graph(distances);
-        Assertions.assertEquals(12, sut.evalueteGenericTour());
+        Assertions.assertEquals(12, sut.evaluateGenericTour());
     }
 }

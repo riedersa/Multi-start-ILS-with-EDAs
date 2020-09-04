@@ -26,7 +26,7 @@ public class PositionBasedEDA_PBIL extends PositionBasedEDA {
      * @param selectedPopulationSize the size, the population should have after selecting the best ones.
      * @param sampledPopulationSize  the size the population should have after sampling the new ones.
      * @param maxCounterOtIterations the maximum number of iterations the algorithm should perform before stopping.
-     * @param probForPriorTour       the probability for a node to occure at the position it was in the given tour
+     * @param probForPriorTour       the probability for a node to occur at the position it was in the given tour
      * @param alpha                  the weighting, the current population should get when updating the model
      * @throws IllegalArgumentException Throws an IllegalArgumentException if the sampledPopulationSize is smaller than
      *                                  the selectedPopulationSize or the value of alpha is smaller than 0 or bigger

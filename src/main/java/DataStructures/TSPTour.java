@@ -43,6 +43,11 @@ public class TSPTour implements Comparable<TSPTour> {
     }
 
 
+    /**
+     * This is the getter for the length. It will throw an UnsupportedOperationException if the length is not known.
+     *
+     * @return the length of the tour
+     */
     public long getLength() {
         if (!lengthKnown) {
             throw new UnsupportedOperationException("The length is not known");
@@ -129,17 +134,17 @@ public class TSPTour implements Comparable<TSPTour> {
         }
         ArrayList<Integer> newTour = new ArrayList();
         if (start < insertionPoint && start <= end) {
-            addTotour(newTour, 0, start-1);
+            addTotour(newTour, 0, start - 1);
             addTotour(newTour, end + 1, insertionPoint);
             addTotour(newTour, start, end);
-            addTotour(newTour, insertionPoint + 1, tour.length-1);
+            addTotour(newTour, insertionPoint + 1, tour.length - 1);
         } else if (start == insertionPoint) { //then also end == insertion point, otherwise an exception would arise
-            addTotour(newTour, 0, tour.length-1);
+            addTotour(newTour, 0, tour.length - 1);
         } else if (insertionPoint < start && start <= end) {
             addTotour(newTour, 0, insertionPoint);
             addTotour(newTour, start, end);
             addTotour(newTour, insertionPoint + 1, start - 1);
-            addTotour(newTour, end + 1, tour.length-1);
+            addTotour(newTour, end + 1, tour.length - 1);
         } else if (end <= insertionPoint && insertionPoint < start) {
             addTotour(newTour, end + 1, insertionPoint);
             addTotour(newTour, start, tour.length - 1);

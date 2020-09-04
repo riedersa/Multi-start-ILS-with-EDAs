@@ -23,7 +23,7 @@ public class PositionBasedEDA_UMDA extends PositionBasedEDA {
      * @param selectedPopulationSize the size, the population should have after selecting the best ones.
      * @param sampledPopulationSize  the size the population should have after sampling the new ones.
      * @param maxCounterOtIterations the maximum number of iterations the algorithm should perform before stopping.
-     * @param probForPriorTour       the probability for a node to occure at the position it was in the given tour
+     * @param probForPriorTour       the probability for a node to occurat the position it was in the given tour
      * @throws IllegalArgumentException Throws an IllegalArgumentException if the sampledPopulationSize is smaller thant
      *                                  the selectedPopulationSize.
      */

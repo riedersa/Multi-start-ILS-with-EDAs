@@ -8,6 +8,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+/**
+ * This class reads an output file and created a {@link DrawingInstanceFromFile}.
+ */
 public class Reader {
 
     /**

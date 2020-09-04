@@ -4,6 +4,9 @@ import DataStructures.TSPTour;
 
 import java.util.PriorityQueue;
 
+/**
+ * This class helps to select the best individuals of a population.
+ */
 public class PriorityQueueHelper {
 
     /**

@@ -1,5 +1,9 @@
 package DataStructures;
 
+/**
+ * This class represents a problem instance. It contains all important information that can be taken from the TSPLib
+ * file.
+ */
 public class ProblemInstance {
     private String name;
     private String type;

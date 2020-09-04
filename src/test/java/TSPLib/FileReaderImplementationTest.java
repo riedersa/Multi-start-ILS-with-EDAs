@@ -20,7 +20,7 @@ public class FileReaderImplementationTest {
         String fileName = "C:\\PathToFile\\att532.tsp";
         FileReaderImplementation fileReaderImplementation = new FileReaderImplementation();
         ProblemInstance problemInstance = fileReaderImplementation.createGraphFromFile(fileName);
-        long length = problemInstance.getGraph().evalueteGenericTour();
+        long length = problemInstance.getGraph().evaluateGenericTour();
         System.out.println(length);
     }
 

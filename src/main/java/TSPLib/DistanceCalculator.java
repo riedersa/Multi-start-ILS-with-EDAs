@@ -1,5 +1,9 @@
 package TSPLib;
 
+/**
+ * This class can be used to calculate distances from node coordinates as given in the TSPLib. There is no test for this
+ * class since we do not have any test data. One can only use the generic tours given in the TSPLib.
+ */
 public class DistanceCalculator {
 
     private static int xCoordinate = 1;
@@ -130,11 +134,23 @@ public class DistanceCalculator {
     }
 
 
+    /**
+     * This is a rounding function as described in the TSPLib.
+     *
+     * @param x the value to round
+     * @return the rounded result
+     */
     private static int nint(double x) {
         return (int) (x + 0.5);
     }
 
 
+    /**
+     * This function round the value up.
+     *
+     * @param x the value to round up
+     * @return the rounded value
+     */
     private static int roundUp(double x) {
         if (((int) x) < x) {
             return (int) x + 1;
@@ -144,6 +160,12 @@ public class DistanceCalculator {
     }
 
 
+    /**
+     * This is used for radiant computation. It can be found in the TSPLib
+     *
+     * @param coordinate the coordinate for which to do the computation
+     * @return the result of the computation
+     */
     private static double radCompuatation(double coordinate) {
         int deg = (int) coordinate;
         double min = coordinate - deg;

@@ -2,7 +2,6 @@ package EDA;
 
 import DataStructures.Graph;
 import DataStructures.TSPTour;
-import Storage.FileParameters;
 
 import java.util.PriorityQueue;
 import java.util.Random;
@@ -13,8 +12,8 @@ import java.util.Random;
  * estimation of distribution for traveling salesman problem. IEEJ Transactions on Electrical and Electronic
  * Engineering, 2016, 11. Jg., S. S142-S154.".
  * <p>
- * Furthermore, this method implements some new type of refinement, similar to the one for edge based EDAs. The original
- * one takes too much time.
+ * Furthermore, this method implements some new type of refinement, similar to the one for edge based EDAs. Instead of
+ * creating an unfeasible tour, a feasible one is created using a roulette wheel technique.
  */
 public class PositionBasedEDA_PBIL_newRefinement extends PositionBasedEDA_PBIL {
 
@@ -56,7 +55,7 @@ public class PositionBasedEDA_PBIL_newRefinement extends PositionBasedEDA_PBIL {
 
 
     /**
-     * This method creates a new tour according to the edge histogram matrix.
+     * This method creates a new tour according to the probabilities in the model.
      *
      * @return the newly generated tour.
      */

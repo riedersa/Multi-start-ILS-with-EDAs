@@ -19,6 +19,7 @@ public class CalculationInstance {
 
     private TSPTour minimum;
 
+    //These strings represent the algorithms that were used
     private String eda;
     private String ls;
     private String multiStartILS;

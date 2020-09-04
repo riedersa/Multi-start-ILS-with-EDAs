@@ -39,7 +39,7 @@ public class EdgeBasedEDA implements EDA {
      * @param selectedPopulationSize the size, the population should have after selecting the best ones.
      * @param sampledPopulationSize  the size the population should have after sampling the new ones.
      * @param maxCounterOtIterations the maximum number of iterations the algorithm should perform before stopping.
-     * @param bRatio                 the bRatio value. If this value is high, the pertubation is high
+     * @param bRatio                 the bRatio value. If this value is high, the perturbation is high
      * @param valueForAPrioriEdges   the value, edges that are already in a tour, should get
      * @throws IllegalArgumentException Throws an IllegalArgumentException if the sampledPopulationSize is smaller thant
      *                                  the selectedPopulationSize.
@@ -348,6 +348,9 @@ public class EdgeBasedEDA implements EDA {
     }
 
 
+    /**
+     * This method should only be used inside the class or for testing. Epsilon is derived as described in the paper.
+     */
     protected void setEpsilon() {
         this.epsilon = (2.0 * selectedPopulationSize) / (numberNodes - 1) * bRatio;
     }

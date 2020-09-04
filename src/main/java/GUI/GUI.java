@@ -1,15 +1,10 @@
 package GUI;
 
-import EDA.EdgeBasedEDA;
-import EDA.PositionBasedEDA_UMDA;
-import LocalSearch.OrOpt;
-import LocalSearch.TwoOpt;
-
 import javax.swing.*;
-import java.io.File;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 
+/**
+ * This class represents the GUI.
+ */
 public class GUI {
 
     private static int rowsTextArea = 2;
@@ -44,6 +39,7 @@ public class GUI {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
     }
+
 
     /**
      * This method returns a JTextArea that looks like a JLabel

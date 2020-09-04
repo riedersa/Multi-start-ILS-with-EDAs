@@ -1,5 +1,9 @@
 package DataStructures;
 
+/**
+ * This class is a subclass of CalculationInstance. It extends the class with an additional value for the runtime,
+ * a boolean telling if the optimal value was found and the number ot times local search was executed.
+ */
 public class CalculationInstanceWithTime extends CalculationInstance {
 
     //Execution time in milli seconds

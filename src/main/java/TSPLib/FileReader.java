@@ -1,12 +1,11 @@
 package TSPLib;
 
-import DataStructures.Graph;
 import DataStructures.ProblemInstance;
 
 import java.io.IOException;
 
 /**
- * This class creates a {@link Graph} form a file of the TSPLIB.
+ * This class creates a {@link ProblemInstance} containing a graph form a file of the TSPLIB.
  */
 public interface FileReader {
 

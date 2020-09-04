@@ -1,5 +1,8 @@
 package Main;
 
+/**
+ * Here, default values for each parameter of EDA and LS are stored.
+ */
 public class DefaultValues {
 
     //EDAs

@@ -13,6 +13,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * This class is ues for storing the results of the EvaluatingClass to memory.
+ */
 public class EvaluationStorage {
 
     /**
@@ -55,6 +58,13 @@ public class EvaluationStorage {
     }
 
 
+    /**
+     * This method creates an new file and returns it.
+     *
+     * @param problemInstance the instance for which to create the file. The name of the problem is needed.
+     * @return the newly created file
+     * @throws IOException if creating does not work out.
+     */
     private static File createFile(ProblemInstance problemInstance) throws IOException {
         String fileSeparator = System.getProperty("file.separator");
         String fileName = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date());
@@ -68,6 +78,18 @@ public class EvaluationStorage {
     }
 
 
+    /**
+     * This method adds all information to the file
+     *
+     * @param writer               where to write the information
+     * @param calculationInstances a list of the calculations to store
+     * @param filenames            the names of the files storing data for the single runs
+     * @param time                 a list containing the runtimes of each run
+     * @param problemInstance      the problem
+     * @param opt                  the optimal value for the length of a tour
+     * @param generalInformation   information on the algorithms
+     * @throws IOException if writing does not work out
+     */
     private static void addResults(BufferedWriter writer, List<CalculationInstance> calculationInstances,
                                    List<String> filenames, List<Double> time, ProblemInstance problemInstance,
                                    double opt, String generalInformation)
@@ -88,7 +110,7 @@ public class EvaluationStorage {
         writer.write("AbsAvgError:" + (avg - opt) + "\n");
         double relAvgError = (avg - opt) / opt;
         writer.write("RelAvgError:" + relAvgError + "\n");
-        writer.write("AvgTime:"+getAvgTime(time)+"\n");
+        writer.write("AvgTime:" + getAvgTime(time) + "\n");
 
         writer.write("Calculations" + "\n");
         for (int i = 0; i < calculationInstances.size(); i++) {
@@ -100,6 +122,13 @@ public class EvaluationStorage {
     }
 
 
+    /**
+     * Counts the number of times, a run found the optimal tour
+     *
+     * @param calculationInstances list of calculations
+     * @param opt                  the optimal value
+     * @return the number of optimal tours
+     */
     private static int timesOptWasFound(List<CalculationInstance> calculationInstances, double opt) {
         int counter = 0;
         for (CalculationInstance calculationInstance : calculationInstances) {
@@ -111,6 +140,12 @@ public class EvaluationStorage {
     }
 
 
+    /**
+     * Finds the tour with minimal length in all runs
+     *
+     * @param calculationInstances information on the single runs
+     * @return the minimal length
+     */
     private static CalculationInstance findMinimum(List<CalculationInstance> calculationInstances) {
         CalculationInstance optInstance = null;
         double distance = Double.MAX_VALUE;
@@ -124,6 +159,12 @@ public class EvaluationStorage {
     }
 
 
+    /**
+     * Computes the average distance
+     *
+     * @param calculationInstances information on the runs
+     * @return the average distance
+     */
     private static double computeAvgDistance(List<CalculationInstance> calculationInstances) {
         double distance = 0;
         for (CalculationInstance calculationInstance : calculationInstances) {
@@ -133,11 +174,17 @@ public class EvaluationStorage {
     }
 
 
-    private static double getAvgTime(List<Double> time){
+    /**
+     * Computes the average time needed
+     *
+     * @param time the list containing all runtimes
+     * @return
+     */
+    private static double getAvgTime(List<Double> time) {
         int value = 0;
-        for(Double t: time){
+        for (Double t : time) {
             value += t;
         }
-        return value/time.size();
+        return value / time.size();
     }
 }

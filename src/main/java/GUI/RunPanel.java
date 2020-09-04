@@ -16,6 +16,9 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+/**
+ * This class represents the run panel.
+ */
 public class RunPanel {
     private static int bottomSpace = 5;
 
@@ -59,7 +62,7 @@ public class RunPanel {
     private static String aPrioriStringEdge = "The value, which edges already in a tour, should get. " +
             "This should be an integer: ";
     private static String getaPrioriStringPosition = "The probability an node in the given tour should get to appear " +
-            "on the sae spot:";
+            "on the same spot:";
     private static String edaComboBoxListe[] = {EdgeBasedEDA.getName(), EdgeBasedEDA_UpdateWithWeight.getName(),
             PositionBasedEDA_UMDA.getNameStatic(), PositionBasedEDA_PBIL.getNameStatic(),
             PositionBasedEDA_PBIL_newRefinement.getNameStatic()};
@@ -77,7 +80,7 @@ public class RunPanel {
             "iteration will be high):");
     private static JFormattedTextField bRatioField = new JFormattedTextField(doubleFormatter);
     private static JTextArea alpha = GUI.formatTextArea("Alpha (This value defines the weighting the current tours in" +
-            " the population should get when updating the model. The value hsould be between 0 and 1.");
+            " the population should get when updating the model. The value should be between 0 and 1.)");
     private static JFormattedTextField alphaField = new JFormattedTextField(doubleFormatter);
 
 

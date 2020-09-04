@@ -98,6 +98,12 @@ public class StorageComponent {
     }
 
 
+    /**
+     * This method writes an int array. Each entry is separated using the separator given in {@link FileParameters}.
+     *
+     * @param array the array to write
+     * @return the String representing the array
+     */
     private static String writeIntArray(int[] array) {
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < array.length - 1; i++) {
@@ -108,6 +114,13 @@ public class StorageComponent {
     }
 
 
+    /**
+     * This method returns a string representing the double array. Each entry is separated using the separator given in
+     * {@link FileParameters}.
+     *
+     * @param array the array to represent
+     * @return the string representation
+     */
     private static String writeDoubleArray(double[] array) {
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < array.length - 1; i++) {

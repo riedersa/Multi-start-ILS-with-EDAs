@@ -9,6 +9,9 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * This class represents the draw panel.
+ */
 public class DrawPanel {
 
     private static int bottomSpace = 5;
@@ -97,16 +100,16 @@ public class DrawPanel {
         runPanel.add(labelName, gridBagConstraints);
         labelName.setVisible(false);
 
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = start + 2;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = start + 3;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 0.0;
         gridBagConstraints.insets = new Insets(0, 10, bottomSpace, 0);
         runPanel.add(labelNumberNodes, gridBagConstraints);
         labelNumberNodes.setVisible(false);
 
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = start + 2;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = start + 4;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 0.0;
         gridBagConstraints.insets = new Insets(0, 10, bottomSpace, 0);
@@ -114,7 +117,7 @@ public class DrawPanel {
         labelPrintable.setVisible(false);
 
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = start + 3;
+        gridBagConstraints.gridy = start + 5;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 0.0;
         gridBagConstraints.insets = new Insets(0, 10, bottomSpace, 0);

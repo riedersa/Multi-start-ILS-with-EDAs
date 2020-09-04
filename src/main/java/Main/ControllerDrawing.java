@@ -6,6 +6,9 @@ import Storage.Reader;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * This class is used to separate the draw panel form the logic of the program.
+ */
 public class ControllerDrawing {
 
     /**

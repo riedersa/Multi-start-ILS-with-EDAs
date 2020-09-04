@@ -14,8 +14,6 @@ import java.util.Random;
  * estimation of distribution for traveling salesman problem. IEEJ Transactions on Electrical and Electronic
  * Engineering, 2016, 11. Jg., S. S142-S154.". The only method, the subclasses implement is the method estimate for
  * updating the model.
- * <p>
- * TODO: add another stopping criterion like no improvement
  */
 public abstract class PositionBasedEDA implements EDA {
     /* This is the probabilistic model used by the EDA. model[i][j] is the probability that node i is at position j

@@ -4,6 +4,9 @@ import DataStructures.Graph;
 import DataStructures.TSPTour;
 import Storage.FileParameters;
 
+/**
+ * This class implements Two-Opt. It can be used with first improvement or steepest descent.
+ */
 public class TwoOpt implements LocalSearch {
 
     private static String name = "2-Opt";

@@ -1,11 +1,19 @@
 package DataStructures;
 
+/**
+ * This class is used to store all necessary information for drawing a tour.
+ */
 public class DrawingInstanceFromFile {
 
+    //the name of the problem
     private String name;
+    //the tour to draw
     private TSPTour tspTour;
+    //the coordinates of the nodes
     private double[][] nodeCoordinates;
+    //the number of nodes
     private int numberNodes;
+    //if the tour can be printed, this value is true. Some problems only have a distance matrix and cannot be printed
     private boolean printable;
 
 

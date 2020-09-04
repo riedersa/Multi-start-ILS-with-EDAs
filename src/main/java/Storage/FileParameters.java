@@ -1,5 +1,8 @@
 package Storage;
 
+/**
+ * This class contains the keywords for the output file.
+ */
 public class FileParameters {
 
     public static String separator = ":";

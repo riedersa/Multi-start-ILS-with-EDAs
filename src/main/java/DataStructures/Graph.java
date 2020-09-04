@@ -50,7 +50,7 @@ public class Graph {
      *
      * @return the tour length
      */
-    public long evalueteGenericTour() {
+    public long evaluateGenericTour() {
         long result = 0L;
         for (int i = 0; i < graph.length - 1; i++) {
             result += graph[i][i + 1];
@@ -95,12 +95,24 @@ public class Graph {
     }
 
 
-    public long getNewLengthAfterSwap(long initialLength, int[] tour, int startReverse, int endRevers, int numberNodes){
-        int preStart = startReverse == 0? numberNodes - 1 : startReverse - 1;
+    /**
+     * This method returns the length of a tour after performing a swap of the segment [startReverse,...,endReverse]
+     * like for Two-Opt.
+     *
+     * @param initialLength the length the tour has before swapping
+     * @param tour          the tour
+     * @param startReverse  the start index of the segment to reverse
+     * @param endRevers     the end index of the segment to reverse
+     * @param numberNodes   the number of nodes in the tour
+     * @return the new length
+     */
+    public long getNewLengthAfterSwap(long initialLength, int[] tour, int startReverse, int endRevers,
+                                      int numberNodes) {
+        int preStart = startReverse == 0 ? numberNodes - 1 : startReverse - 1;
         int postEnd = (endRevers + 1) % numberNodes;
-         return initialLength
-                - graph[tour[preStart]] [tour[startReverse]]
-                - graph[tour[endRevers]] [tour[postEnd]]
+        return initialLength
+                - graph[tour[preStart]][tour[startReverse]]
+                - graph[tour[endRevers]][tour[postEnd]]
                 + graph[tour[preStart]][tour[endRevers]]
                 + graph[tour[startReverse]][tour[postEnd]];
     }

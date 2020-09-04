@@ -8,8 +8,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+/**
+ * This class is a concrete implementation of the {@link FileReader}
+ */
 public class FileReaderImplementation implements FileReader {
 
+    //This can be used for logging.
     private final Logger logger = Logger.getLogger(FileReaderImplementation.class.getName());
 
 
@@ -187,6 +191,8 @@ public class FileReaderImplementation implements FileReader {
         return edges;
     }
 
+
+    //The following methods read the formats described in the TSPLib
 
     protected void readFullMatrix(int[] edgeWeights, int[][] edges) throws IOException {
         int index = 0;

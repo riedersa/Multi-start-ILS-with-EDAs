@@ -19,6 +19,7 @@ public class MultiStartILS {
     private int maxTimesLS = 100;
     private int maxTimesStuck = 5;
 
+    //If this value is set to false, the algorithm will stop the next time it returns to the main loop.
     private boolean continueRunning = true;
 
 

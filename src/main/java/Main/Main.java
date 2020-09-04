@@ -7,8 +7,6 @@ import java.text.ParseException;
 
 /**
  * This is the main class.
- * <p>
- * TODO: think about usage of illegalArgumentException. Maybe checked one would be better (Create One).
  */
 public class Main {
 
@@ -21,9 +19,6 @@ public class Main {
      * @throws ParseException this exception is thrown, if some parsing for the GUI gos wrong.
      */
     public static void main(String[] args) throws IOException, ParseException {
-        String edaS = "PosBas";
-        String lsS = "2Opt";
-
         GUI.create();
     }
 
