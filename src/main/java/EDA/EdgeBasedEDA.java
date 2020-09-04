@@ -12,8 +12,6 @@ import java.util.Random;
  * This class is an edge based EDA. It can only be used for symmetric TSP. It is based on "TSUTSUI, Shigeyoshi.
  * Probabilistic model-building genetic algorithms in permutation representation domain using edge histogram. In:
  * International Conference on Parallel Problem Solving from Nature. Springer, Berlin, Heidelberg, 2002. S. 224-233".
- * <p>
- * TODO: stopping criterion
  */
 public class EdgeBasedEDA implements EDA {
 
